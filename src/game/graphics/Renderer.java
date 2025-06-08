@@ -50,7 +50,6 @@ public class Renderer {
     public Renderer(MapData mapData) throws Exception {
         this.mapData = mapData;
 
-        // Create and compile the shader program for floor geometry.
         String vertexShaderSource = "#version 330 core\n" +
                 "layout(location = 0) in vec3 position;\n" +
                 "layout(location = 1) in vec3 color;\n" +
@@ -70,11 +69,8 @@ public class Renderer {
                 "}";
         shaderProgram = new ShaderProgram(vertexShaderSource, fragmentShaderSource);
 
-        // Generate floor geometry and record positions for wall, exit, and door tiles.
         generateFloorGeometry();
-        // Generate the version overlay texture.
         generateVersionTexture();
-        // Initialize textured renderers using paths from mapData.
         for (String tex : cubeInstances.keySet()) {
             cubeRenderers.put(
                     tex,
@@ -82,7 +78,6 @@ public class Renderer {
             );
         }
 
-        // And for each quad texture
         for (String tex : quadInstances.keySet()) {
             quadRenderers.put(
                     tex,
@@ -95,11 +90,9 @@ public class Renderer {
      * Generates floor geometry for floor tiles and records wall, exit, and door positions.
      */
     private void generateFloorGeometry() {
-        // Clear any old data
         cubeInstances.clear();
         quadInstances.clear();
 
-        // Build floor vertices as before
         List<Float> verticesList = new ArrayList<>();
         Tile[][] tiles = mapData.getTiles();
         int rows = tiles.length;
@@ -111,7 +104,6 @@ public class Renderer {
                 float centerX = col * tileSize + roomHalfSize;
                 float centerZ = row * tileSize + roomHalfSize;
 
-                // Pull renderer type and texture straight from the definition
                 TileDefinition def = t.getDefinition();
                 String rendererType = def.getRenderer();  // "floor", "cube", or "quad"
                 String texPath      = def.getTexture();
@@ -135,7 +127,6 @@ public class Renderer {
             }
         }
 
-        // Upload the floor VBO exactly as you did before:
         float[] vertices = new float[verticesList.size()];
         for (int i = 0; i < vertices.length; i++) {
             vertices[i] = verticesList.get(i);

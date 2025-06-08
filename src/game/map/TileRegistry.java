@@ -5,7 +5,6 @@ import java.util.Map;
 public class TileRegistry {
     private static Map<Character,TileDefinition> defs;
 
-    /** Call once at startup */
     public static void initialize(Map<Character,TileDefinition> definitions) {
         defs = definitions;
     }

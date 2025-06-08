@@ -32,7 +32,7 @@ public class LevelCompleteState implements IGameState {
 
     @Override
     public void enter() {
-        // No-op (overlay was constructed in constructor)
+
     }
 
     @Override

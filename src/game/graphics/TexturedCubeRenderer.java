@@ -24,10 +24,8 @@ public class TexturedCubeRenderer {
     public TexturedCubeRenderer(float tileSize, float roomHeight, String texturePath) throws Exception {
         this.halfSize = GameConfig.ROOM_HALF_SIZE;
         this.roomHeight = roomHeight;
-        // Load the texture.
         textureId = TextureLoader.loadTexture(texturePath);
 
-        // Create a shader program for textured rendering.
         String vertexShaderSource = "#version 330 core\n" +
                 "layout(location = 0) in vec3 position;\n" +
                 "layout(location = 1) in vec2 texCoord;\n" +
@@ -58,17 +56,17 @@ public class TexturedCubeRenderer {
         float h = roomHeight;
         float[] vertices = {
                 // Front face (z = +hs)
-                -hs,  h,  hs,   0, 0,   // Was (0,1)
-                hs,   h,  hs,   1, 0,   // Was (1,1)
-                hs,   0,  hs,   1, 1,   // Was (1,0)
+                -hs,  h,  hs,   0, 0,
+                hs,   h,  hs,   1, 0,
+                hs,   0,  hs,   1, 1,
                 -hs,  h,  hs,   0, 0,
                 hs,   0,  hs,   1, 1,
                 -hs,  0,  hs,   0, 1,
 
                 // Back face (z = -hs) – interior ordering for consistency.
-                hs,   h, -hs,   0, 0,   // (0,1) becomes (0,0)
-                -hs,  h, -hs,   1, 0,   // (1,1) becomes (1,0)
-                -hs,  0, -hs,   1, 1,   // (1,0) becomes (1,1)
+                hs,   h, -hs,   0, 0,
+                -hs,  h, -hs,   1, 0,
+                -hs,  0, -hs,   1, 1,
                 hs,   h, -hs,   0, 0,
                 -hs,  0, -hs,   1, 1,
                 hs,   0, -hs,   0, 1,
@@ -90,12 +88,12 @@ public class TexturedCubeRenderer {
                 hs,   0,  hs,   0, 1,
 
                 // Top face (y = h)
-                -hs,  h, -hs,   0, 1,   // (0,0) becomes (0,1)
-                hs,   h, -hs,   1, 1,   // (1,0) becomes (1,1)
-                hs,   h,  hs,   1, 0,   // (1,1) becomes (1,0)
+                -hs,  h, -hs,   0, 1,
+                hs,   h, -hs,   1, 1,
+                hs,   h,  hs,   1, 0,
                 -hs,  h, -hs,   0, 1,
                 hs,   h,  hs,   1, 0,
-                -hs,  h,  hs,   0, 0,   // (0,1) becomes (0,0)
+                -hs,  h,  hs,   0, 0,
 
                 // Bottom face (y = 0)
                 -hs, 0,  hs,    0, 1,

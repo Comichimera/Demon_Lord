@@ -7,7 +7,7 @@ import java.util.List;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MainMenuState implements IGameState {
-    private final Game game;          // reference back to orchestrate transitions
+    private final Game game;
     private final MenuOverlay menu;
 
     public MainMenuState(Game game) {

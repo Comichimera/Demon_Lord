@@ -25,24 +25,19 @@ public class PlayingState implements IGameState {
 
     @Override
     public void enter() {
-        // Load or reload the level exactly as in Game.reloadLevel()
         game.reloadLevel();
         timer.update(0);
     }
 
     @Override
     public void update(float dt) {
-        // Global ESC takes you back to main menu:
         if (glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             game.changeState(new MainMenuState(game));
             return;
         }
 
-        // Timer update (increment and push to overlay)
         game.elapsedTime += dt;
         timer.update(game.elapsedTime);
-
-        // --- BEGIN COPY of updateGame(dt) from Game.java ---
 
         // Process movement and interactions:
         keyboard.processInput(game.player, dt, game.mapData);
@@ -101,8 +96,6 @@ public class PlayingState implements IGameState {
                 }
             }
         }
-
-        // --- END COPY of updateGame(dt) from Game.java ---
     }
 
     @Override

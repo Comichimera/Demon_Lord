@@ -16,13 +16,11 @@ public class MainMenuOverlay {
 
     public MainMenuOverlay(String text) {
         this.text = text;
-        // Use a monospaced font for consistency, or choose one you like.
         font = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 24f);
         generateTexture();
     }
 
     private void generateTexture() {
-        // Split text into lines.
         String[] lines = text.split("\\r?\\n");
         BufferedImage tempImg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = tempImg.createGraphics();
@@ -95,7 +93,6 @@ public class MainMenuOverlay {
         glPushMatrix();
         glLoadIdentity();
 
-        // Draw a full-screen black background.
         glDisable(GL_DEPTH_TEST);
         glColor3f(0, 0, 0);
         glBegin(GL_QUADS);

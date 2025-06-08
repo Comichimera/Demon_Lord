@@ -30,7 +30,7 @@ public class TimerOverlay {
     }
 
     public void update(double elapsed) {
-        String s = formatTime(elapsed); // same as before
+        String s = formatTime(elapsed);
         if (!s.equals(last)) {
             if (tex != null) tex.cleanup();
             tex = new TextTexture(s, font, 10, 5, Color.WHITE);

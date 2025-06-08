@@ -15,7 +15,6 @@ public class Tile {
         this.open      = false;
     }
 
-    // Expose the original ID if you still need it
     public char getType() {
         return def.getId();
     }

@@ -42,7 +42,6 @@ public class TexturedQuadRenderer {
         float hw = width / 2.0f;
         float hh = height / 2.0f;
         float[] vertices = {
-                // positions (x, y, z) and texture coordinates (u, v)
                 -hw, 0, -hh,   0, 0,
                 hw, 0, -hh,   1, 0,
                 hw, 0,  hh,   1, 1,

@@ -10,7 +10,6 @@ import static org.lwjgl.opengl.GL12.*;
 
 public class TextureLoader {
     public static int loadTexture(String path) throws Exception {
-        // Load the texture from the given path (e.g., "/assets/textures/wall.png")
         InputStream in = TextureLoader.class.getResourceAsStream(path);
         if(in == null) {
             throw new Exception("Texture not found: " + path);

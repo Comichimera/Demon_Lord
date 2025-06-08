@@ -12,7 +12,6 @@ public class TileDefinitionLoader {
     public static Map<Character, TileDefinition> loadDefinitions() {
         Map<Character, TileDefinition> defs = new HashMap<>();
 
-        // Load the JSON from resources
         InputStream in = TileDefinitionLoader.class
                 .getResourceAsStream("/data/map/tiledefs.json");
         if (in == null) {

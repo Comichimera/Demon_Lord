@@ -50,7 +50,6 @@ public class MenuOverlay {
             downPressed = false;
         }
 
-        // only rebuild when selection actually changed
         if (selected != prev) {
             rebuild();
         }

@@ -19,9 +19,6 @@ public class Main {
         }));
 
         // Start the game
-        // new Game().run();
-
-        // Start the game
         game.run();
     }
 
@@ -64,4 +61,3 @@ public class Main {
         }
     }
 }
-

@@ -22,7 +22,7 @@ public class GameData {
                         break;
                     }
                 }
-                System.out.println("Loaded version: " + version); // <-- ADD THIS LINE
+                System.out.println("Loaded version: " + version);
             } else {
                 System.err.println("Warning: version.txt not found in JAR. Defaulting to 'Unknown'.");
             }

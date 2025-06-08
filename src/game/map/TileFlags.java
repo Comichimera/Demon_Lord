@@ -1,4 +1,3 @@
-// File: src/game/map/TileFlags.java
 package game.map;
 
 import org.json.JSONObject;

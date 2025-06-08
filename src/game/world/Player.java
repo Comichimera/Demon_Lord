@@ -33,7 +33,6 @@ public class Player {
     }
 
     public void applyCameraTransform() {
-        // your existing GL camera code here...
     }
 
     public float getYaw() { return yaw; }

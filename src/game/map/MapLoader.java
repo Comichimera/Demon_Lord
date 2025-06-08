@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 
 import game.map.TileRegistry;
 import game.map.TileDefinition;
-
 import game.map.TileDefinitionLoader;
 
 public class MapLoader {
@@ -91,7 +90,6 @@ public class MapLoader {
                     int x = ovr.getInt("x");
                     int y = ovr.getInt("y");
                     TileFlags flags = TileFlags.fromJson(ovr);
-                    // Coordinates assumed valid; you could clamp/check here
                     flags.applyTo(tiles[y][x]);
                 }
             }

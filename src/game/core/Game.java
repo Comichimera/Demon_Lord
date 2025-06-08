@@ -17,16 +17,12 @@ public class Game {
     Player player;
     private KeyboardInput keyboard;
     MapData mapData;
-
-    // Level and state management
     LevelManager levelManager;
 
     // Timer UI and end-of-level overlay
     double elapsedTime = 0;
     double totalTime = 0;
     private IGameState currentState;
-
-    // Menu flags
 
     /**
      * Formats a time value into mm:ss format with no decimal.
@@ -60,14 +56,13 @@ public class Game {
         window       = new Window(800, 600, "pre alpha");
         levelManager = new LevelManager("/data/map/levels.json");
 
-        // Initialize tile definitions exactly as before
+        // Initialize tile definitions
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
         TileRegistry.initialize(baseDefs);
 
         player   = new Player();
         keyboard = new KeyboardInput();
 
-        // We no longer directly create overlays here. Instead, begin in MainMenuState:
         changeState(new MainMenuState(this));
 
         running = true;
@@ -83,9 +78,8 @@ public class Game {
             float deltaTime = (now - lastTime) / 1_000_000_000f;
             lastTime = now;
 
-            // Delegate entirely to the active state
             currentState.update(deltaTime);
-            render();      // also simplified below
+            render();
             window.update();
         }
     }
@@ -115,19 +109,6 @@ public class Game {
         player.setPosition(sx * ts + ts / 2f, sy * ts + ts / 2f);
         player.setYaw(mapData.getCameraYaw());
     }
-
-    /**
-     * Processes player input, handles interactions (like door toggling), and checks for level completion.
-     */
-
-
-    /**
-     * Handles input when a level is complete. Pressing Enter advances to the next level.
-     */
-
-    /**
-     * Central render function. Clears frame, then draws game or UI depending on state.
-     */
     private void render() {
         // clear happens inside each state's render if needed, or you can do it here:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

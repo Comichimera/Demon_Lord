@@ -27,7 +27,6 @@ public class OverlayRenderer {
 
         glDisable(GL_DEPTH_TEST);
 
-        // Full-screen background?
         if (fullBg) {
             glEnable(GL_BLEND);
             glColor4f(bgR, bgG, bgB, bgAlpha);
