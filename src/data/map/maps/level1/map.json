@@ -1,0 +1,43 @@
+{
+    "textures": {
+      "floor": "/data/assets/textures/floor.png",
+      "wall": "/data/assets/textures/woah.jpg",
+      "door": "/data/assets/textures/door.png",
+      "exit": "/data/assets/textures/exit.png"
+    },
+    "layout": [
+      ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+      ["W", "F", "F", "F", "W", "W", "F", "F", "F", "F", "W", "E", "E", "E", "W"],
+      ["W", "F", "F", "F", "W", "F", "D", "F", "F", "F", "D", "E", "E", "E", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "W", "F", "F", "W", "E", "E", "E", "W"],
+      ["W", "W", "D", "W", "W", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "F", "W", "F", "W", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "W", "W", "F", "W", "W", "W", "W", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "W", "W", "W", "D", "W", "W", "W", "W", "D", "W", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "D", "F", "F", "F", "F", "F", "D", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
+      ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
+    ],
+    "player": {
+      "spawn": { "x": 2, "y": 1 },
+      "camera": {
+        "yaw": 180
+      }
+    },
+    "per-type": {
+      "overrides": {
+        "walls": { "walkable": false, "endsLevel": false, "openable":  false},
+        "doors": { "walkable": false},
+        "exits": { "endsLevel": true}
+      }
+    },
+    "per-tile": {
+      "overrides": [
+        { "x":12,"y":4,"openable":true }
+      ]
+    }
+  }

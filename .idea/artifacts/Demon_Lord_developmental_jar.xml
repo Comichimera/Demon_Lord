@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Demon_Lord:developmental_jar">
+    <output-path>$PROJECT_DIR$/out/developmentalbuilds/Demon_Lord_developmental_jar</output-path>
+    <root id="archive" name="Demon_Lord.jar">
+      <element id="module-output" name="Demon_Lord" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl-glfw.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl-opengl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

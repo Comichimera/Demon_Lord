@@ -1,0 +1,24 @@
+{
+  "textures": {
+      "floor": "/data/assets/textures/floor.png",
+      "wall": "/data/assets/textures/wall.png",
+      "door": "/data/assets/textures/door.png",
+      "exit": "/data/assets/textures/exit.png"
+    },
+  "layout": [
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W", "E", "E", "W", "F", "W", "F", "F", "F", "F", "F", "F", "W"],
+    ["W", "F", "W", "W", "W", "F", "W", "F", "F", "W", "F", "F", "F", "W", "W", "W", "W", "W", "E", "E", "W", "F", "F", "F", "F", "F", "W", "F", "F", "W"],
+    ["W", "F", "F", "W", "F", "F", "W", "W", "W", "W", "W", "F", "W", "W", "F", "F", "F", "W", "E", "E", "F", "F", "W", "W", "W", "F", "W", "W", "W", "W"],
+    ["W", "F", "F", "W", "F", "F", "W", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W", "E", "E", "W", "F", "F", "W", "F", "F", "F", "W", "W", "W"],
+    ["W", "F", "W", "W", "W", "F", "W", "F", "W", "W", "F", "W", "F", "W", "W", "F", "W", "W", "W", "W", "W", "F", "F", "W", "F", "F", "F", "W", "W", "W"],
+    ["W", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W", "W", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
+  ],
+  "player": {
+    "spawn": { "x": 15, "y": 3 },
+    "camera": {
+      "yaw": 180
+    }
+  }
+}
