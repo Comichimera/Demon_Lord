@@ -1,34 +1,5 @@
 {
   "W": {
-    "name":      "Wall",
-    "walkable":  false,
-    "openable":  false,
-    "endsLevel": false,
-    "renderer":  "cube",
-    "texture":   "/data/assets/textures/wall.png"
-  },
-  "F": {
-    "name":      "Floor",
-    "walkable":  true,
-    "openable":  false,
-    "endsLevel": false,
-    "renderer":  "floor",
-    "texture":   "/data/assets/textures/floor.png"
-  },
-  "D": {
-    "name":      "Door",
-    "walkable":  false,
-    "openable":  true,
-    "endsLevel": false,
-    "renderer":  "cube",
-    "texture":   "/data/assets/textures/door.png"
-  },
-  "E": {
-    "name":      "Exit",
-    "walkable":  true,
-    "openable":  false,
-    "endsLevel": true,
-    "renderer":  "quad",
-    "texture":   "/data/assets/textures/exit.png"
+    "texture":   "/data/assets/textures/ground.png"
   }
 }

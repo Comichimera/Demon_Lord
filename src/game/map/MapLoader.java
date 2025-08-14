@@ -13,28 +13,20 @@ import game.map.TileDefinitionLoader;
 
 public class MapLoader {
     public static MapData loadMap(String path) {
+        TileRegistry.reset();
         TileDefinitionLoader.loadAndMergeMapDefinitions(path);
 
         try (InputStream is = MapLoader.class.getResourceAsStream(path)) {
-            if (is == null) {
-                throw new RuntimeException("Map file not found: " + path);
-            }
+            if (is == null) throw new RuntimeException("Map file not found: " + path);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             StringBuilder sb = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
+            while ((line = reader.readLine()) != null) sb.append(line);
+
             JSONObject json = new JSONObject(sb.toString());
 
-            // 1) Read textures
-            JSONObject tex = json.getJSONObject("textures");
-            String wallTex = tex.getString("wall");
-            String exitTex = tex.getString("exit");
-            String doorTex = tex.getString("door");
-
-            // 2) Build raw Tile grid from layout
+            // Build raw Tile grid from layout
             JSONArray layoutArr = json.getJSONArray("layout");
             int rows = layoutArr.length();
             int cols = layoutArr.getJSONArray(0).length();
@@ -48,31 +40,19 @@ public class MapLoader {
                 }
             }
 
-            // 3) Apply per-type overrides
+            // Apply per-type overrides
             if (json.has("per-type")) {
-                JSONObject typeSection = json
-                        .getJSONObject("per-type")
-                        .getJSONObject("overrides");
+                JSONObject typeSection = json.getJSONObject("per-type").getJSONObject("overrides");
                 for (String typeKey : typeSection.keySet()) {
                     JSONObject overrideJson = typeSection.getJSONObject(typeKey);
                     TileFlags flags = TileFlags.fromJson(overrideJson);
 
-                    // Map your keys to the tile character:
-                    //   “walls” → 'W', “doors” → 'D', “exits” → 'E', “floor”→'F'
-                    char tileChar;
-                    switch (typeKey.toLowerCase()) {
-                        case "walls":  tileChar = 'W'; break;
-                        case "doors":  tileChar = 'D'; break;
-                        case "exits":  tileChar = 'E'; break;
-                        case "floor":  tileChar = 'F'; break;
-                        default:
-                            continue;  // unknown key, skip
-                    }
+                    java.util.Set<Character> targets = TileRegistry.idsForCategory(typeKey);
+                    if (targets.isEmpty()) continue;
 
-                    // Apply to every tile of that type
                     for (int y = 0; y < rows; y++) {
                         for (int x = 0; x < cols; x++) {
-                            if (tiles[y][x].getType() == tileChar) {
+                            if (targets.contains(tiles[y][x].getType())) {
                                 flags.applyTo(tiles[y][x]);
                             }
                         }
@@ -80,11 +60,9 @@ public class MapLoader {
                 }
             }
 
-            // 4) Apply per-tile overrides
+            // Apply per-tile overrides
             if (json.has("per-tile")) {
-                JSONArray perTileArr = json
-                        .getJSONObject("per-tile")
-                        .getJSONArray("overrides");
+                JSONArray perTileArr = json.getJSONObject("per-tile").getJSONArray("overrides");
                 for (int i = 0; i < perTileArr.length(); i++) {
                     JSONObject ovr = perTileArr.getJSONObject(i);
                     int x = ovr.getInt("x");
@@ -94,26 +72,14 @@ public class MapLoader {
                 }
             }
 
-            // 5) Parse player spawn & camera yaw
+            // Parse player spawn & camera yaw
             JSONObject playerObj = json.getJSONObject("player");
-            int spawnX = playerObj
-                    .getJSONObject("spawn")
-                    .getInt("x");
-            int spawnY = playerObj
-                    .getJSONObject("spawn")
-                    .getInt("y");
-            float yaw = playerObj
-                    .getJSONObject("camera")
-                    .getFloat("yaw");
+            int spawnX = playerObj.getJSONObject("spawn").getInt("x");
+            int spawnY = playerObj.getJSONObject("spawn").getInt("y");
+            float yaw  = playerObj.getJSONObject("camera").getFloat("yaw");
 
-            // 6) Return the assembled MapData
-            return new MapData(
-                    tiles,
-                    spawnX, spawnY,
-                    wallTex, exitTex,
-                    yaw,
-                    doorTex
-            );
+            // Return the assembled MapData
+            return new MapData(tiles, spawnX, spawnY, yaw);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,3 +87,4 @@ public class MapLoader {
         }
     }
 }
+

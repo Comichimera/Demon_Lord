@@ -89,7 +89,6 @@ public class Game {
      */
     void reloadLevel() {
         String mapPath = levelManager.getCurrentLevel().mapPath;
-        TileDefinitionLoader.loadAndMergeMapDefinitions(mapPath);
         mapData = MapLoader.loadMap(mapPath);
 
         if (renderer != null) renderer.cleanup();

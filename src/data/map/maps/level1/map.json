@@ -1,10 +1,4 @@
 {
-    "textures": {
-      "floor": "/data/assets/textures/floor.png",
-      "wall": "/data/assets/textures/woah.jpg",
-      "door": "/data/assets/textures/door.png",
-      "exit": "/data/assets/textures/exit.png"
-    },
     "layout": [
       ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
       ["W", "F", "F", "F", "W", "W", "F", "F", "F", "F", "W", "E", "E", "E", "W"],

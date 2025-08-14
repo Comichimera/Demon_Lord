@@ -37,5 +37,9 @@
     <orderEntry type="library" name="lwjgl-stb" level="project" />
     <orderEntry type="library" name="joml-1.10.7" level="project" />
     <orderEntry type="library" name="org.json-1.6-20240205" level="project" />
+    <orderEntry type="library" name="junit-jupiter-api-5.13.0-M3" level="project" />
+    <orderEntry type="library" name="junit-jupiter-engine-5.13.0-M3" level="project" />
+    <orderEntry type="library" name="apiguardian-api-1.1.2" level="project" />
+    <orderEntry type="library" name="opentest4j-1.3.0" level="project" />
   </component>
 </module>

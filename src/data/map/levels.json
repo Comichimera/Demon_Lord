@@ -4,19 +4,19 @@
       "id": "level1",
       "name": "Level One: The Beginning",
       "mapPath": "/data/map/maps/level1/map.json",
-      "target": "O:30"
+      "target": "0:30"
     },
     {
       "id": "level2",
       "name": "Level Two: The Descent",
       "mapPath": "/data/map/maps/level2/maptwo.json",
-      "target": "O:15"
+      "target": "0:15"
     },
     {
       "id": "level3",
       "name": "Level Three: Big Map",
       "mapPath": "/data/map/maps/level3/bigmap.json",
-      "target": "O:15"
+      "target": "0:15"
     }
   ]
 }
