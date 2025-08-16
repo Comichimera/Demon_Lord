@@ -3,11 +3,23 @@ package game.core;
 import game.input.KeyboardInput;
 import game.ui.TimerOverlay;
 import game.world.Player;
-import game.map.LevelManager;
 import game.config.GameConfig;
 import game.graphics.Renderer;
 import game.map.MapData;
 import game.map.Tile;
+
+// NEW imports for the logic layer
+import game.logic.EventBus;
+import game.logic.ObjectiveManager;
+import game.logic.RuntimeContext;
+import game.logic.GameEvent;
+import game.logic.GameEventType;
+import game.logic.Registries;
+import game.logic.Condition;
+import game.logic.ConditionFactory;
+
+import org.json.JSONObject;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public class PlayingState implements IGameState {
@@ -16,6 +28,12 @@ public class PlayingState implements IGameState {
     private final TimerOverlay timer;
     private boolean interactPressed = false;
 
+    // NEW: objective system
+    private EventBus events;
+    private ObjectiveManager objectives;
+
+    // NEW: track the last grid cell to fire ENTER_TILE events
+    private int lastTx = -1, lastTy = -1;
 
     public PlayingState(Game game) {
         this.game = game;
@@ -25,8 +43,41 @@ public class PlayingState implements IGameState {
 
     @Override
     public void enter() {
-        game.reloadLevel();
+        game.reloadLevel();          // builds mapData for the current level
         timer.update(0);
+
+        // --- Objective system setup (safe if a level has no objectives) ---
+        events = new EventBus();
+        objectives = new ObjectiveManager();
+
+        if (game.mapData.getObjectiveSpecs() != null) {
+            for (JSONObject spec : game.mapData.getObjectiveSpecs()) {
+                String id = spec.optString("id", "objective");
+                boolean mandatory = spec.optBoolean("mandatory", true);
+                String ui = spec.optString("ui", id);
+
+                JSONObject when = spec.getJSONObject("when");
+                String type = when.getString("type");
+                ConditionFactory f = Registries.CONDITIONS.get(type);
+                if (f == null) {
+                    System.err.println("Unknown objective type: " + type + " (skipping)");
+                    continue;
+                }
+                Condition cond = f.create(when);
+                game.logic.Objective obj = new game.logic.Objective(id, mandatory, cond, ui);
+                objectives.add(obj);
+            }
+        }
+
+        // attach & subscribe (so objectives receive events)
+        objectives.attach(ctx());
+        events.subscribe(objectives);
+
+        // level start event (lets conditions initialize if they want)
+        events.post(GameEvent.simple(GameEventType.LEVEL_START));
+
+        // reset cell tracker so first movement posts an event correctly
+        lastTx = lastTy = -1;
     }
 
     @Override
@@ -42,13 +93,21 @@ public class PlayingState implements IGameState {
         // Process movement and interactions:
         keyboard.processInput(game.player, dt, game.mapData);
 
+        // --- Post ENTER_TILE when player changes grid cell ---
+        int tx = (int)(game.player.getX() / GameConfig.TILE_SIZE);
+        int ty = (int)(game.player.getZ() / GameConfig.TILE_SIZE);
+        if (tx != lastTx || ty != lastTy) {
+            lastTx = tx; lastTy = ty;
+            events.post(new GameEvent(GameEventType.ENTER_TILE, tx, ty));
+        }
+
         // Interaction key ("E") toggles adjacent openable tiles (e.g., doors)
         int interactState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_E);
         if (interactState == GLFW_PRESS && !interactPressed) {
             interactPressed = true;
 
-            int col = (int)(game.player.getX() / GameConfig.TILE_SIZE);
-            int row = (int)(game.player.getZ() / GameConfig.TILE_SIZE);
+            int col = tx;
+            int row = ty;
             int[][] offs = {{-1,0},{1,0},{0,-1},{0,1}};  // NSEW
 
             for (int[] off : offs) {
@@ -67,32 +126,18 @@ public class PlayingState implements IGameState {
             interactPressed = false;
         }
 
-        // Check if player is standing on an exit tile
-        {
-            int col = (int)(game.player.getX() / GameConfig.TILE_SIZE);
-            int row = (int)(game.player.getZ() / GameConfig.TILE_SIZE);
-            if (row >= 0 && row < game.mapData.getHeight()
-                    && col >= 0 && col < game.mapData.getWidth()) {
+        // Check if player is standing on an exit tile — now gated by objectives
+        if (ty >= 0 && ty < game.mapData.getHeight()
+                && tx >= 0 && tx < game.mapData.getWidth()) {
 
-                Tile t = game.mapData.getTile(row, col);
-                if (t.isEndsLevel()) {
-
-                    String lvlTime = game.formatTimeNoDecimal(game.elapsedTime);
-                    String cumTime = game.formatTimeNoDecimal(game.totalTime);
-                    String target = game.levelManager.getCurrentLevel().target;
-                    String upcoming = (game.levelManager.hasNextLevel())
-                            ? game.levelManager.getLevels()
-                            .get(game.levelManager.getCurrentIndex() + 1).name
-                            : "None";
-
-                    String text =
-                            "Level Complete\n" +
-                                    "Time: " + lvlTime + "\n" +
-                                    "Target: " + target + "\n\n" +
-                                    "Total: " + cumTime + "\n\n" +
-                                    "Next: " + upcoming;
-
+            Tile t = game.mapData.getTile(ty, tx);
+            if (t.isEndsLevel()) {
+                boolean canFinish = (objectives == null) || objectives.allMandatoryComplete();
+                if (canFinish) {
                     game.changeState(new LevelCompleteState(game));
+                } else {
+                    // Optional: flash a hint via your overlay system
+                    // timer.flash("Objectives remaining");
                 }
             }
         }
@@ -104,10 +149,29 @@ public class PlayingState implements IGameState {
         game.renderer.render(game.player);
         // Render the timer overlay
         timer.render();
+
+        // Optional HUD line:
+        // if (objectives != null) timer.drawText(objectives.statusLine(), 10, 50);
     }
 
     @Override
     public void exit() {
         timer.cleanup();
+        // Optional: events.post(GameEvent.simple(GameEventType.LEVEL_END));
+    }
+
+    // --- RuntimeContext adapter (lets conditions read minimal game state) ---
+    private RuntimeContext ctx() {
+        return new RuntimeContext() {
+            @Override
+            public Tile tileAt(int x, int y) {
+                if (x < 0 || y < 0 || y >= game.mapData.getHeight() || x >= game.mapData.getWidth()) return null;
+                return game.mapData.getTile(y, x); // note: MapData.getTile(row,col) expects (y,x)
+            }
+            @Override
+            public float elapsedSeconds() {
+                return (float) game.elapsedTime;
+            }
+        };
     }
 }

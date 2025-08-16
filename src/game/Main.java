@@ -14,9 +14,7 @@ public class Main {
 
         // Set the path so LWJGL can find the extracted .dll files
         System.setProperty("org.lwjgl.librarypath", nativePath);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            game.cleanup();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(game::cleanup));
 
         // Start the game
         game.run();

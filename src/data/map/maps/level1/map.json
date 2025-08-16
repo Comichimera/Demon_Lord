@@ -33,5 +33,11 @@
       "overrides": [
         { "x":12,"y":4,"openable":true }
       ]
-    }
+    },
+    "objectives": [
+      { "id":"reach.controlRoom", "mandatory":true,
+        "when": { "type":"reach", "x":2, "y":13 },
+        "ui": "Reach the tile (10,4)"
+      }
+    ]
   }
