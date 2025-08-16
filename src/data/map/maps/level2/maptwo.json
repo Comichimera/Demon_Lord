@@ -14,5 +14,15 @@
     "camera": {
       "yaw": 180
     }
-  }
+  },
+  "objectives": [
+    { "id":"reach.firstSpecialTile", "mandatory":true,
+      "when": { "type":"reach", "x":1, "y":1 },
+      "ui": "Reach the tile (1,1)"
+    },
+    { "id":"reach.secondSpecialTile", "mandatory":true,
+      "when": { "type":"reach", "x":25, "y":5 },
+      "ui": "Reach the tile (1,1)"
+    }
+  ]
 }
