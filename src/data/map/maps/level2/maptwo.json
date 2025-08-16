@@ -22,7 +22,7 @@
     },
     { "id":"reach.secondSpecialTile", "mandatory":true,
       "when": { "type":"reach", "x":25, "y":5 },
-      "ui": "Reach the tile (1,1)"
+      "ui": "Reach the tile (25,5)"
     }
   ]
 }
