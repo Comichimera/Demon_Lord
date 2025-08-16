@@ -30,5 +30,13 @@
     "endsLevel": true,
     "renderer":  "quad",
     "texture":   "/data/assets/textures/exit.png"
+  },
+  "O": {
+    "name":      "Objective",
+    "walkable":  true,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "quad",
+    "texture":   "/data/assets/textures/objective.png"
   }
 }

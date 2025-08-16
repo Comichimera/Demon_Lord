@@ -1,5 +1,13 @@
 {
   "W": {
     "texture":   "/data/assets/textures/ground.png"
+  },
+  "O": {
+    "name":      "Objective",
+    "walkable":  true,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "quad",
+    "texture":   "/data/assets/textures/objective.png"
   }
 }
