@@ -78,8 +78,16 @@ public class MapLoader {
             int spawnY = playerObj.getJSONObject("spawn").getInt("y");
             float yaw  = playerObj.getJSONObject("camera").getFloat("yaw");
 
+            java.util.List<org.json.JSONObject> objectiveSpecs = new java.util.ArrayList<>();
+            if (json.has("objectives")) {
+                org.json.JSONArray arr = json.getJSONArray("objectives");
+                for (int i = 0; i < arr.length(); i++) {
+                    objectiveSpecs.add(arr.getJSONObject(i));
+                }
+            }
+
             // Return the assembled MapData
-            return new MapData(tiles, spawnX, spawnY, yaw);
+            return new MapData(tiles, spawnX, spawnY, yaw, objectiveSpecs);
 
         } catch (Exception e) {
             e.printStackTrace();

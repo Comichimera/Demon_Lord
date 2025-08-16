@@ -10,6 +10,14 @@ import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+
+import game.logic.Registries;
+import game.logic.ConditionFactory;
+import game.logic.Condition;
+import game.logic.cond.ReachCell;
+import org.json.JSONObject;
+
+
 public class Game {
     boolean running;
     Window window;
@@ -59,6 +67,13 @@ public class Game {
         // Initialize tile definitions
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
         TileRegistry.initialize(baseDefs);
+
+        Registries.CONDITIONS.put("reach", new ConditionFactory() {
+            @Override public String id(){ return "reach"; }
+            @Override public Condition create(JSONObject cfg){
+                return new ReachCell(cfg.getInt("x"), cfg.getInt("y"));
+            }
+        });
 
         player   = new Player();
         keyboard = new KeyboardInput();
