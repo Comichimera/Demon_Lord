@@ -1,2 +1,2 @@
-version=pre-alpha 0.2.1_02
-build=10505
+version=pre-alpha 0.2.2
+build=10509

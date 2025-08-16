@@ -98,6 +98,13 @@ public class PlayingState implements IGameState {
             events.post(new GameEvent(GameEventType.ENTER_TILE, tx, ty));
         }
 
+        if (objectives != null) {
+            for (String msg : objectives.drainCompletedPopups()) {
+                // NEW: show a toast for ~2.5 seconds
+                timer.pushPopup(msg, 2.5f);
+            }
+        }
+
         // Interaction key ("E") toggles adjacent openable tiles (e.g., doors)
         int interactState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_E);
         if (interactState == GLFW_PRESS && !interactPressed) {
@@ -133,8 +140,6 @@ public class PlayingState implements IGameState {
                 if (canFinish) {
                     game.changeState(new LevelCompleteState(game));
                 } else {
-                    // Optional: flash a hint via overlay system
-                    // timer.flash("Objectives remaining");
                 }
             }
         }
@@ -145,8 +150,6 @@ public class PlayingState implements IGameState {
         game.renderer.render(game.player);
         timer.render();
 
-        // Optional HUD line:
-        // if (objectives != null) timer.drawText(objectives.statusLine(), 10, 50);
     }
 
     @Override
