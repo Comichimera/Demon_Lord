@@ -49,6 +49,8 @@ public class LevelManager {
             for (int i = 0; i < levelsArray.length(); i++) {
                 JSONObject obj = levelsArray.getJSONObject(i);
                 String id = obj.getString("id");
+
+
                 String name = obj.getString("name");
                 String mapPath = obj.getString("mapPath");
                 String target  = obj.optString("target", "");

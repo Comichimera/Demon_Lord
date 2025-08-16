@@ -41,6 +41,7 @@ public class PlayingState implements IGameState {
     @Override
     public void enter() {
         game.reloadLevel();          // builds mapData for the current level
+        game.timers.startLevel();
         timer.update(0);
 
         // Objective system setup (safe if a level has no objectives)
@@ -80,12 +81,13 @@ public class PlayingState implements IGameState {
     @Override
     public void update(float dt) {
         if (glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            game.timers.pause();
             game.changeState(new MainMenuState(game));
             return;
         }
 
-        game.elapsedTime += dt;
-        timer.update(game.elapsedTime);
+        game.timers.tick(dt);
+        timer.update(game.timers.levelSeconds());
 
         // Process movement and interactions:
         keyboard.processInput(game.player, dt, game.mapData);
@@ -168,7 +170,7 @@ public class PlayingState implements IGameState {
             }
             @Override
             public float elapsedSeconds() {
-                return (float) game.elapsedTime;
+                return (float) game.timers.levelSeconds();
             }
         };
     }

@@ -8,7 +8,7 @@
       ["W", "F", "F", "F", "W", "F", "F", "F", "W", "F", "W", "F", "F", "F", "W"],
       ["W", "F", "F", "F", "W", "W", "F", "W", "W", "W", "W", "F", "F", "F", "W"],
       ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
-      ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
+      ["W", "F", "F", "F", "W", "F", "F", "F", "F", "O", "W", "F", "F", "F", "W"],
       ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
       ["W", "F", "F", "F", "W", "W", "W", "D", "W", "W", "W", "W", "D", "W", "W"],
       ["W", "F", "F", "F", "W", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W"],
@@ -37,7 +37,11 @@
     "objectives": [
       { "id":"reach.specialTile", "mandatory":true,
         "when": { "type":"reach", "x":2, "y":13 },
-        "ui": "Reach the tile (10,4)"
+        "ui": "Reach the tile (2,13)"
+      },
+      { "id":"reach.specialTile", "mandatory":true,
+        "when": { "type":"reach", "x":9, "y":8 },
+        "ui": "Reach the tile (9,8)"
       }
     ]
   }

@@ -17,6 +17,9 @@ import game.logic.Condition;
 import game.logic.cond.ReachCell;
 import org.json.JSONObject;
 
+import game.logic.TimerService;
+import game.ui.VersionOverlay;
+
 
 public class Game {
     boolean running;
@@ -26,11 +29,11 @@ public class Game {
     private KeyboardInput keyboard;
     MapData mapData;
     LevelManager levelManager;
-
-    // Timer UI and end-of-level overlay
-    double elapsedTime = 0;
-    double totalTime = 0;
     private IGameState currentState;
+
+    public final TimerService timers = new TimerService();
+
+    private VersionOverlay versionOverlay;
 
     /**
      * Formats a time value into mm:ss format with no decimal.
@@ -63,6 +66,7 @@ public class Game {
     private void init() {
         window       = new Window(800, 600, "pre alpha");
         levelManager = new LevelManager("/data/map/levels.json");
+        versionOverlay = new VersionOverlay(window, game.core.GameData.getVersion());
 
         // Initialize tile definitions
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
@@ -114,8 +118,6 @@ public class Game {
             System.exit(-1);
         }
 
-        elapsedTime = 0;
-
         // Reset player position based on map config
         float ts = GameConfig.TILE_SIZE;
         int sx = mapData.getPlayerSpawnX();
@@ -127,6 +129,8 @@ public class Game {
         // clear happens inside each state's render if needed, or you can do it here:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         currentState.render();
+        if (versionOverlay != null) versionOverlay.render();
+
     }
 
     /**
@@ -134,6 +138,7 @@ public class Game {
      */
     public void cleanup() {
         if (renderer != null) renderer.cleanup();
+        if (versionOverlay != null) versionOverlay.cleanup();
         if (window != null) window.destroy();
     }
 }

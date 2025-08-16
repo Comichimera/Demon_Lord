@@ -36,10 +36,6 @@ public class Renderer {
     private final float roomHalfSize = GameConfig.ROOM_HALF_SIZE;
     private final float roomHeight = GameConfig.ROOM_HEIGHT;
 
-    // For version overlay.
-    private int versionTexture;
-    private int versionWidth, versionHeight;
-
     // Lists to record positions of different tile types.
     private final Map<String,TexturedCubeRenderer> cubeRenderers = new HashMap<>();
     private final Map<String,TexturedQuadRenderer> quadRenderers = new HashMap<>();
@@ -70,7 +66,6 @@ public class Renderer {
         shaderProgram = new ShaderProgram(vertexShaderSource, fragmentShaderSource);
 
         generateFloorGeometry();
-        generateVersionTexture();
         for (String tex : cubeInstances.keySet()) {
             cubeRenderers.put(
                     tex,
@@ -185,82 +180,6 @@ public class Renderer {
         list.add(b);
     }
 
-    // Generates the version overlay texture.
-    private void generateVersionTexture() {
-        String versionText = game.core.GameData.getVersion();
-        Font font = new Font("Rubik", Font.PLAIN, 24);
-        BufferedImage image = new BufferedImage(256, 32, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setFont(font);
-        g.setColor(Color.WHITE);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        FontMetrics metrics = g.getFontMetrics();
-        versionWidth = metrics.stringWidth(versionText);
-        versionHeight = metrics.getHeight();
-        g.setComposite(AlphaComposite.Clear);
-        g.fillRect(0, 0, image.getWidth(), image.getHeight());
-        g.setComposite(AlphaComposite.SrcOver);
-        g.setColor(Color.WHITE);
-        g.drawString(versionText, 10, metrics.getAscent() + 5);
-        g.dispose();
-
-        int[] pixels = new int[image.getWidth() * image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) ((pixel >> 16) & 0xFF));
-                buffer.put((byte) ((pixel >> 8) & 0xFF));
-                buffer.put((byte) (pixel & 0xFF));
-                buffer.put((byte) ((pixel >> 24) & 0xFF));
-            }
-        }
-        buffer.flip();
-
-        versionTexture = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, versionTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    // Draws the version overlay at the top-left corner.
-    private void drawVersionText() {
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        glOrtho(0, 800, 600, 0, -1, 1);
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
-
-        glDisable(GL_DEPTH_TEST);
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, versionTexture);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glColor4f(1f, 1f, 1f, 1f);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(10, 10);
-        glTexCoord2f(1, 0); glVertex2f(10 + versionWidth, 10);
-        glTexCoord2f(1, 1); glVertex2f(10 + versionWidth, 10 + versionHeight);
-        glTexCoord2f(0, 1); glVertex2f(10, 10 + versionHeight);
-        glEnd();
-
-        glDisable(GL_TEXTURE_2D);
-        glDisable(GL_BLEND);
-        glEnable(GL_DEPTH_TEST);
-
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        glPopMatrix();
-    }
-
     public void render(Player player) {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -310,7 +229,6 @@ public class Renderer {
             }
         }
 
-        drawVersionText();
     }
 
     public void updateFloorGeometry() {
@@ -335,7 +253,5 @@ public class Renderer {
         quadRenderers.clear();
         cubeInstances.clear();
         quadInstances.clear();
-
-        glDeleteTextures(versionTexture);
     }
 }
