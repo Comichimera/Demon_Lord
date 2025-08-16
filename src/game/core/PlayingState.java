@@ -8,7 +8,6 @@ import game.graphics.Renderer;
 import game.map.MapData;
 import game.map.Tile;
 
-// NEW imports for the logic layer
 import game.logic.EventBus;
 import game.logic.ObjectiveManager;
 import game.logic.RuntimeContext;
@@ -28,11 +27,9 @@ public class PlayingState implements IGameState {
     private final TimerOverlay timer;
     private boolean interactPressed = false;
 
-    // NEW: objective system
     private EventBus events;
     private ObjectiveManager objectives;
 
-    // NEW: track the last grid cell to fire ENTER_TILE events
     private int lastTx = -1, lastTy = -1;
 
     public PlayingState(Game game) {
@@ -46,7 +43,7 @@ public class PlayingState implements IGameState {
         game.reloadLevel();          // builds mapData for the current level
         timer.update(0);
 
-        // --- Objective system setup (safe if a level has no objectives) ---
+        // Objective system setup (safe if a level has no objectives)
         events = new EventBus();
         objectives = new ObjectiveManager();
 
@@ -69,11 +66,11 @@ public class PlayingState implements IGameState {
             }
         }
 
-        // attach & subscribe (so objectives receive events)
+        // attach & subscribe
         objectives.attach(ctx());
         events.subscribe(objectives);
 
-        // level start event (lets conditions initialize if they want)
+        // level start event
         events.post(GameEvent.simple(GameEventType.LEVEL_START));
 
         // reset cell tracker so first movement posts an event correctly
@@ -93,7 +90,7 @@ public class PlayingState implements IGameState {
         // Process movement and interactions:
         keyboard.processInput(game.player, dt, game.mapData);
 
-        // --- Post ENTER_TILE when player changes grid cell ---
+        // Post ENTER_TILE when player changes grid cell
         int tx = (int)(game.player.getX() / GameConfig.TILE_SIZE);
         int ty = (int)(game.player.getZ() / GameConfig.TILE_SIZE);
         if (tx != lastTx || ty != lastTy) {
@@ -126,7 +123,7 @@ public class PlayingState implements IGameState {
             interactPressed = false;
         }
 
-        // Check if player is standing on an exit tile — now gated by objectives
+        // Check if player is standing on an exit tile
         if (ty >= 0 && ty < game.mapData.getHeight()
                 && tx >= 0 && tx < game.mapData.getWidth()) {
 
@@ -136,7 +133,7 @@ public class PlayingState implements IGameState {
                 if (canFinish) {
                     game.changeState(new LevelCompleteState(game));
                 } else {
-                    // Optional: flash a hint via your overlay system
+                    // Optional: flash a hint via overlay system
                     // timer.flash("Objectives remaining");
                 }
             }
@@ -145,9 +142,7 @@ public class PlayingState implements IGameState {
 
     @Override
     public void render() {
-        // Render the 3D world (Player + map)
         game.renderer.render(game.player);
-        // Render the timer overlay
         timer.render();
 
         // Optional HUD line:
@@ -157,10 +152,10 @@ public class PlayingState implements IGameState {
     @Override
     public void exit() {
         timer.cleanup();
-        // Optional: events.post(GameEvent.simple(GameEventType.LEVEL_END));
+        events.post(GameEvent.simple(GameEventType.LEVEL_END));
     }
 
-    // --- RuntimeContext adapter (lets conditions read minimal game state) ---
+    // RuntimeContext adapter (lets conditions read minimal game state)
     private RuntimeContext ctx() {
         return new RuntimeContext() {
             @Override
