@@ -27,7 +27,20 @@ public class VersionOverlay {
         if (version == null) version = "";
         if (version.equals(lastVersion) && tex != null) return;
 
-        String raw = "Version " + version;
+        String os = System.getProperty("os.name").toLowerCase();
+        String suffix;
+
+        if (os.contains("win")) {
+            suffix = " (win)";
+        } else if (os.contains("mac")) {
+            suffix = " (mac)";
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            suffix = " (dumb linuxoid version)";
+        } else {
+            suffix = "";
+        }
+
+        String raw = version + suffix;
         int maxW = renderer.window.getWidth() - margin * 2;
 
         // Ellipsize if too wide

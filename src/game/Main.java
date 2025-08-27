@@ -21,26 +21,38 @@ public class Main {
     }
 
     private static String extractNativeLibraries() {
-        // Get OS-specific native directory
-        String osName = System.getProperty("os.name").toLowerCase();
-        String nativeFolder = osName.contains("win") ? "natives-windows" :
-                osName.contains("mac") ? "natives-macos" :
-                        osName.contains("linux") ? "natives-linux" : "natives-unknown";
+        String os = System.getProperty("os.name").toLowerCase();
+        String arch = System.getProperty("os.arch").toLowerCase();
 
-        // Create a temporary directory for the extracted natives
-        File tempDir = new File(System.getProperty("java.io.tmpdir"), "lwjgl-natives");
-        if (!tempDir.exists()) tempDir.mkdir();
+        String nativeFolder =
+                os.contains("win")   ? "natives-windows" :
+                        os.contains("mac")   ? "natives-macos"   :
+                                os.contains("linux") ? "natives-linux"   : "natives-unknown";
 
-        // Extract native files from JAR to temp directory
-        List<String> nativeFiles = Arrays.asList(
-                "lwjgl.dll",
-                "glfw.dll",
-                "lwjgl_opengl.dll",
-                "lwjgl_stb.dll"
-        );
-        for (String fileName : nativeFiles) {
-            extractFile("/libs/native/" + fileName, new File(tempDir, fileName));
+        // Pick correct filenames per OS
+        List<String> files;
+        if (os.contains("win")) {
+            files = Arrays.asList("lwjgl.dll", "glfw.dll", "lwjgl_opengl.dll", "lwjgl_stb.dll");
+        } else if (os.contains("linux")) {
+            files = Arrays.asList("liblwjgl.so", "libglfw.so", "liblwjgl_opengl.so", "liblwjgl_stb.so");
+        } else if (os.contains("mac")) {
+            files = Arrays.asList("liblwjgl.dylib", "libglfw.dylib", "liblwjgl_opengl.dylib", "liblwjgl_stb.dylib");
+        } else {
+            throw new UnsupportedOperationException("Unsupported OS: " + os);
         }
+
+        // Optional: if you bundle separate folders per arch (x86_64/aarch64), include that here
+        String base = "/libs/native/" + nativeFolder + "/"; // e.g., /libs/native/natives-linux/
+
+        File tempDir = new File(System.getProperty("java.io.tmpdir"), "lwjgl-natives-" + System.nanoTime());
+        if (!tempDir.mkdirs()) throw new RuntimeException("Failed to create temp dir: " + tempDir);
+
+        for (String name : files) {
+            extractFile(base + name, new File(tempDir, name)); // your extractFile(resourcePath, targetFile)
+        }
+
+        // Point LWJGL at the extracted natives (LWJGL 3 reads this)
+        System.setProperty("org.lwjgl.librarypath", tempDir.getAbsolutePath());
 
         return tempDir.getAbsolutePath();
     }
