@@ -22,6 +22,10 @@ import static org.lwjgl.opengl.GL30.*;
 import java.awt.RenderingHints;
 import java.util.Map;
 
+import game.world.enemy.EnemyManager;
+import game.graphics.EnemySpriteRenderer;
+import game.graphics.SpriteDefsLoader;
+
 public class Renderer {
 
     private ShaderProgram shaderProgram;
@@ -42,6 +46,8 @@ public class Renderer {
 
     private final Map<String,List<float[]>> cubeInstances = new HashMap<>();
     private final Map<String,List<float[]>> quadInstances = new HashMap<>();
+    private EnemySpriteRenderer enemySprites;
+    private EnemyManager enemyManager;
 
     public Renderer(MapData mapData) throws Exception {
         this.mapData = mapData;
@@ -229,10 +235,23 @@ public class Renderer {
             }
         }
 
+        if (enemySprites != null && enemyManager != null) {
+            enemySprites.render(enemyManager, player, projection, view);
+        }
+
     }
 
     public void updateFloorGeometry() {
         generateFloorGeometry();
+    }
+
+    public void initEnemySprites(TextureLoader textures) {
+        SpriteDefsLoader defs = new SpriteDefsLoader("/data/assets/spritedefs.json");
+        this.enemySprites = new EnemySpriteRenderer(defs);
+    }
+
+    public void setEnemyManager(EnemyManager mgr) {
+        this.enemyManager = mgr;
     }
 
     public void cleanup() {
@@ -253,5 +272,12 @@ public class Renderer {
         quadRenderers.clear();
         cubeInstances.clear();
         quadInstances.clear();
+
+        if (enemySprites != null) {
+            enemySprites.cleanup();
+            enemySprites = null;
+        }
+        enemyManager = null;
     }
+
 }

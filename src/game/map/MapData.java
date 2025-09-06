@@ -3,6 +3,7 @@ package game.map;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -14,13 +15,20 @@ public class MapData {
 
     private final List<JSONObject> objectiveSpecs;
 
-    public MapData(Tile[][] tiles, int playerSpawnX, int playerSpawnY, float cameraYaw,
-                   List<JSONObject> objectiveSpecs) {
+    private final List<JSONObject> enemySpecs;
+
+    public MapData(Tile[][] tiles,
+                   int playerSpawnX,
+                   int playerSpawnY,
+                   float cameraYaw,
+                   List<JSONObject> objectiveSpecs,
+                   List<JSONObject> enemySpecs) {
         this.tiles = tiles;
         this.playerSpawnX = playerSpawnX;
         this.playerSpawnY = playerSpawnY;
         this.cameraYaw = cameraYaw;
-        this.objectiveSpecs = objectiveSpecs;
+        this.objectiveSpecs = objectiveSpecs != null ? objectiveSpecs : new ArrayList<>();
+        this.enemySpecs     = enemySpecs     != null ? enemySpecs     : new ArrayList<>();
     }
 
     // Returns the entire tile grid.
@@ -45,4 +53,6 @@ public class MapData {
     public float  getCameraYaw()  { return cameraYaw; }
 
     public List<JSONObject> getObjectiveSpecs(){ return objectiveSpecs; }
+
+    public List<JSONObject> getEnemySpecs() { return enemySpecs; }
 }

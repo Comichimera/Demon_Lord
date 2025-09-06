@@ -7,6 +7,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import game.map.TileRegistry;
 import game.map.TileDefinition;
 import game.map.TileDefinitionLoader;
@@ -86,8 +90,17 @@ public class MapLoader {
                 }
             }
 
+            List<JSONObject> enemySpecs = Collections.emptyList();
+            if (json.has("enemies")) {
+                JSONArray arr = json.getJSONArray("enemies");
+                enemySpecs = new ArrayList<>(arr.length());
+                for (int i = 0; i < arr.length(); i++) {
+                    enemySpecs.add(arr.getJSONObject(i));
+                }
+            }
+
             // Return the assembled MapData
-            return new MapData(tiles, spawnX, spawnY, yaw, objectiveSpecs);
+            return new MapData(tiles, spawnX, spawnY, yaw, objectiveSpecs, enemySpecs);
 
         } catch (Exception e) {
             e.printStackTrace();

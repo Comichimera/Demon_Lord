@@ -1,0 +1,14 @@
+{
+  "patroller": {
+    "front": "/data/assets/sprites/zombie.png",
+    "side":  "/data/assets/sprites/zombie.png",
+    "back":  "/data/assets/sprites/zombie.png",
+    "scale": { "width": 0.9, "height": 1.8 }
+  },
+  "sentry": {
+    "front": "/data/assets/sprites/zombie.png",
+    "side":  "/data/assets/sprites/zombie.png",
+    "back":  "/data/assets/sprites/zombie.png",
+    "scale": { "width": 0.9, "height": 1.8 }
+  }
+}

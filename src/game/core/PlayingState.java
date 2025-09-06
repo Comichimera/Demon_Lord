@@ -16,6 +16,7 @@ import game.logic.GameEventType;
 import game.logic.Registries;
 import game.logic.Condition;
 import game.logic.ConditionFactory;
+import game.world.enemy.EnemyManager;
 
 import org.json.JSONObject;
 
@@ -29,6 +30,8 @@ public class PlayingState implements IGameState {
 
     private EventBus events;
     private ObjectiveManager objectives;
+
+    private EnemyManager enemies;
 
     private int lastTx = -1, lastTy = -1;
 
@@ -47,6 +50,8 @@ public class PlayingState implements IGameState {
         // Objective system setup (safe if a level has no objectives)
         events = new EventBus();
         objectives = new ObjectiveManager();
+        enemies = new EnemyManager(game.mapData, events);
+        game.renderer.setEnemyManager(enemies);
 
         if (game.mapData.getObjectiveSpecs() != null) {
             for (JSONObject spec : game.mapData.getObjectiveSpecs()) {
@@ -144,6 +149,10 @@ public class PlayingState implements IGameState {
                 } else {
                 }
             }
+        }
+
+        if (enemies != null) {
+            enemies.update(dt, game.mapData, game.player);
         }
     }
 

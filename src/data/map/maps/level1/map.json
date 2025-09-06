@@ -43,5 +43,19 @@
         "when": { "type":"reach", "x":9, "y":8 },
         "ui": "Reach the tile (9,8)"
       }
+    ],
+    "enemies": [
+      {
+        "type": "patroller",
+        "spawn": { "x": 7, "y": 3 },
+        "path":  [ {"x":7,"y":3}, {"x":10,"y":3}, {"x":10,"y":6} ],
+        "speed": 2.0,
+        "fov": 90, "viewDistance": 6
+      },
+      {
+        "type": "sentry",
+        "spawn": { "x": 2, "y": 13 },
+        "turnRate": 90
+      }
     ]
   }
