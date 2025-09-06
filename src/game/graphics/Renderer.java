@@ -245,8 +245,12 @@ public class Renderer {
         generateFloorGeometry();
     }
 
-    public void initEnemySprites(TextureLoader textures) {
-        SpriteDefsLoader defs = new SpriteDefsLoader("/data/assets/spritedefs.json");
+    public void initEnemySpritesForMap(String mapJsonPath) {
+        if (enemySprites != null) {           // clean old per-level cache
+            enemySprites.cleanup();
+            enemySprites = null;
+        }
+        SpriteDefsLoader defs = SpriteDefsLoader.loadForMap(mapJsonPath);
         this.enemySprites = new EnemySpriteRenderer(defs);
     }
 

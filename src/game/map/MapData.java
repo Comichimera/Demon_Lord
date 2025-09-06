@@ -13,6 +13,8 @@ public class MapData {
     private final int playerSpawnY;
     private final float  cameraYaw;
 
+    private final String sourcePath;
+
     private final List<JSONObject> objectiveSpecs;
 
     private final List<JSONObject> enemySpecs;
@@ -22,13 +24,15 @@ public class MapData {
                    int playerSpawnY,
                    float cameraYaw,
                    List<JSONObject> objectiveSpecs,
-                   List<JSONObject> enemySpecs) {
+                   List<JSONObject> enemySpecs,
+                   String sourcePath) {
         this.tiles = tiles;
         this.playerSpawnX = playerSpawnX;
         this.playerSpawnY = playerSpawnY;
         this.cameraYaw = cameraYaw;
         this.objectiveSpecs = objectiveSpecs != null ? objectiveSpecs : new ArrayList<>();
         this.enemySpecs     = enemySpecs     != null ? enemySpecs     : new ArrayList<>();
+        this.sourcePath = sourcePath;
     }
 
     // Returns the entire tile grid.
@@ -55,4 +59,6 @@ public class MapData {
     public List<JSONObject> getObjectiveSpecs(){ return objectiveSpecs; }
 
     public List<JSONObject> getEnemySpecs() { return enemySpecs; }
+
+    public String getSourcePath() { return sourcePath; }
 }

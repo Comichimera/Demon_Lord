@@ -126,7 +126,6 @@ public class Game {
         player.setYaw(mapData.getCameraYaw());
     }
     private void render() {
-        // clear happens inside each state's render if needed, or you can do it here:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         currentState.render();
         if (versionOverlay != null) versionOverlay.render();

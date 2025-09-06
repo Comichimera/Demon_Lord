@@ -100,7 +100,7 @@ public class MapLoader {
             }
 
             // Return the assembled MapData
-            return new MapData(tiles, spawnX, spawnY, yaw, objectiveSpecs, enemySpecs);
+            return new MapData(tiles, spawnX, spawnY, yaw, objectiveSpecs, enemySpecs, path);
 
         } catch (Exception e) {
             e.printStackTrace();

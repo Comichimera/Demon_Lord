@@ -55,7 +55,6 @@ public final class EnemySpriteRenderer {
 
             chosen.render(projection, view, model);
         }
-        System.out.println("done");
     }
 
     public void cleanup() {

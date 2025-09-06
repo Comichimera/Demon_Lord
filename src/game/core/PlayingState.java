@@ -52,6 +52,7 @@ public class PlayingState implements IGameState {
         objectives = new ObjectiveManager();
         enemies = new EnemyManager(game.mapData, events);
         game.renderer.setEnemyManager(enemies);
+        game.renderer.initEnemySpritesForMap(game.mapData.getSourcePath());
 
         if (game.mapData.getObjectiveSpecs() != null) {
             for (JSONObject spec : game.mapData.getObjectiveSpecs()) {
