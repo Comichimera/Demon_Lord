@@ -235,6 +235,7 @@ public class Renderer {
             }
         }
 
+        // draw enemies
         if (enemySprites != null && enemyManager != null) {
             enemySprites.render(enemyManager, player, projection, view);
         }

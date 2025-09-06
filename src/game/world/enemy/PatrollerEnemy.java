@@ -30,7 +30,7 @@ public class PatrollerEnemy extends BaseEnemy {
         if (canSeePlayer(map, player)) {
             final float dx = player.getX() - x;
             final float dz = player.getZ() - z;
-            final float dist = (float)Math.sqrt(dx*dx + dx*dz);
+            final float dist = (float)Math.sqrt(dx*dx + dz*dz);
             if (dist > 1e-4f && speed > 0f) {
                 faceToward(player.getX(), player.getZ());
                 final float nx = dx / dist;

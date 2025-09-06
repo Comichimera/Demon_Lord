@@ -3,12 +3,12 @@
     "front": "/data/assets/sprites/zombie.png",
     "side":  "/data/assets/sprites/zombie.png",
     "back":  "/data/assets/sprites/zombie.png",
-    "scale": { "width": 0.9, "height": 1.8 }
+    "scale": { "width": 1, "height": 1 }
   },
   "sentry": {
     "front": "/data/assets/sprites/zombie.png",
     "side":  "/data/assets/sprites/zombie.png",
     "back":  "/data/assets/sprites/zombie.png",
-    "scale": { "width": 0.9, "height": 1.8 }
+    "scale": { "width": 1, "height": 1 }
   }
 }

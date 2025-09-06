@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Math.*;
+import static org.lwjgl.opengl.GL11.*;
 
 public final class EnemySpriteRenderer {
 
@@ -38,6 +39,14 @@ public final class EnemySpriteRenderer {
     public void render(EnemyManager manager, Player cameraPlayer, Matrix4f projection, Matrix4f view) {
         if (manager == null) return;
 
+        boolean wasBlend = glIsEnabled(GL_BLEND);
+        boolean wasCull  = glIsEnabled(GL_CULL_FACE);
+
+        if (!wasBlend) glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        if (wasCull) glDisable(GL_CULL_FACE);
+
         final float camYaw = cameraPlayer.getYaw();
 
         for (Enemy e : manager.getEnemies()) {
@@ -55,6 +64,9 @@ public final class EnemySpriteRenderer {
 
             chosen.render(projection, view, model);
         }
+
+        if (wasCull) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
+        if (!wasBlend) glDisable(GL_BLEND);
     }
 
     public void cleanup() {
