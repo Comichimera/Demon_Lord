@@ -6,9 +6,9 @@
     "scale": { "width": 1, "height": 1 }
   },
   "sentry": {
-    "front": "/data/assets/sprites/zombie.png",
-    "side":  "/data/assets/sprites/zombie.png",
-    "back":  "/data/assets/sprites/zombie.png",
+    "front": "/data/assets/sprites/kit.png",
+    "side":  "/data/assets/sprites/kit.png",
+    "back":  "/data/assets/sprites/kit.png",
     "scale": { "width": 1, "height": 1 }
   }
 }
