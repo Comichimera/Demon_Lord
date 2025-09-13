@@ -1,0 +1,30 @@
+{
+  "root": {
+    "type": "selector",
+    "children": [
+      {
+        "type": "sequence",
+        "children": [
+          {"type":"condition","name":"playerVisible","params":{"recentSeconds":0.15}},
+          {"type":"action","name":"look","params":{"target":"player","duration":0.6}},
+          {"type":"action","name":"move","params":{"toward":"lastSeenPlayer","speed":1.15}}
+        ]
+      },
+      {
+        "type":"sequence",
+        "children":[
+          {"type":"condition","name":"heardNoiseWithin","params":{"radius":8,"recentSeconds":3.0}},
+          {"type":"action","name":"listen","params":{"duration":1.0}},
+          {"type":"action","name":"move","params":{"toward":"lastHeardNoise","speed":1.0}}
+        ]
+      },
+      {
+        "type":"sequence",
+        "children":[
+          {"type":"action","name":"scan","params":{"duration":0.6}},
+          {"type":"wait","seconds":0.3}
+        ]
+      }
+    ]
+  }
+}

@@ -46,16 +46,20 @@
     ],
     "enemies": [
       {
-        "type": "patroller",
+        "type": "enemy",
+        "sprite": "patroller",
         "spawn": { "x": 12, "y": 5 },
-        "path":  [ {"x":12,"y":5}, {"x":13,"y":5}, {"x":13,"y":9}, {"x":11,"y":9}, {"x":11,"y":5} ],
+        "behavior": "/data/ai/patroller.behavior.json",
+        "patrol":  [ {"x":12,"y":5}, {"x":13,"y":5}, {"x":13,"y":9}, {"x":11,"y":9}, {"x":11,"y":5} ],
         "speed": 2.0,
-        "fov": 90, "viewDistance": 6
+        "fov": 90,
+        "viewDistance": 6
       },
       {
-        "type": "sentry",
+        "type": "enemy",
+        "sprite": "sentry",
         "spawn": { "x": 2, "y": 13 },
-        "turnRate": 90
+        "behavior": "/data/ai/sentry.behavior.json"
       }
     ]
   }

@@ -22,7 +22,7 @@ public final class LookAction implements Action {
 
     private LookAction(Target t, Vector2i pt, float duration) { this.target = t; this.point = pt; this.remaining = duration; }
 
-    @Override public void enter(AIAgent agent, Blackboard bb) { /* no-op */ }
+    @Override public void enter(AIAgent agent, Blackboard bb) { }
 
     @Override public Status tick(float dt, AIAgent agent, Blackboard bb) {
         Vector2i to = null;

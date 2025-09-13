@@ -6,23 +6,28 @@ import game.logic.GameEvent;
 import game.logic.GameEventType;
 import game.map.MapData;
 import game.world.Player;
+import org.joml.Vector2i;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class EnemyManager {
-    private final List<Enemy> enemies = new ArrayList<>();
-    private final EventBus events;
-    private boolean playerDefeated = false;
 
-    public EnemyManager(MapData map, EventBus events) {
+    private final List<Enemy> enemies = new ArrayList<>();
+    private boolean playerDefeated = false;
+    private final EventBus events;
+    private final Player player;
+
+    public EnemyManager(MapData map, Player player, EventBus events) {
         this.events = events;
+        this.player = player;
         if (map.getEnemySpecs() != null) {
             for (JSONObject spec : map.getEnemySpecs()) {
-                Enemy e = buildEnemyFromSpec(spec);
+                Enemy e = buildEnemyFromSpec(spec, map, events);
                 if (e != null) enemies.add(e);
             }
         }
@@ -38,17 +43,22 @@ public class EnemyManager {
         for (Enemy e : enemies) {
             e.update(dt, map, player, events);
 
+            // Vision events: now AI-backed via EnemyEntity.canSeePlayer(...)
             if (e.canSeePlayer(map, player)) {
                 final int tx = (int)(player.getX() / GameConfig.TILE_SIZE);
                 final int ty = (int)(player.getZ() / GameConfig.TILE_SIZE);
                 events.post(new GameEvent(GameEventType.ENEMY_SPOTTED_PLAYER, tx, ty));
             }
 
+            // Capture / defeat check (unchanged)
             final float dx = player.getX() - e.getX();
             final float dz = player.getZ() - e.getZ();
             final float dist2 = dx*dx + dz*dz;
 
-            float r = (e instanceof BaseEnemy) ? ((BaseEnemy)e).getCaptureRadiusMeters() : (0.4f * GameConfig.TILE_SIZE);
+            float r = (e instanceof BaseEnemy)
+                    ? ((BaseEnemy)e).getCaptureRadiusMeters()
+                    : (0.4f * GameConfig.TILE_SIZE);
+
             if (dist2 <= r * r) {
                 playerDefeated = true;
                 final int tx = (int)(player.getX() / GameConfig.TILE_SIZE);
@@ -56,60 +66,78 @@ public class EnemyManager {
                 events.post(new GameEvent(GameEventType.PLAYER_DEFEATED_BY_ENEMY, tx, ty));
                 break;
             }
-
         }
     }
+    private Enemy buildEnemyFromSpec(JSONObject spec, MapData map, EventBus events) {
+        final String legacyType = spec.optString("type", "sentry").toLowerCase();
 
-    private static Enemy buildEnemyFromSpec(JSONObject spec) {
-        String type = spec.optString("type", "sentry").toLowerCase();
+        final String spriteKey = spec.optString("sprite", legacyType);
 
-        switch (type) {
-            case "patroller": {
-                PatrollerEnemy p = new PatrollerEnemy();
-
-                if (spec.has("speed")) p.speed = (float) spec.optDouble("speed", 1.5);
-                // NEW: FOV & range (tiles)
-                if (spec.has("fov"))          p.setFov((float) spec.optDouble("fov", 90.0));
-                if (spec.has("viewDistance")) p.setViewDistTiles((float) spec.optDouble("viewDistance", 6.0));
-
-                JSONObject spawn = spec.optJSONObject("spawn");
-                if (spawn != null) {
-                    int sx = spawn.optInt("x", 0);
-                    int sy = spawn.optInt("y", 0);
-                    p.setPosition(toWorld(sx), toWorld(sy));
-                }
-
-                JSONArray path = spec.optJSONArray("path");
-                if (path != null) {
-                    for (int i = 0; i < path.length(); i++) {
-                        JSONObject node = path.getJSONObject(i);
-                        p.addPathPointGrid(node.optInt("x", 0), node.optInt("y", 0));
-                    }
-                }
-
-                if (spec.has("yaw")) p.setYaw((float) spec.optDouble("yaw", 0));
-                return p;
-            }
-            case "sentry":
-            default: {
-                SentryEnemy s = new SentryEnemy();
-
-                if (spec.has("speed")) s.speed = (float) spec.optDouble("speed", 0.0);
-                if (spec.has("fov"))          s.setFov((float) spec.optDouble("fov", 90.0));       // NEW
-                if (spec.has("viewDistance")) s.setViewDistTiles((float) spec.optDouble("viewDistance", 6.0)); // NEW
-
-                JSONObject spawn = spec.optJSONObject("spawn");
-                if (spawn != null) {
-                    int sx = spawn.optInt("x", 0);
-                    int sy = spawn.optInt("y", 0);
-                    s.setPosition(toWorld(sx), toWorld(sy));
-                }
-
-                s.setYaw((float) spec.optDouble("yaw", 0.0));
-                if (spec.has("turnRate")) s.setTurnRate((float) spec.optDouble("turnRate", 0.0));
-                return s;
+        String behavior = spec.optString("behavior", null);
+        if (behavior == null) {
+            switch (legacyType) {
+                case "patroller":
+                    behavior = "/data/ai/patroller.behavior.json";
+                    break;
+                case "sentry":
+                default:
+                    behavior = "/data/ai/sentry.behavior.json";
+                    break;
             }
         }
+
+        // Movement/vision parameters
+        final float speed = (float) spec.optDouble("speed", 1.5);
+        final float fov   = (float) spec.optDouble("fov", 90.0);
+        final float view  = (float) spec.optDouble("viewDistance", 6.0);
+        final float yaw   = (float) spec.optDouble("yaw", 0.0);
+
+        // Spawn (grid coords)
+        final JSONObject spawn = spec.optJSONObject("spawn");
+        final int sx = spawn != null ? spawn.optInt("x", 0) : 0;
+        final int sy = spawn != null ? spawn.optInt("y", 0) : 0;
+
+        final List<Vector2i> patrol = new ArrayList<>();
+        if (spec.has("patrol")) {
+            JSONArray arr = spec.getJSONArray("patrol");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject node = arr.getJSONObject(i);
+                patrol.add(new Vector2i(node.optInt("x", 0), node.optInt("y", 0)));
+            }
+        } else if (spec.has("path")) {
+            JSONArray arr = spec.getJSONArray("path");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject node = arr.getJSONObject(i);
+                patrol.add(new Vector2i(node.optInt("x", 0), node.optInt("y", 0)));
+            }
+        }
+
+        final InputStream behaviorJson = EnemyManager.class.getResourceAsStream(behavior);
+        if (behaviorJson == null) {
+            throw new IllegalArgumentException("Behavior file not found on classpath: " + behavior);
+        }
+
+        // Deterministic-ish seed so wandering is stable between runs
+        final long seed = ((long)sx * 73856093L) ^ ((long)sy * 19349663L) ^ behavior.hashCode();
+
+        EnemyEntity e = new EnemyEntity(
+                spriteKey,
+                behaviorJson,
+                patrol,
+                map,
+                player,
+                events,
+                speed,
+                fov,
+                view,
+                yaw,
+                seed
+        );
+
+        // Position in world units (center of tile)
+        e.setPosition(toWorld(sx), toWorld(sy));
+        e.setYaw(yaw);
+        return e;
     }
 
     private static float toWorld(int grid) {

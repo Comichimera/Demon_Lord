@@ -50,7 +50,7 @@ public class PlayingState implements IGameState {
         // Objective system setup (safe if a level has no objectives)
         events = new EventBus();
         objectives = new ObjectiveManager();
-        enemies = new EnemyManager(game.mapData, events);
+        enemies = new EnemyManager(game.mapData, game.player, events);
         game.renderer.setEnemyManager(enemies);
         game.renderer.initEnemySpritesForMap(game.mapData.getSourcePath());
 

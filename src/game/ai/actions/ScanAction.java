@@ -12,8 +12,7 @@ public final class ScanAction implements Action {
     public ScanAction(float duration) { this.remaining = duration; }
 
     @Override public Status tick(float dt, AIAgent agent, Blackboard bb) {
-        // You can oscillate facing here if you want; for now just wait.
-        remaining -= dt;
+                remaining -= dt;
         return remaining > 0 ? Status.RUNNING : Status.SUCCESS;
     }
 }

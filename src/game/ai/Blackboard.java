@@ -20,5 +20,5 @@ public final class Blackboard {
 
     public final Deque<String> debugNotes = new ArrayDeque<>();
 
-    void clearPath() { currentPath = Optional.empty(); currentPathIndex = 0; }
+    public void clearPath() { currentPath = Optional.empty(); currentPathIndex = 0; }
 }

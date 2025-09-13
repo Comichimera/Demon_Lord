@@ -61,7 +61,6 @@ public final class MoveAction implements Action {
     }
 
     private Status stepToward(AIAgent agent, Blackboard bb, Vector2i target) {
-        // Greedy neighbor toward target (simple, cheap)
         java.util.List<Vector2i> ns = agent.world().neighbors4(agent.getCell());
         ns.sort(java.util.Comparator.comparingDouble(n -> agent.world().heuristicCost(n, target)));
         for (Vector2i n : ns) if (agent.world().isWalkable(n)) {
@@ -71,11 +70,10 @@ public final class MoveAction implements Action {
         return Status.FAILURE;
     }
 
-    // Helper: patrol if available else random
     private static final class PatrolOrRandom implements PathProvider {
         private final PatrolProvider patrol;
         private final RandomAdjacentProvider rand = new RandomAdjacentProvider();
-        PatrolOrRandom() { this.patrol = null; } // inject actual patrol via enemy data if you like
+        PatrolOrRandom() { this.patrol = null; }
         @Override public Optional<List<Vector2i>> nextPath(AIAgent agent, Blackboard bb) {
             if (patrol != null) {
                 Optional<List<Vector2i>> p = patrol.nextPath(agent, bb);
