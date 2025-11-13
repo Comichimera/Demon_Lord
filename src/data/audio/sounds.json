@@ -1,0 +1,8 @@
+{
+  "sfx": {
+  },
+  "music": {
+    "level1": { "path": "/data/audio/music/level1.ogg" },
+    "levelx": { "path": "/data/audio/music/stanley.ogg" }
+  }
+}

@@ -1,5 +1,6 @@
 package game.core;
 
+import game.audio.AudioSystem;
 import game.input.KeyboardInput;
 import game.ui.TimerOverlay;
 import game.world.Player;
@@ -47,12 +48,34 @@ public class PlayingState implements IGameState {
         game.timers.startLevel();
         timer.update(0);
 
-        // Objective system setup (safe if a level has no objectives)
         events = new EventBus();
         objectives = new ObjectiveManager();
         enemies = new EnemyManager(game.mapData, game.player, events);
         game.renderer.setEnemyManager(enemies);
         game.renderer.initEnemySpritesForMap(game.mapData.getSourcePath());
+
+        String musicId = game.levelManager.getCurrentLevel().musicId;
+        if (musicId != null) AudioSystem.playMusic(musicId);
+
+        events.subscribe(e -> {
+            switch (e.type) {
+                case ENTER_TILE -> {
+                    var t = game.mapData.getTile(e.y, e.x);
+                    String cat = (t != null && t.getDefinition()!=null) ? t.getDefinition().getCategory() : "tile";
+                    // Try category-specific first, else default:
+                    String sfxId = switch (cat) {
+                        case "floor" -> "footstep_floor";
+                        case "door"  -> "footstep_door";
+                        default -> "footstep";
+                    };
+                    AudioSystem.playSfx(sfxId);
+                }
+                case ENEMY_SPOTTED_PLAYER -> AudioSystem.playSfx("enemy_alert");
+                case PLAYER_DEFEATED_BY_ENEMY -> AudioSystem.playSfx("player_down");
+                case LEVEL_END -> AudioSystem.stopMusic();
+                default -> {}
+            }
+        });
 
         if (game.mapData.getObjectiveSpecs() != null) {
             for (JSONObject spec : game.mapData.getObjectiveSpecs()) {
@@ -73,14 +96,11 @@ public class PlayingState implements IGameState {
             }
         }
 
-        // attach & subscribe
         objectives.attach(ctx());
         events.subscribe(objectives);
 
-        // level start event
         events.post(GameEvent.simple(GameEventType.LEVEL_START));
 
-        // reset cell tracker so first movement posts an event correctly
         lastTx = lastTy = -1;
     }
 
@@ -98,6 +118,8 @@ public class PlayingState implements IGameState {
         // Process movement and interactions:
         keyboard.processInput(game.player, dt, game.mapData);
 
+        AudioSystem.setListener(game.player.getX(), game.player.getY(), game.player.getZ(), game.player.getYaw());
+
         // Post ENTER_TILE when player changes grid cell
         int tx = (int)(game.player.getX() / GameConfig.TILE_SIZE);
         int ty = (int)(game.player.getZ() / GameConfig.TILE_SIZE);
@@ -108,12 +130,10 @@ public class PlayingState implements IGameState {
 
         if (objectives != null) {
             for (String msg : objectives.drainCompletedPopups()) {
-                // NEW: show a toast for ~2.5 seconds
                 timer.pushPopup(msg, 2.5f);
             }
         }
 
-        // Interaction key ("E") toggles adjacent openable tiles (e.g., doors)
         int interactState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_E);
         if (interactState == GLFW_PRESS && !interactPressed) {
             interactPressed = true;
@@ -170,7 +190,6 @@ public class PlayingState implements IGameState {
         events.post(GameEvent.simple(GameEventType.LEVEL_END));
     }
 
-    // RuntimeContext adapter (lets conditions read minimal game state)
     private RuntimeContext ctx() {
         return new RuntimeContext() {
             @Override

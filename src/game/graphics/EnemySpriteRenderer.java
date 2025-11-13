@@ -15,18 +15,12 @@ import static org.lwjgl.opengl.GL11.*;
 public final class EnemySpriteRenderer {
 
     private static final class QuadSet {
-        final TexturedQuadRenderer front, side, back;
+        final TexturedQuadRenderer front, sideLeft, sideRight, back;
         final float heightMeters;
-
-        QuadSet(TexturedQuadRenderer f, TexturedQuadRenderer s, TexturedQuadRenderer b, float hMeters) {
-            this.front = f; this.side = s; this.back = b; this.heightMeters = hMeters;
+        QuadSet(TexturedQuadRenderer f, TexturedQuadRenderer sl, TexturedQuadRenderer sr, TexturedQuadRenderer b, float h) {
+            front = f; sideLeft = sl; sideRight = sr; back = b; heightMeters = h;
         }
-
-        void cleanup() {
-            front.cleanup();
-            side.cleanup();
-            back.cleanup();
-        }
+        void cleanup() { front.cleanup(); sideLeft.cleanup(); sideRight.cleanup(); back.cleanup(); }
     }
 
     private final SpriteDefsLoader defs;
@@ -74,27 +68,26 @@ public final class EnemySpriteRenderer {
         cache.clear();
     }
 
-    // --- helpers ---
-
     private QuadSet buildQuadSetForType(String type) {
         SpriteDefsLoader.SpriteDef d = defs.get(type);
         float w = d.widthTiles  * GameConfig.TILE_SIZE;
         float h = d.heightTiles * GameConfig.TILE_SIZE;
         try {
-            TexturedQuadRenderer f = new TexturedQuadRenderer(d.frontPath, w, h);
-            TexturedQuadRenderer s = new TexturedQuadRenderer(d.sidePath,  w, h);
-            TexturedQuadRenderer b = new TexturedQuadRenderer(d.backPath,  w, h);
-            return new QuadSet(f, s, b, h);
+            TexturedQuadRenderer f  = new TexturedQuadRenderer(d.frontPath,     w, h);
+            TexturedQuadRenderer sl = new TexturedQuadRenderer(d.sideLeftPath,  w, h);
+            TexturedQuadRenderer sr = new TexturedQuadRenderer(d.sideRightPath, w, h);
+            TexturedQuadRenderer b  = new TexturedQuadRenderer(d.backPath,      w, h);
+            return new QuadSet(f, sl, sr, b, h);
         } catch (Exception ex) {
-            throw new RuntimeException("EnemySpriteRenderer init failed for type '" + type + "': " + ex.getMessage(), ex);
+            throw new RuntimeException("EnemySpriteRenderer init failed for '" + type + "': " + ex.getMessage(), ex);
         }
     }
 
     private static TexturedQuadRenderer selectRenderer(QuadSet qs, float deltaDeg) {
         float a = abs(deltaDeg);
-        if (a <= 45f)  return qs.front;  // facing camera
-        if (a >= 135f) return qs.back;   // facing away
-        return qs.side;
+        if (a <= 45f)  return qs.front; // facing camera
+        if (a >= 135f) return qs.back;  // facing away
+        return (deltaDeg > 0f) ? qs.sideLeft : qs.sideRight;
     }
 
     private static float normalizeDeg(float a) {

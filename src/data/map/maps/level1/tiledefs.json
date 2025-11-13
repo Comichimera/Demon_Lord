@@ -7,6 +7,14 @@
     "renderer":  "cube",
     "texture":   "/data/assets/textures/wall.png"
   },
+  "X": {
+    "name":      "Wall",
+    "walkable":  true,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/wall.png"
+  },
   "F": {
     "name":      "Floor",
     "walkable":  true,

@@ -2,7 +2,7 @@
 package game.logic;
 public final class GameEvent {
     public final GameEventType type;
-    public final int x, y;          // grid coords if relevant, else -1
+    public final int x, y;
     public GameEvent(GameEventType type, int x, int y) {
         this.type = type; this.x = x; this.y = y;
     }

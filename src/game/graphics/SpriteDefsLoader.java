@@ -8,27 +8,22 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-/**
- * Loads enemy sprite definitions (front/side/back texture paths + size in tiles).
- * Supports:
- *  - Direct load from a specific JSON resource path, OR
- *  - Per-level load via loadForMap(mapJsonPath), which overlays:
- *      1) optional base:   "/data/map/spritedefs.json"
- *      2) optional per-map: "<dir-of-map>/spritedefs.json"
- */
 public final class SpriteDefsLoader {
 
     public static final class SpriteDef {
         public final String frontPath;
         public final String sidePath;
+        public final String sideLeftPath;
+        public final String sideRightPath;
         public final String backPath;
         public final float widthTiles;
         public final float heightTiles;
 
-        SpriteDef(String frontPath, String sidePath, String backPath, float widthTiles, float heightTiles) {
+        SpriteDef(String frontPath, String sidePath, String sideL, String sideR, String backPath, float widthTiles, float heightTiles) {
             this.frontPath = frontPath;
             this.sidePath = sidePath;
+            this.sideLeftPath = sideL != null ? sideL : sidePath;
+            this.sideRightPath = sideR != null ? sideR : sidePath;
             this.backPath = backPath;
             this.widthTiles = widthTiles;
             this.heightTiles = heightTiles;
@@ -37,7 +32,6 @@ public final class SpriteDefsLoader {
 
     private final Map<String, SpriteDef> byType = new HashMap<>();
 
-    /** Load from a single JSON resource path (kept for compatibility). */
     public SpriteDefsLoader(String resourcePath) {
         try (InputStream in = resource(resourcePath)) {
             if (in == null) {
@@ -50,38 +44,27 @@ public final class SpriteDefsLoader {
         }
     }
 
-    /** Private ctor used by the per-map factory once definitions are merged. */
     private SpriteDefsLoader(Map<String, SpriteDef> prebuilt) {
         this.byType.putAll(prebuilt);
     }
-
-    /**
-     * Per-level loader mirroring tile definition behavior:
-     *  1) Try base "/data/map/spritedefs.json" (optional).
-     *  2) Overlay with "<dir-of-map>/spritedefs.json" (optional).
-     * @param mapJsonPath the path to the current level's map.json (classpath or filesystem)
-     */
     public static SpriteDefsLoader loadForMap(String mapJsonPath) {
         Map<String, SpriteDef> merged = new HashMap<>();
 
-        // 1) Base (optional)
         try (InputStream in = resource("/data/map/spritedefs.json")) {
             if (in != null) {
                 JSONObject root = new JSONObject(new JSONTokener(new InputStreamReader(in, StandardCharsets.UTF_8)));
                 putAll(merged, root);
             }
         } catch (Exception ignore) {
-            // No base is fine.
         }
 
-        // 2) Per-map (optional)
         String dir = parentDir(mapJsonPath);
         if (dir != null) {
             String overridePath = dir + "/spritedefs.json";
             try (InputStream in = resource(overridePath)) {
                 if (in != null) {
                     JSONObject root = new JSONObject(new JSONTokener(new InputStreamReader(in, StandardCharsets.UTF_8)));
-                    putAll(merged, root); // overrides by key
+                    putAll(merged, root);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Failed loading per-map spritedefs: " + overridePath, e);
@@ -91,7 +74,6 @@ public final class SpriteDefsLoader {
         return new SpriteDefsLoader(merged);
     }
 
-    /** Get the sprite definition for an enemy type (case-insensitive). */
     public SpriteDef get(String enemyType) {
         SpriteDef d = byType.get(enemyType.toLowerCase());
         if (d == null) {
@@ -100,24 +82,18 @@ public final class SpriteDefsLoader {
         return d;
     }
 
-    // ---- helpers ----
-
     private static void putAll(Map<String, SpriteDef> out, JSONObject root) {
         for (String key : root.keySet()) {
             JSONObject def = root.getJSONObject(key);
-
             String front = def.getString("front");
             String side  = def.getString("side");
             String back  = def.getString("back");
-
-            float w = 0.9f, h = 1.8f;
-            if (def.has("scale")) {
-                JSONObject s = def.getJSONObject("scale");
-                w = (float) s.optDouble("width",  0.9);
-                h = (float) s.optDouble("height", 1.8);
-            }
-
-            out.put(key.toLowerCase(), new SpriteDef(front, side, back, w, h));
+            String sideL = def.optString("side_left",  null);
+            String sideR = def.optString("side_right", null);
+            JSONObject scale = def.getJSONObject("scale");
+            float w = (float) scale.getDouble("width");
+            float h = (float) scale.getDouble("height");
+            out.put(key.toLowerCase(), new SpriteDef(front, side, sideL, sideR, back, w, h));
         }
     }
 

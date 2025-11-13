@@ -1,0 +1,130 @@
+{
+  "W": {
+    "name":      "Wall",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/stanleywall.png"
+  },
+  "I": {
+    "name":      "Window",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/stanleywindow.png"
+  },
+  "F": {
+    "name":      "Floor",
+    "walkable":  true,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "quad",
+    "texture":   "/data/assets/textures/stanleyfloor.png"
+  },
+  "D": {
+    "name":      "Door",
+    "walkable":  false,
+    "openable":  true,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/stanleydoor.png"
+  },
+  "R": {
+    "name":      "427Door",
+    "walkable":  false,
+    "openable":  true,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/427door.png"
+  },
+  "E": {
+    "name":      "Exit",
+    "walkable":  true,
+    "openable":  false,
+    "endsLevel": true,
+    "renderer":  "quad",
+    "texture":   "/data/assets/textures/exit.png"
+  },
+  "A": {
+    "name":      "Aa",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/429door.png"
+  },
+  "B": {
+    "name":      "Bb",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/430door.png"
+  },
+  "C": {
+    "name":      "Cc",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/437door.png"
+  },
+  "1": {
+    "name":      "426",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/426door.png"
+  },
+  "2": {
+    "name":      "425",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/425door.png"
+  },
+  "X": {
+    "name":      "blankdoor",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/stanleydoor.png"
+  },
+  "3": {
+    "name":      "420",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/420door.png"
+  },
+  "4": {
+    "name":      "417",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/417door.png"
+  },
+  "5": {
+    "name":      "416",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/416door.png"
+  },
+  "6": {
+    "name":      "415",
+    "walkable":  false,
+    "openable":  false,
+    "endsLevel": false,
+    "renderer":  "cube",
+    "texture":   "/data/assets/textures/415door.png"
+  }
+}

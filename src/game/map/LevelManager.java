@@ -15,11 +15,14 @@ public class LevelManager {
         public final String mapPath;
         public final String target;
 
-        public Level(String id, String name, String mapPath, String target) {
+        public final String musicId;
+
+        public Level(String id, String name, String mapPath, String target, String musicId) {
             this.id = id;
             this.name = name;
             this.mapPath = mapPath;
             this.target  = target;
+            this.musicId = musicId;
         }
     }
 
@@ -54,7 +57,8 @@ public class LevelManager {
                 String name = obj.getString("name");
                 String mapPath = obj.getString("mapPath");
                 String target  = obj.optString("target", "");
-                levels.add(new Level(id, name, mapPath, target));
+                String musicId = obj.optString("musicId", null);
+                levels.add(new Level(id, name, mapPath, target, musicId));
             }
         } catch(Exception e) {
             e.printStackTrace();

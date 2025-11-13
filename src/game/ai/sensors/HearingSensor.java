@@ -9,7 +9,7 @@ public final class HearingSensor implements Sensor {
     public HearingSensor(float decaySeconds) { this.decaySeconds = decaySeconds; }
 
     @Override public void sample(float dt, AIAgent agent, Blackboard bb) {
-        Vector2i noise = agent.world().lastNoiseCell(); // implement in WorldAPI impl
+        Vector2i noise = agent.world().lastNoiseCell();
         if (noise != null) {
             bb.lastHeardNoiseCell = java.util.Optional.of(new Vector2i(noise));
             bb.timeSinceHeardNoise = 0f;

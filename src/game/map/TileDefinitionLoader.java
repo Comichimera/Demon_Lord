@@ -31,7 +31,6 @@ public class TileDefinitionLoader {
             String renderer   = obj.getString("renderer");
             String texture    = obj.getString("texture");
 
-            // NEW: category is optional in baseline JSON; infer a sensible default if missing
             String category   = normalizeCategory(obj.optString("category", inferDefaultCategory(id)));
 
             TileDefinition td = new TileDefinition(
@@ -60,57 +59,47 @@ public class TileDefinitionLoader {
             char id = key.charAt(0);
             JSONObject patch = root.getJSONObject(key);
 
-            // Try to find an existing baseline definition first
-            TileDefinition base = TileRegistry.get(id);
+            TileDefinition base;
+            try {
+                base = TileRegistry.get(id);
+            } catch (RuntimeException e) {
+                base = null;
+            }
 
             if (base != null) {
-                // --- Merge: inherit fields from baseline unless explicitly overridden ---
-                String name       = patch.has("name")       ? patch.getString("name")       : base.getName();
-                boolean walkable  = patch.has("walkable")   ? patch.getBoolean("walkable")  : base.isWalkable();
-                boolean openable  = patch.has("openable")   ? patch.getBoolean("openable")  : base.isOpenable();
-                boolean endsLevel = patch.has("endsLevel")  ? patch.getBoolean("endsLevel") : base.isEndsLevel();
-                String renderer   = patch.has("renderer")   ? patch.getString("renderer")   : base.getRenderer();
-                String texture    = patch.has("texture")    ? patch.getString("texture")    : base.getTexture();
-                String category   = patch.has("category")
-                        ? normalizeCategory(patch.getString("category"))
-                        : base.getCategory();
+                String name       = patch.has("name")      ? patch.getString("name")      : base.getName();
+                boolean walkable  = patch.has("walkable")  ? patch.getBoolean("walkable") : base.isWalkable();
+                boolean openable  = patch.has("openable")  ? patch.getBoolean("openable") : base.isOpenable();
+                boolean endsLevel = patch.has("endsLevel") ? patch.getBoolean("endsLevel"): base.endsLevel();
+                String renderer   = patch.has("renderer")  ? patch.getString("renderer")  : base.getRenderer();
+                String texture    = patch.has("texture")   ? patch.getString("texture")   : base.getTexture();
+                String category   = patch.has("category")  ? patch.getString("category")  : base.getCategory();
 
-                TileDefinition merged = new TileDefinition(
+                TileRegistry.override(id, new TileDefinition(
                         id, name, walkable, openable, endsLevel, renderer, texture, category
-                );
-                TileRegistry.override(id, merged);
-
+                ));
             } else {
-                // require essential fields or fail with a helpful message
-                String renderer = patch.optString("renderer", null);
-                String texture  = patch.optString("texture",  null);
-                if (renderer == null || texture == null) {
+                if (!patch.has("renderer") || !patch.has("texture")) {
                     throw new IllegalArgumentException(
-                            "Per-level tiledefs (" + overridePath + ") introduces new tile '" + id +
-                                    "' but is missing required field(s): " +
-                                    (renderer == null ? "renderer " : "") +
-                                    (texture  == null ? "texture"   : "")
+                            "New tile '" + id + "' is missing renderer or texture"
                     );
                 }
+                String name       = patch.has("name")      ? patch.getString("name")      : ("Tile " + id);
+                boolean walkable  = patch.has("walkable")  ? patch.getBoolean("walkable") : false;
+                boolean openable  = patch.has("openable")  ? patch.getBoolean("openable") : false;
+                boolean endsLevel = patch.has("endsLevel") ? patch.getBoolean("endsLevel"): false;
+                String renderer   = patch.getString("renderer");
+                String texture    = patch.getString("texture");
+                String category   = patch.has("category")  ? patch.getString("category")  : "default";
 
-                String name       = patch.optString("name", "Tile " + id);
-                boolean walkable  = patch.optBoolean("walkable",  false);
-                boolean openable  = patch.optBoolean("openable",  false);
-                boolean endsLevel = patch.optBoolean("endsLevel", false);
-                String category   = normalizeCategory(patch.optString("category", inferDefaultCategory(id)));
-
-                TileDefinition td = new TileDefinition(
+                TileRegistry.override(id, new TileDefinition(
                         id, name, walkable, openable, endsLevel, renderer, texture, category
-                );
-                TileRegistry.override(id, td);
+                ));
             }
         }
     }
 
-    // Helpers
-
     private static String inferDefaultCategory(char id) {
-        // Fallbacks so old baseline JSON without "category" still works nicely
         switch (Character.toUpperCase(id)) {
             case 'W': return "wall";
             case 'D': return "door";
@@ -123,7 +112,6 @@ public class TileDefinitionLoader {
     private static String normalizeCategory(String s) {
         if (s == null) return "tile";
         s = s.trim().toLowerCase();
-        // optional: singularize simple plurals ("walls" -> "wall")
         if (s.endsWith("s")) s = s.substring(0, s.length()-1);
         return s.isEmpty() ? "tile" : s;
     }

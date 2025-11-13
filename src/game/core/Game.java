@@ -2,6 +2,7 @@ package game.core;
 
 import game.config.GameConfig;
 import game.graphics.Renderer;
+import game.input.InputEdge;
 import game.input.KeyboardInput;
 import game.map.*;
 import game.world.Player;
@@ -34,10 +35,6 @@ public class Game {
     public final TimerService timers = new TimerService();
 
     private VersionOverlay versionOverlay;
-
-    /**
-     * Formats a time value into mm:ss format with no decimal.
-     */
     String formatTimeNoDecimal(double time) {
         int minutes = (int)(time / 60);
         int seconds = (int)(time % 60);
@@ -48,25 +45,21 @@ public class Game {
         if (currentState != null) currentState.exit();
         currentState = newState;
         currentState.enter();
+        InputEdge.onStateEnter(window.getWindowHandle());
     }
-
-
-    /**
-     * Entry point for running the game.
-     */
     public void run() {
         init();
         loop();
         cleanup();
     }
-
-    /**
-     * Initializes the game window, player, menus, levels, tile definitions, and UI overlays.
-     */
     private void init() {
         window       = new Window(800, 600, "pre alpha");
         levelManager = new LevelManager("/data/map/levels.json");
         versionOverlay = new VersionOverlay(window, game.core.GameData.getVersion());
+
+        if (!game.audio.AudioSystem.init()) {
+            System.err.println("Audio init failed; continuing without sound.");
+        }
 
         // Initialize tile definitions
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
@@ -82,14 +75,13 @@ public class Game {
         player   = new Player();
         keyboard = new KeyboardInput();
 
+        game.achievements.AchievementsManager.get().printStartupSummary();
+        game.achievements.AchievementsManager.get().unlock("open_game");
+
         changeState(new MainMenuState(this));
 
         running = true;
     }
-
-    /**
-     * Main game loop. Processes input, updates state, handles rendering and UI logic.
-     */
     private void loop() {
         long lastTime = System.nanoTime();
         while (running && !window.shouldClose()) {
@@ -98,14 +90,11 @@ public class Game {
             lastTime = now;
 
             currentState.update(deltaTime);
+            game.audio.AudioSystem.update(deltaTime);
             render();
             window.update();
         }
     }
-
-    /**
-     * Loads current level data, resets player, timers, and creates the renderer.
-     */
     void reloadLevel() {
         String mapPath = levelManager.getCurrentLevel().mapPath;
         mapData = MapLoader.loadMap(mapPath);
@@ -131,11 +120,8 @@ public class Game {
         if (versionOverlay != null) versionOverlay.render();
 
     }
-
-    /**
-     * Releases GL and window resources.
-     */
     public void cleanup() {
+        game.audio.AudioSystem.shutdown();
         if (renderer != null) renderer.cleanup();
         if (versionOverlay != null) versionOverlay.cleanup();
         if (window != null) window.destroy();

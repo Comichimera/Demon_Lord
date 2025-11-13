@@ -6,6 +6,7 @@ import game.ai.io.BehaviorTreeLoader;
 import game.ai.sensors.*;
 import game.ai.path.*;
 import game.logic.EventBus;
+import game.logic.GameEvent;
 import game.map.MapData;
 import game.world.Player;
 import org.json.JSONObject;

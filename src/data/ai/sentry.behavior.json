@@ -11,18 +11,19 @@
         ]
       },
       {
-        "type":"sequence",
-        "children":[
+        "type": "sequence",
+        "children": [
           {"type":"condition","name":"heardNoiseWithin","params":{"radius":8,"recentSeconds":3.0}},
           {"type":"action","name":"listen","params":{"duration":1.0}},
           {"type":"action","name":"move","params":{"toward":"lastHeardNoise","speed":1.0}}
         ]
       },
       {
-        "type":"sequence",
-        "children":[
-          {"type":"action","name":"scan","params":{"duration":0.6}},
-          {"type":"wait","seconds":0.3}
+        "type": "sequence",
+        "name": "idle_spin",
+        "children": [
+          {"type":"action","name":"scan","params":{"duration":2.5,"rotate":true,"mode":"spin","deg_per_sec":180,"random_start":false}},
+          {"type":"wait","seconds":0.25}
         ]
       }
     ]

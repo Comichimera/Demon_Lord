@@ -120,9 +120,6 @@ public class TexturedCubeRenderer {
         glBindVertexArray(0);
     }
 
-    /**
-     * Render a cube given the projection, view, and model matrices.
-     */
     public void render(Matrix4f projection, Matrix4f view, Matrix4f model) {
         shaderProgram.use();
 

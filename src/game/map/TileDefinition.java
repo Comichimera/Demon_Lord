@@ -27,4 +27,6 @@ public class TileDefinition {
     public String getRenderer()   { return renderer; }
     public String getTexture()    { return texture; }
     public String getCategory() { return category; }
+
+    public boolean endsLevel() { return endsLevel; }
 }

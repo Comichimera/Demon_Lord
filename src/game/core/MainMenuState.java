@@ -1,5 +1,8 @@
 package game.core;
 
+import game.achievements.AchievementsManager;
+import game.audio.AudioSystem;
+import game.input.InputGate;
 import game.ui.MenuOverlay;
 
 import java.util.List;
@@ -14,18 +17,19 @@ public class MainMenuState implements IGameState {
         this.game = game;
         this.menu = new MenuOverlay(
                 game.window,
-                List.of("Start Game", "Level Select", "Exit")
+                List.of("Start Game", "Level Select", "Achievements", "Exit")
         );
     }
 
     @Override
     public void enter() {
-        // Reset the menu’s internal “selected” index if needed.
         menu.rebuild();
+        AudioSystem.playMusic("menu");
     }
 
     @Override
     public void update(float dt) {
+        if (InputGate.isGated(game.window.getWindowHandle())) return;
         // Query the overlay for a selection (Return value: 0=start,1=level-select,2=exit; -1=none)
         int choice = menu.update(game.window.getWindowHandle(), dt);
         if (choice != -1) {
@@ -37,6 +41,10 @@ public class MainMenuState implements IGameState {
                     game.changeState(new LevelSelectState(game));
                     break;
                 case 2:
+                    game.changeState(new AchievementsState(game));
+                    break;
+                case 3:
+                    AchievementsManager.get().unlock("go_outside");
                     game.running = false;
                     break;
             }
@@ -50,6 +58,7 @@ public class MainMenuState implements IGameState {
 
     @Override
     public void exit() {
+        AudioSystem.stopMusic();
         menu.cleanup();
     }
 }

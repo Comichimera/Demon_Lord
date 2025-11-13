@@ -86,10 +86,6 @@ public class Renderer {
             );
         }
     }
-
-    /**
-     * Generates floor geometry for floor tiles and records wall, exit, and door positions.
-     */
     private void generateFloorGeometry() {
         cubeInstances.clear();
         quadInstances.clear();
@@ -161,7 +157,6 @@ public class Renderer {
                 0.5f, 0f, 0f);  // Dark red floor color.
     }
 
-    // Helper: adds a quad (two triangles) given four vertices and a color.
     private void addQuad(List<Float> list,
                          float x1, float y1, float z1,
                          float x2, float y2, float z2,
@@ -247,7 +242,7 @@ public class Renderer {
     }
 
     public void initEnemySpritesForMap(String mapJsonPath) {
-        if (enemySprites != null) {           // clean old per-level cache
+        if (enemySprites != null) {
             enemySprites.cleanup();
             enemySprites = null;
         }
@@ -264,11 +259,9 @@ public class Renderer {
         glDeleteBuffers(floorVboId);
         glDeleteVertexArrays(floorVaoId);
 
-        // Delete all cube textures
         for (TexturedCubeRenderer r : cubeRenderers.values()) {
             r.cleanup();
         }
-        // Delete all quad textures
         for (TexturedQuadRenderer r : quadRenderers.values()) {
             r.cleanup();
         }

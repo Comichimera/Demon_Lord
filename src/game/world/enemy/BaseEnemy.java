@@ -53,7 +53,7 @@ public abstract class BaseEnemy {
         if (isWalkable(map, x, newZ)) z = newZ;
     }
 
-    protected void faceToward(float cx, float cz) {
+    public void faceToward(float cx, float cz) {
         float dx = cx - x;
         float dz = cz - z;
         if (Math.abs(dx) > 1e-6f || Math.abs(dz) > 1e-6f) {

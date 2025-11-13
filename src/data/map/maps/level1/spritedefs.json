@@ -2,13 +2,17 @@
   "patroller": {
     "front": "/data/assets/sprites/zombie.png",
     "side":  "/data/assets/sprites/zombie.png",
-    "back":  "/data/assets/sprites/zombie.png",
+    "side_left":  "/data/assets/sprites/zombie-sideleft.png",
+    "side_right": "/data/assets/sprites/zombie-sideright.png",
+    "back":  "/data/assets/sprites/zombie-back.png",
     "scale": { "width": 1, "height": 1 }
   },
   "sentry": {
-    "front": "/data/assets/sprites/kit.png",
-    "side":  "/data/assets/sprites/kit.png",
-    "back":  "/data/assets/sprites/kit.png",
+    "front": "/data/assets/sprites/zombie-front-2.png",
+    "side":  "/data/assets/sprites/zombie-front-2.png",
+    "side_left":  "/data/assets/sprites/zombie-sideleft-2.png",
+    "side_right": "/data/assets/sprites/zombie-sideright.png",
+    "back":  "/data/assets/sprites/zombie-back-2.png",
     "scale": { "width": 1, "height": 1 }
   }
 }

@@ -41,8 +41,6 @@ public class LevelSelectState implements IGameState {
 
             // If the player picked the FIRST level, treat it as a fresh run
             if (choice == 0) {
-                // Either way is fine:
-                // game.levelManager.reset();          // (not needed if you already advanced to 0)
                 game.timers.startRun();                // <-- reset cumulative run time
             }
 

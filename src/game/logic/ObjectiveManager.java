@@ -7,10 +7,8 @@ import java.util.Deque;
 public final class ObjectiveManager implements EventListener {
     private final List<Objective> list = new ArrayList<>();
 
-    // NEW: track last-known completion state per objective
     private final List<Boolean> wasComplete = new ArrayList<>();
 
-    // NEW: queue of popup messages for the HUD
     private final Deque<String> popupQueue = new ArrayDeque<>();
 
     public void add(Objective o){
@@ -34,7 +32,6 @@ public final class ObjectiveManager implements EventListener {
             o.condition.onEvent(e);
             boolean now = o.condition.isTrue();
             if (!wasComplete.get(i) && now) {
-                // flipped false -> true: enqueue a popup
                 popupQueue.addLast(completionText(o));
             }
             wasComplete.set(i, now);
@@ -51,14 +48,12 @@ public final class ObjectiveManager implements EventListener {
         return done + "/" + list.size() + " objectives";
     }
 
-    // NEW: let the HUD drain messages to display as toasts
     public java.util.List<String> drainCompletedPopups() {
         java.util.List<String> out = new java.util.ArrayList<>(popupQueue);
         popupQueue.clear();
         return out;
     }
 
-    // NEW: customizable popup text (use uiText when present)
     private String completionText(Objective o) {
         // e.g., "Objective complete: Reach the control room"
         return "Objective complete: " + (o.uiText != null ? o.uiText : o.id);
