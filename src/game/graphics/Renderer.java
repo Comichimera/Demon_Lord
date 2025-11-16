@@ -52,26 +52,23 @@ public class Renderer {
     public Renderer(MapData mapData) throws Exception {
         this.mapData = mapData;
 
-        String vertexShaderSource =
-                "#version 330 core\n" +
-                        "layout(location = 0) in vec3 position;\n" +
-                        "layout(location = 1) in vec2 texCoord;\n" +
-                        "out vec2 vTexCoord;\n" +
-                        "uniform mat4 projection;\n" +
-                        "uniform mat4 view;\n" +
-                        "uniform mat4 model;\n" +
-                        "void main() {\n" +
-                        "    vTexCoord = texCoord;\n" +
-                        "    gl_Position = projection * view * model * vec4(position, 1.0);\n" +
-                        "}";
-        String fragmentShaderSource =
-                "#version 330 core\n" +
-                        "in vec2 vTexCoord;\n" +
-                        "out vec4 fragColor;\n" +
-                        "uniform sampler2D floorTexture;\n" +
-                        "void main() {\n" +
-                        "    fragColor = texture(floorTexture, vTexCoord);\n" +
-                        "}";
+        String vertexShaderSource = "#version 330 core\n" +
+                "layout(location = 0) in vec3 position;\n" +
+                "layout(location = 1) in vec3 color;\n" +
+                "out vec3 vertexColor;\n" +
+                "uniform mat4 projection;\n" +
+                "uniform mat4 view;\n" +
+                "uniform mat4 model;\n" +
+                "void main() {\n" +
+                "    vertexColor = color;\n" +
+                "    gl_Position = projection * view * model * vec4(position, 1.0);\n" +
+                "}";
+        String fragmentShaderSource = "#version 330 core\n" +
+                "in vec3 vertexColor;\n" +
+                "out vec4 fragColor;\n" +
+                "void main() {\n" +
+                "    fragColor = vec4(vertexColor, 1.0);\n" +
+                "}";
         shaderProgram = new ShaderProgram(vertexShaderSource, fragmentShaderSource);
 
         generateFloorGeometry();
@@ -152,30 +149,36 @@ public class Renderer {
 
     // Adds a floor quad for a floor tile.
     private void addFloor(List<Float> list, float centerX, float centerZ) {
-        // Tile quad at y = 0
-        float x1 = centerX - roomHalfSize;
-        float x2 = centerX + roomHalfSize;
-        float z1 = centerZ - roomHalfSize;
-        float z2 = centerZ + roomHalfSize;
-
-        // Two triangles, with UVs 0..1 across the tile
-        addVertex(list, x1, 0f, z1, 0f, 0f);
-        addVertex(list, x2, 0f, z1, 1f, 0f);
-        addVertex(list, x2, 0f, z2, 1f, 1f);
-
-        addVertex(list, x1, 0f, z1, 0f, 0f);
-        addVertex(list, x2, 0f, z2, 1f, 1f);
-        addVertex(list, x1, 0f, z2, 0f, 1f);
+        addQuad(list,
+                centerX - roomHalfSize, 0f, centerZ - roomHalfSize,
+                centerX + roomHalfSize, 0f, centerZ - roomHalfSize,
+                centerX + roomHalfSize, 0f, centerZ + roomHalfSize,
+                centerX - roomHalfSize, 0f, centerZ + roomHalfSize,
+                0.5f, 0f, 0f);  // Dark red floor color.
     }
 
-    private void addVertex(List<Float> list,
-                           float x, float y, float z,
-                           float u, float v) {
+    private void addQuad(List<Float> list,
+                         float x1, float y1, float z1,
+                         float x2, float y2, float z2,
+                         float x3, float y3, float z3,
+                         float x4, float y4, float z4,
+                         float r, float g, float b) {
+        addVertex(list, x1, y1, z1, r, g, b);
+        addVertex(list, x2, y2, z2, r, g, b);
+        addVertex(list, x3, y3, z3, r, g, b);
+        addVertex(list, x1, y1, z1, r, g, b);
+        addVertex(list, x3, y3, z3, r, g, b);
+        addVertex(list, x4, y4, z4, r, g, b);
+    }
+
+    private void addVertex(List<Float> list, float x, float y, float z,
+                           float r, float g, float b) {
         list.add(x);
         list.add(y);
         list.add(z);
-        list.add(u);
-        list.add(v);
+        list.add(r);
+        list.add(g);
+        list.add(b);
     }
 
     public void render(Player player) {
