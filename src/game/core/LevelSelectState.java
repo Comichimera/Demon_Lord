@@ -1,5 +1,6 @@
 package game.core;
 
+import game.input.InputGate;
 import game.ui.MenuOverlay;
 
 import java.util.List;
@@ -9,7 +10,6 @@ import static org.lwjgl.glfw.GLFW.*;
 public class LevelSelectState implements IGameState {
     private final Game game;
     private final MenuOverlay menu;
-    private boolean ignoreFirstInput = true;
 
     public LevelSelectState(Game game) {
         this.game = game;
@@ -21,27 +21,21 @@ public class LevelSelectState implements IGameState {
     @Override
     public void enter() {
         menu.rebuild();
-        ignoreFirstInput = true;
     }
 
     @Override
     public void update(float dt) {
-        if (ignoreFirstInput) {
-            int state = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_ENTER);
-            if (state == GLFW_RELEASE) {
-                ignoreFirstInput = false;
-            }
-            return;
-        }
+        long win = game.window.getWindowHandle();
+        if (InputGate.isGated(win)) return;
 
-        int choice = menu.update(game.window.getWindowHandle(), dt);
+        int choice = menu.update(win, dt);
         if (choice != -1) {
             // Move the cursor to the chosen level
             game.levelManager.advanceToLevel(choice);
 
             // If the player picked the FIRST level, treat it as a fresh run
             if (choice == 0) {
-                game.timers.startRun();                // <-- reset cumulative run time
+                game.timers.startRun();  // reset cumulative run time
             }
 
             game.changeState(new PlayingState(game));

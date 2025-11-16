@@ -3,6 +3,7 @@ package game.core;
 import game.config.GameConfig;
 import game.graphics.Renderer;
 import game.input.InputEdge;
+import game.input.InputGate;
 import game.input.KeyboardInput;
 import game.map.*;
 import game.world.Player;
@@ -45,7 +46,10 @@ public class Game {
         if (currentState != null) currentState.exit();
         currentState = newState;
         currentState.enter();
-        InputEdge.onStateEnter(window.getWindowHandle());
+
+        long win = window.getWindowHandle();
+        InputEdge.onStateEnter(win);  // edge detector gate
+        InputGate.arm();              // simple global “ignore until keys released”
     }
     public void run() {
         init();
