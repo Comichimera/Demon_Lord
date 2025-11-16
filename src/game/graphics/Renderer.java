@@ -27,73 +27,59 @@ import game.graphics.EnemySpriteRenderer;
 import game.graphics.SpriteDefsLoader;
 
 public class Renderer {
-
-    private ShaderProgram shaderProgram;
-    private int floorVaoId;
-    private int floorVboId;
-    private int floorVertexCount;
-    private FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
     private MapData mapData;
 
-    // Tile dimensions from GameConfig.
     private final float tileSize = GameConfig.TILE_SIZE;
     private final float roomHalfSize = GameConfig.ROOM_HALF_SIZE;
     private final float roomHeight = GameConfig.ROOM_HEIGHT;
 
-    // Lists to record positions of different tile types.
     private final Map<String,TexturedCubeRenderer> cubeRenderers = new HashMap<>();
     private final Map<String,TexturedQuadRenderer> quadRenderers = new HashMap<>();
 
     private final Map<String,List<float[]>> cubeInstances = new HashMap<>();
     private final Map<String,List<float[]>> quadInstances = new HashMap<>();
+    private final Map<String, TexturedQuadRenderer> floorRenderers = new HashMap<>();
+    private final Map<String, List<float[]>> floorInstances = new HashMap<>();
     private EnemySpriteRenderer enemySprites;
     private EnemyManager enemyManager;
 
     public Renderer(MapData mapData) throws Exception {
         this.mapData = mapData;
 
-        String vertexShaderSource = "#version 330 core\n" +
-                "layout(location = 0) in vec3 position;\n" +
-                "layout(location = 1) in vec3 color;\n" +
-                "out vec3 vertexColor;\n" +
-                "uniform mat4 projection;\n" +
-                "uniform mat4 view;\n" +
-                "uniform mat4 model;\n" +
-                "void main() {\n" +
-                "    vertexColor = color;\n" +
-                "    gl_Position = projection * view * model * vec4(position, 1.0);\n" +
-                "}";
-        String fragmentShaderSource = "#version 330 core\n" +
-                "in vec3 vertexColor;\n" +
-                "out vec4 fragColor;\n" +
-                "void main() {\n" +
-                "    fragColor = vec4(vertexColor, 1.0);\n" +
-                "}";
-        shaderProgram = new ShaderProgram(vertexShaderSource, fragmentShaderSource);
-
         generateFloorGeometry();
+
         for (String tex : cubeInstances.keySet()) {
-            cubeRenderers.put(
-                    tex,
-                    new TexturedCubeRenderer(tileSize, roomHeight, tex)
-            );
+            cubeRenderers.put(tex, new TexturedCubeRenderer(tileSize, roomHeight, tex));
         }
 
         for (String tex : quadInstances.keySet()) {
-            quadRenderers.put(
-                    tex,
-                    new TexturedQuadRenderer(tex, tileSize, tileSize)
-            );
+            quadRenderers.put(tex, new TexturedQuadRenderer(tex, tileSize, tileSize));
+        }
+
+        for (String tex : floorInstances.keySet()) {
+            floorRenderers.put(tex, new TexturedQuadRenderer(tex, tileSize, tileSize));
         }
     }
     private void generateFloorGeometry() {
         cubeInstances.clear();
         quadInstances.clear();
+        floorInstances.clear();
 
-        List<Float> verticesList = new ArrayList<>();
         Tile[][] tiles = mapData.getTiles();
         int rows = tiles.length;
         int cols = tiles[0].length;
+
+        String defaultFloorTex = null;
+        for (int r = 0; r < rows && defaultFloorTex == null; r++) {
+            for (int c = 0; c < cols && defaultFloorTex == null; c++) {
+                TileDefinition def = tiles[r][c].getDefinition();
+                if ("floor".equals(def.getRenderer())
+                        && def.getTexture() != null
+                        && !def.getTexture().isEmpty()) {
+                    defaultFloorTex = def.getTexture();
+                }
+            }
+        }
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -105,17 +91,31 @@ public class Renderer {
                 String rendererType = def.getRenderer();  // "floor", "cube", or "quad"
                 String texPath      = def.getTexture();
 
-                // 1) Floor tiles (or open doors shown as floor)
-                if ("floor".equals(rendererType) || (t.isOpenable() && t.isOpen())) {
-                    addFloor(verticesList, centerX, centerZ);
+                boolean isOpenDoor = t.isOpenable() && t.isOpen();
 
-                    // 2) Cube-type (walls, closed doors, new spikes, etc.)
+                if ("floor".equals(rendererType) || isOpenDoor) {
+                    String floorTex = texPath;
+
+                    if (isOpenDoor) {
+                        floorTex = resolveDoorFloorTexture(row, col, tiles, defaultFloorTex);
+                    }
+
+                    if (floorTex == null || floorTex.isEmpty()) {
+                        floorTex = defaultFloorTex;
+                    }
+                    if (floorTex == null) {
+                        continue;
+                    }
+
+                    floorInstances
+                            .computeIfAbsent(floorTex, k -> new ArrayList<>())
+                            .add(new float[]{ centerX, centerZ });
+
                 } else if ("cube".equals(rendererType)) {
                     cubeInstances
                             .computeIfAbsent(texPath, k -> new ArrayList<>())
                             .add(new float[]{ centerX, centerZ });
 
-                    // 3) Quad-type (exit markers, 2D overlays, etc.)
                 } else if ("quad".equals(rendererType)) {
                     quadInstances
                             .computeIfAbsent(texPath, k -> new ArrayList<>())
@@ -123,31 +123,10 @@ public class Renderer {
                 }
             }
         }
-
-        float[] vertices = new float[verticesList.size()];
-        for (int i = 0; i < vertices.length; i++) {
-            vertices[i] = verticesList.get(i);
-        }
-        floorVertexCount = vertices.length / 6;
-        if (floorVaoId == 0) {
-            floorVaoId = glGenVertexArrays();
-            floorVboId = glGenBuffers();
-        }
-        glBindVertexArray(floorVaoId);
-        glBindBuffer(GL_ARRAY_BUFFER, floorVboId);
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
-        int stride = 6 * Float.BYTES;
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, 3 * Float.BYTES);
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
     }
 
 
 
-    // Adds a floor quad for a floor tile.
     private void addFloor(List<Float> list, float centerX, float centerZ) {
         addQuad(list,
                 centerX - roomHalfSize, 0f, centerZ - roomHalfSize,
@@ -185,56 +164,78 @@ public class Renderer {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CULL_FACE);
-        shaderProgram.use();
 
-        Matrix4f projection = new Matrix4f().perspective((float)Math.toRadians(60), 800f / 600f, 0.1f, 100f);
-        int projLocation = shaderProgram.getUniformLocation("projection");
-        projection.get(matrixBuffer);
-        glUniformMatrix4fv(projLocation, false, matrixBuffer);
+        Matrix4f projection = new Matrix4f()
+                .perspective((float) Math.toRadians(60), 800f / 600f, 0.1f, 100f);
 
         Matrix4f view = new Matrix4f().identity()
-                .rotateY((float)Math.toRadians(player.getYaw()))
+                .rotateY((float) Math.toRadians(player.getYaw()))
                 .translate(-player.getX(), -player.getY(), -player.getZ());
-        int viewLocation = shaderProgram.getUniformLocation("view");
-        view.get(matrixBuffer);
-        glUniformMatrix4fv(viewLocation, false, matrixBuffer);
 
-        Matrix4f model = new Matrix4f().identity();
-        int modelLocation = shaderProgram.getUniformLocation("model");
-        model.get(matrixBuffer);
-        glUniformMatrix4fv(modelLocation, false, matrixBuffer);
+        for (var entry : floorInstances.entrySet()) {
+            String tex = entry.getKey();
+            TexturedQuadRenderer rend = floorRenderers.get(tex);
+            if (rend == null) continue;
 
-        // Render floor geometry.
-        glBindVertexArray(floorVaoId);
-        glDrawArrays(GL_TRIANGLES, 0, floorVertexCount);
-        glBindVertexArray(0);
-        shaderProgram.stop();
+            for (float[] center : entry.getValue()) {
+                Matrix4f model = new Matrix4f().translation(center[0], 0f, center[1]);
+                rend.render(projection, view, model);
+            }
+        }
 
-        // Cube instances
         for (var entry : cubeInstances.entrySet()) {
             String tex = entry.getKey();
             TexturedCubeRenderer rend = cubeRenderers.get(tex);
+            if (rend == null) continue;
+
             for (float[] center : entry.getValue()) {
-                Matrix4f cubeModel = new Matrix4f().translation(center[0], 0, center[1]);
+                Matrix4f cubeModel = new Matrix4f().translation(center[0], 0f, center[1]);
                 rend.render(projection, view, cubeModel);
             }
         }
 
-// Quad instances
         for (var entry : quadInstances.entrySet()) {
             String tex = entry.getKey();
             TexturedQuadRenderer rend = quadRenderers.get(tex);
+            if (rend == null) continue;
+
             for (float[] center : entry.getValue()) {
-                Matrix4f quadModel = new Matrix4f().translation(center[0], 0, center[1]);
+                Matrix4f quadModel = new Matrix4f().translation(center[0], 0f, center[1]);
                 rend.render(projection, view, quadModel);
             }
         }
 
-        // draw enemies
         if (enemySprites != null && enemyManager != null) {
             enemySprites.render(enemyManager, player, projection, view);
         }
+    }
+    private String resolveDoorFloorTexture(int row, int col,
+                                           Tile[][] tiles,
+                                           String defaultFloorTex) {
+        int rows = tiles.length;
+        int cols = tiles[0].length;
 
+        // 4-neighbors
+        int[][] offsets = {
+                { 1, 0 }, { -1, 0 },
+                { 0, 1 }, { 0, -1 }
+        };
+
+        for (int[] off : offsets) {
+            int nr = row + off[0];
+            int nc = col + off[1];
+            if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
+
+            Tile neighbor = tiles[nr][nc];
+            TileDefinition ndef = neighbor.getDefinition();
+            if ("floor".equals(ndef.getRenderer())
+                    && ndef.getTexture() != null
+                    && !ndef.getTexture().isEmpty()) {
+                return ndef.getTexture();
+            }
+        }
+
+        return defaultFloorTex;
     }
 
     public void updateFloorGeometry() {
@@ -255,20 +256,25 @@ public class Renderer {
     }
 
     public void cleanup() {
-        shaderProgram.cleanup();
-        glDeleteBuffers(floorVboId);
-        glDeleteVertexArrays(floorVaoId);
+        // floors
+        for (TexturedQuadRenderer r : floorRenderers.values()) {
+            r.cleanup();
+        }
+        floorRenderers.clear();
+        floorInstances.clear();
 
+        // cubes
         for (TexturedCubeRenderer r : cubeRenderers.values()) {
             r.cleanup();
         }
+        cubeRenderers.clear();
+        cubeInstances.clear();
+
+        // other quads
         for (TexturedQuadRenderer r : quadRenderers.values()) {
             r.cleanup();
         }
-
-        cubeRenderers.clear();
         quadRenderers.clear();
-        cubeInstances.clear();
         quadInstances.clear();
 
         if (enemySprites != null) {
