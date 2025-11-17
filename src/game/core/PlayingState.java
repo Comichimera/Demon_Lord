@@ -106,6 +106,11 @@ public class PlayingState implements IGameState {
 
     @Override
     public void update(float dt) {
+        if (enemies != null && enemies.isPlayerDefeated()) {
+            game.changeState(new PlayerDefeatedState(game));
+            return;
+        }
+
         if (glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             game.timers.pause();
             game.changeState(new MainMenuState(game));
