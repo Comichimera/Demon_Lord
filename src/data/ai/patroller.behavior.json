@@ -5,20 +5,27 @@
       {
         "type": "sequence",
         "children": [
-          {"type":"condition","name":"playerVisible","params":{"recentSeconds":0.15}},
-          {"type":"action","name":"look","params":{"target":"player","duration":0.4}},
-          {"type":"action","name":"move","params":{"toward":"lastSeenPlayer","speed":1.1}}
+          {"type": "condition", "name": "suspicionAbove", "params": {"threshold": 0.8}},
+          {"type": "action", "name": "move", "params": {"toward": "lastSeenPlayer", "speed": 1.3}}
         ]
       },
       {
-        "type":"sequence",
-        "children":[
-          {"type":"condition","name":"heardNoiseWithin","params":{"radius":6,"recentSeconds":2.0}},
-          {"type":"action","name":"listen","params":{"duration":0.8}},
-          {"type":"action","name":"move","params":{"toward":"lastHeardNoise","speed":1.0}}
+        "type": "sequence",
+        "children": [
+          {"type": "condition", "name": "suspicionAbove", "params": {"threshold": 0.3}},
+          {"type": "action", "name": "scan", "params": {"duration": 1.5, "rotate": true, "mode": "oscillate", "deg_per_sec": 90, "sweep_deg": 120, "random_start": false}},
+          {"type": "action", "name": "move", "params": {"toward": "lastSeenPlayer", "speed": 0.7}}
         ]
       },
-      {"type":"action","name":"move","params":{"mode":"patrolOrRandom","speed":1.0}}
+      {
+        "type": "parallel",
+        "successPolicy": "requireOne",
+        "failurePolicy": "requireOne",
+        "children": [
+          {"type": "action", "name": "move", "params": {"mode": "patrolOrRandom", "speed": 1.0}},
+          {"type": "action", "name": "scan", "params": {"duration": 9999, "rotate": true, "mode": "spin", "deg_per_sec": 60, "random_start": false}}
+        ]
+      }
     ]
   }
 }

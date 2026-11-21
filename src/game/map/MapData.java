@@ -35,12 +35,10 @@ public class MapData {
         this.sourcePath = sourcePath;
     }
 
-    // Returns the entire tile grid.
     public Tile[][] getTiles() {
         return tiles;
     }
 
-    // Returns the Tile at (row,col).
     public Tile getTile(int row, int col) {
         return tiles[row][col];
     }

@@ -9,9 +9,12 @@ import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+
+
 public class MainMenuState implements IGameState {
     private final Game game;
     private final MenuOverlay menu;
+    private boolean f3Pressed = false;
 
     public MainMenuState(Game game) {
         this.game = game;
@@ -30,7 +33,13 @@ public class MainMenuState implements IGameState {
     @Override
     public void update(float dt) {
         if (InputGate.isGated(game.window.getWindowHandle())) return;
-        // Query the overlay for a selection (Return value: 0=start,1=level-select,2=exit; -1=none)
+
+        long win = game.window.getWindowHandle();
+        if (glfwGetKey(win, GLFW_KEY_F3) == GLFW_PRESS && !f3Pressed) {
+            f3Pressed = true;
+            game.changeState(new DebugMenuState(game));
+            return;
+        } else if (glfwGetKey(win, GLFW_KEY_F3) == GLFW_RELEASE) { f3Pressed = false; }
         int choice = menu.update(game.window.getWindowHandle(), dt);
         if (choice != -1) {
             switch (choice) {

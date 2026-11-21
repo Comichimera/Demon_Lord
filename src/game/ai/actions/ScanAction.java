@@ -1,12 +1,10 @@
-// src/game/ai/actions/ScanAction.java
 package game.ai.actions;
 
 import game.ai.*;
-import game.world.enemy.EnemyEntity;
+import org.joml.Vector2i;
 import org.json.JSONObject;
 
 public final class ScanAction implements Action {
-    // parsed config
     private final float duration;
     private final boolean rotate;
     private final String mode;
@@ -14,7 +12,6 @@ public final class ScanAction implements Action {
     private final float sweepDeg;
     private final boolean randomStart;
 
-    // per-run state
     private float remaining;
     private float baseAngleDeg;
     private float elapsed;
@@ -43,8 +40,7 @@ public final class ScanAction implements Action {
         remaining = duration;
         elapsed   = 0f;
 
-        EnemyEntity self = (EnemyEntity) agent;
-        baseAngleDeg = self.getYaw();
+        baseAngleDeg = agent.getYawDeg();
 
         if (rotate && randomStart) {
             baseAngleDeg = agent.rng().nextFloat() * 360f;
@@ -60,15 +56,15 @@ public final class ScanAction implements Action {
                 float half = Math.max(0f, sweepDeg) * 0.5f;
                 float phase = (float) Math.toRadians(elapsed * degPerSec);
                 angleDeg = baseAngleDeg + (float) Math.sin(phase) * half;
-            } else { // "spin"
+            } else {
                 angleDeg = baseAngleDeg + degPerSec * elapsed;
             }
 
-            EnemyEntity self = (EnemyEntity) agent;
             float rad = (float) Math.toRadians(angleDeg);
-            float tx = self.getX() + (float) Math.cos(rad);
-            float tz = self.getZ() + (float) Math.sin(rad);
-            self.faceToward(tx, tz);
+            Vector2i cell = agent.getCell();
+            float cx = cell.x * game.config.GameConfig.TILE_SIZE;
+            float cz = cell.y * game.config.GameConfig.TILE_SIZE;
+            agent.faceToward(cx + (float) Math.sin(rad), cz + (float) Math.cos(rad));
         }
 
         remaining -= dt;

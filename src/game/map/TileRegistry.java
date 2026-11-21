@@ -14,7 +14,6 @@ public class TileRegistry {
         reset();
     }
 
-    // Retrieve the definition for this tile‐ID
     public static TileDefinition get(char id) {
         TileDefinition td = defs.get(id);
         if (td == null) {

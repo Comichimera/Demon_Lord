@@ -14,7 +14,7 @@ public final class BehaviorTreeLoader {
     public static Node loadFromStream(InputStream in) throws IOException {
         String text = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         JSONObject root = new JSONObject(text).getJSONObject("root");
-        bootstrapRegistries(); // register built-ins
+        bootstrapRegistries();
         return build(root);
     }
 
@@ -36,6 +36,13 @@ public final class BehaviorTreeLoader {
                 return new ActionNode(act);
             }
             case "wait": return new Wait((float)node.getDouble("seconds"));
+            case "parallel": {
+                String sp = node.optString("successPolicy", "requireOne");
+                String fp = node.optString("failurePolicy", "requireOne");
+                Parallel.Policy succ = "requireAll".equals(sp) ? Parallel.Policy.REQUIRE_ALL : Parallel.Policy.REQUIRE_ONE;
+                Parallel.Policy fail = "requireAll".equals(fp) ? Parallel.Policy.REQUIRE_ALL : Parallel.Policy.REQUIRE_ONE;
+                return new Parallel(children(node), succ, fail);
+            }
             default: throw new IllegalArgumentException("Unknown node type: " + type);
         }
     }
@@ -48,13 +55,13 @@ public final class BehaviorTreeLoader {
     }
 
     private static void bootstrapRegistries() {
-        // Actions
         ActionRegistry.register("look", LookAction::fromJson);
         ActionRegistry.register("scan", ScanAction::fromJson);
         ActionRegistry.register("listen", ListenAction::fromJson);
         ActionRegistry.register("move", MoveAction::fromJson);
-        // Conditions
         ConditionRegistry.register("playerVisible", PlayerVisibleCondition::fromJson);
         ConditionRegistry.register("heardNoiseWithin", HeardNoiseWithinCondition::fromJson);
+        ConditionRegistry.register("suspicionAbove", SuspicionAboveCondition::fromJson);
+        ConditionRegistry.register("suspicionBelow", SuspicionBelowCondition::fromJson);
     }
 }

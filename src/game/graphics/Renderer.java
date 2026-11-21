@@ -6,25 +6,17 @@ import game.map.Tile;
 import game.map.TileDefinition;
 import game.world.Player;
 import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
-import java.awt.RenderingHints;
 import java.util.Map;
 
 import game.world.enemy.EnemyManager;
-import game.graphics.EnemySpriteRenderer;
-import game.graphics.SpriteDefsLoader;
+
+import game.inventory.ItemDefinition;
+import game.inventory.ItemRegistry;
 
 public class Renderer {
     private MapData mapData;
@@ -38,10 +30,16 @@ public class Renderer {
 
     private final Map<String,List<float[]>> cubeInstances = new HashMap<>();
     private final Map<String,List<float[]>> quadInstances = new HashMap<>();
+
+    private final Map<String, TexturedQuadRenderer> itemRenderers = new HashMap<>();
+    private final Map<String, List<float[]>> itemInstances = new HashMap<>();
     private final Map<String, TexturedQuadRenderer> floorRenderers = new HashMap<>();
     private final Map<String, List<float[]>> floorInstances = new HashMap<>();
     private EnemySpriteRenderer enemySprites;
     private EnemyManager enemyManager;
+    private static final float ITEM_SIZE = GameConfig.TILE_SIZE * 0.35f;
+    private static final float ITEM_PITCH_DEGREES = 360f;
+    private static final float ITEM_HEIGHT = 0.10f;
 
     public Renderer(MapData mapData) throws Exception {
         this.mapData = mapData;
@@ -59,11 +57,19 @@ public class Renderer {
         for (String tex : floorInstances.keySet()) {
             floorRenderers.put(tex, new TexturedQuadRenderer(tex, tileSize, tileSize));
         }
+
+        for (String tex : itemInstances.keySet()) {
+            itemRenderers.put(
+                    tex,
+                    new TexturedQuadRenderer(tex, ITEM_SIZE, ITEM_SIZE)
+            );
+        }
     }
     private void generateFloorGeometry() {
         cubeInstances.clear();
         quadInstances.clear();
         floorInstances.clear();
+        itemInstances.clear();
 
         Tile[][] tiles = mapData.getTiles();
         int rows = tiles.length;
@@ -88,8 +94,19 @@ public class Renderer {
                 float centerZ = row * tileSize + roomHalfSize;
 
                 TileDefinition def = t.getDefinition();
-                String rendererType = def.getRenderer();  // "floor", "cube", or "quad"
+                String rendererType = def.getRenderer();
                 String texPath      = def.getTexture();
+
+                if (t.hasItem()) {
+                    String itemId = t.getItemId();
+                    ItemDefinition itemDef = ItemRegistry.get(itemId);
+                    if (itemDef != null && itemDef.getIconPath() != null && !itemDef.getIconPath().isEmpty()) {
+                        String iconPath = itemDef.getIconPath();
+                        itemInstances
+                                .computeIfAbsent(iconPath, k -> new ArrayList<>())
+                                .add(new float[]{ centerX, centerZ });
+                    }
+                }
 
                 boolean isOpenDoor = t.isOpenable() && t.isOpen();
 
@@ -133,7 +150,7 @@ public class Renderer {
                 centerX + roomHalfSize, 0f, centerZ - roomHalfSize,
                 centerX + roomHalfSize, 0f, centerZ + roomHalfSize,
                 centerX - roomHalfSize, 0f, centerZ + roomHalfSize,
-                0.5f, 0f, 0f);  // Dark red floor color.
+                0.5f, 0f, 0f);
     }
 
     private void addQuad(List<Float> list,
@@ -160,7 +177,7 @@ public class Renderer {
         list.add(b);
     }
 
-    public void render(Player player) {
+    public void render(Player player, float elapsedSeconds) {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CULL_FACE);
@@ -205,8 +222,27 @@ public class Renderer {
             }
         }
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        for (var entry : itemInstances.entrySet()) {
+            String tex = entry.getKey();
+            TexturedQuadRenderer rend = itemRenderers.get(tex);
+            if (rend == null) continue;
+
+            for (float[] center : entry.getValue()) {
+                Matrix4f model = new Matrix4f()
+                        .translation(center[0], ITEM_HEIGHT, center[1])
+                        .rotateX((float) Math.toRadians(-ITEM_PITCH_DEGREES));
+
+                rend.render(projection, view, model);
+            }
+        }
+
+        glDisable(GL_BLEND);
+
         if (enemySprites != null && enemyManager != null) {
-            enemySprites.render(enemyManager, player, projection, view);
+            enemySprites.render(enemyManager, player, projection, view, elapsedSeconds);
         }
     }
     private String resolveDoorFloorTexture(int row, int col,
@@ -215,7 +251,6 @@ public class Renderer {
         int rows = tiles.length;
         int cols = tiles[0].length;
 
-        // 4-neighbors
         int[][] offsets = {
                 { 1, 0 }, { -1, 0 },
                 { 0, 1 }, { 0, -1 }
@@ -256,21 +291,18 @@ public class Renderer {
     }
 
     public void cleanup() {
-        // floors
         for (TexturedQuadRenderer r : floorRenderers.values()) {
             r.cleanup();
         }
         floorRenderers.clear();
         floorInstances.clear();
 
-        // cubes
         for (TexturedCubeRenderer r : cubeRenderers.values()) {
             r.cleanup();
         }
         cubeRenderers.clear();
         cubeInstances.clear();
 
-        // other quads
         for (TexturedQuadRenderer r : quadRenderers.values()) {
             r.cleanup();
         }
@@ -282,6 +314,11 @@ public class Renderer {
             enemySprites = null;
         }
         enemyManager = null;
+        for (TexturedQuadRenderer r : itemRenderers.values()) {
+            r.cleanup();
+        }
+        itemRenderers.clear();
+        itemInstances.clear();
     }
 
 }

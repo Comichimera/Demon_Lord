@@ -6,7 +6,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyboardInput {
     public void processInput(Player player, float deltaTime, MapData mapData) {
-        float moveSpeed = 5.0f;
+        float moveSpeed = 5.0f * player.getSpeedMultiplier();
         float rotateSpeed = 90.0f;
         long context = glfwGetCurrentContext();
 

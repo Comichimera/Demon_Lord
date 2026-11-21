@@ -13,12 +13,11 @@ public final class ObjectiveManager implements EventListener {
 
     public void add(Objective o){
         list.add(o);
-        wasComplete.add(false); // initialize
+        wasComplete.add(false);
     }
 
     public void attach(RuntimeContext ctx){
         for (Objective o : list) o.condition.attach(ctx);
-        // Prime states after attach
         for (int i = 0; i < list.size(); i++) {
             boolean now = list.get(i).condition.isTrue();
             wasComplete.set(i, now);
@@ -55,7 +54,6 @@ public final class ObjectiveManager implements EventListener {
     }
 
     private String completionText(Objective o) {
-        // e.g., "Objective complete: Reach the control room"
         return "Objective complete: " + (o.uiText != null ? o.uiText : o.id);
     }
 }

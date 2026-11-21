@@ -30,14 +30,12 @@ public class LevelSelectState implements IGameState {
 
         int choice = menu.update(win, dt);
         if (choice != -1) {
-            // Move the cursor to the chosen level
             game.levelManager.advanceToLevel(choice);
 
-            // If the player picked the FIRST level, treat it as a fresh run
             if (choice == 0) {
-                game.timers.startRun();  // reset cumulative run time
+                game.timers.startRun();
             }
-
+            game.player.getInventory().clear();
             game.changeState(new PlayingState(game));
         }
     }

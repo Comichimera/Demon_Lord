@@ -10,7 +10,6 @@ public class TextTexture {
     private final int textureId, width, height;
 
     public TextTexture(String text, Font font, int padX, int padY, Color color) {
-        // 1) Measure text
         String[] lines = text.split("\\r?\\n");
         BufferedImage tmp = new BufferedImage(1,1,BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = tmp.createGraphics();
@@ -23,7 +22,6 @@ public class TextTexture {
         width  = maxW + padX*2;
         height = lineH*lines.length + padY*2;
 
-        // 2) Paint text into image
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
         g.setFont(font);
@@ -41,7 +39,6 @@ public class TextTexture {
         }
         g.dispose();
 
-        // 3) Copy pixels into ByteBuffer
         ByteBuffer buf = BufferUtils.createByteBuffer(width*height*4);
         int[] pixels = img.getRGB(0,0,width,height,null,0,width);
         for (int p : pixels) {
@@ -52,7 +49,6 @@ public class TextTexture {
         }
         buf.flip();
 
-        // 4) Upload to OpenGL texture
         textureId = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, textureId);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height,

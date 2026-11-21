@@ -2,19 +2,26 @@ package game.world.enemy;
 
 import game.config.GameConfig;
 import game.map.MapData;
+import game.physics.CollisionHandler;
 
 public abstract class BaseEnemy {
 
     protected final String type;
 
-    protected float x;   // world X (meters)
-    protected float z;   // world Z (meters)
-    protected float yaw; // facing, degrees [0..360)
+    protected float x;
+    protected float z;
+    protected float yaw;
 
-    protected float speed = 1.5f;          // meters/sec (base move speed)
-    protected float fovDeg = 90.0f;        // field of view (for LOS helpers / sensors)
-    protected float viewDistTiles = 6.0f;  // vision distance in tiles (sensor consumes)
+    protected float speed = 1.5f;
+    protected float fovDeg = 90.0f;
+    protected float viewDistTiles = 6.0f;
     protected float captureRadiusMeters = 0.45f * GameConfig.TILE_SIZE;
+
+    protected int maxHp = 30;
+    protected int hp    = 30;
+    protected int attackDamage = 15;
+    protected float attackCooldown = 0f;
+    protected static final float ATTACK_RATE = 0.8f;
 
     protected BaseEnemy(String type) {
         this.type = type;
@@ -45,6 +52,27 @@ public abstract class BaseEnemy {
     public void setFovDeg(float fovDeg) { this.fovDeg = fovDeg; }
     public void setViewDistTiles(float tiles) { this.viewDistTiles = tiles; }
     public void setCaptureRadiusMeters(float r) { this.captureRadiusMeters = r; }
+
+    public int  getHp()           { return hp; }
+    public int  getMaxHp()        { return maxHp; }
+    public int  getAttackDamage() { return attackDamage; }
+    public boolean isAlive()      { return hp > 0; }
+
+    public void initHp(int max)          { this.maxHp = max; this.hp = max; }
+    public void setAttackDamage(int dmg) { this.attackDamage = dmg; }
+
+    public void takeDamage(int amount) {
+        hp = Math.max(0, hp - amount);
+    }
+
+    public boolean tryAttack(float dt) {
+        attackCooldown -= dt;
+        if (attackCooldown <= 0f) {
+            attackCooldown = ATTACK_RATE;
+            return true;
+        }
+        return false;
+    }
     protected void move(float dx, float dz, MapData map) {
         float newX = x + dx;
         float newZ = z + dz;
@@ -89,6 +117,6 @@ public abstract class BaseEnemy {
     }
 
     protected boolean isWalkable(MapData map, float worldX, float worldZ) {
-        return true;
+        return !CollisionHandler.isColliding(worldX, worldZ, map);
     }
 }

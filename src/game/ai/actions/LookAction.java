@@ -8,6 +8,7 @@ public final class LookAction implements Action {
     private enum Target { PLAYER, POINT }
     private final Target target;
     private final Vector2i point;
+    private final float duration;
     private float remaining;
 
     public static Action fromJson(JSONObject p) {
@@ -20,9 +21,9 @@ public final class LookAction implements Action {
         return new LookAction(Target.PLAYER, null, duration);
     }
 
-    private LookAction(Target t, Vector2i pt, float duration) { this.target = t; this.point = pt; this.remaining = duration; }
+    private LookAction(Target t, Vector2i pt, float duration) { this.target = t; this.point = pt; this.duration = duration; this.remaining = duration; }
 
-    @Override public void enter(AIAgent agent, Blackboard bb) { }
+    @Override public void enter(AIAgent agent, Blackboard bb) { this.remaining = duration; }
 
     @Override public Status tick(float dt, AIAgent agent, Blackboard bb) {
         Vector2i to = null;

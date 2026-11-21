@@ -18,7 +18,6 @@ public class OverlayRenderer {
     {
         int w = window.getWidth(), h = window.getHeight();
 
-        // Set up orthographic projection
         glMatrixMode(GL_PROJECTION);
         glPushMatrix(); glLoadIdentity();
         glOrtho(0, w, h, 0, -1, 1);
@@ -39,7 +38,6 @@ public class OverlayRenderer {
             glDisable(GL_BLEND);
         }
 
-        // Draw the text texture
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, tex.getId());
         glEnable(GL_BLEND);
@@ -57,7 +55,6 @@ public class OverlayRenderer {
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
 
-        // Restore matrices
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);

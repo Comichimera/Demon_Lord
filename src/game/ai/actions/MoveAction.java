@@ -24,7 +24,7 @@ public final class MoveAction implements Action {
         }
         String mode = p.optString("mode", "randomAdjacent");
         PathProvider prov = "patrolOrRandom".equals(mode)
-                ? new CompositeProvider(new PatrolOrRandom())
+                ? new PatrolOrRandom()
                 : new RandomAdjacentProvider();
         return new MoveAction(Mode.PATH_PROVIDER, spd, prov);
     }
@@ -43,48 +43,49 @@ public final class MoveAction implements Action {
                 return stepToward(agent, bb, bb.lastHeardNoiseCell.get());
             case PATH_PROVIDER:
             default:
-                if (bb.currentPath.isEmpty() || bb.currentPathIndex >= bb.currentPath.get().size()) {
+                if (bb.currentPath.isEmpty()) {
                     Optional<List<Vector2i>> np = provider.nextPath(agent, bb);
                     if (np.isEmpty()) return Status.FAILURE;
-                    bb.currentPath = np; bb.currentPathIndex = 0;
+                    bb.currentPath = np;
                 }
-                List<Vector2i> path = bb.currentPath.get();
-                Vector2i next = path.get(bb.currentPathIndex);
-                if (agent.getCell().equals(next)) {
-                    bb.currentPathIndex++;
-                    if (bb.currentPathIndex >= path.size()) { bb.clearPath(); return Status.SUCCESS; }
-                    next = path.get(bb.currentPathIndex);
+                List<Vector2i> stored = bb.currentPath.get();
+                Vector2i goal = stored.get(stored.size() - 1);
+                if (agent.getCell().equals(goal)) {
+                    bb.clearPath();
+                    return Status.SUCCESS;
                 }
-                agent.requestMoveTo(next, speedMul);
+                List<Vector2i> fresh = game.ai.path.AStar.findPath(agent.getCell(), goal, agent.world());
+                if (fresh.isEmpty()) {
+                    bb.clearPath();
+                    return Status.FAILURE;
+                }
+                agent.requestMoveTo(fresh.get(0), speedMul);
                 return Status.RUNNING;
         }
     }
 
     private Status stepToward(AIAgent agent, Blackboard bb, Vector2i target) {
-        java.util.List<Vector2i> ns = agent.world().neighbors4(agent.getCell());
-        ns.sort(java.util.Comparator.comparingDouble(n -> agent.world().heuristicCost(n, target)));
-        for (Vector2i n : ns) if (agent.world().isWalkable(n)) {
-            agent.requestMoveTo(n, speedMul);
-            return Status.RUNNING;
-        }
-        return Status.FAILURE;
+        if (agent.getCell().equals(target)) return Status.SUCCESS;
+        List<Vector2i> path = game.ai.path.AStar.findPath(agent.getCell(), target, agent.world());
+        if (path.isEmpty()) return Status.FAILURE;
+        agent.requestMoveTo(path.get(0), speedMul);
+        return Status.RUNNING;
     }
 
     private static final class PatrolOrRandom implements PathProvider {
-        private final PatrolProvider patrol;
+        private PatrolProvider patrol;
         private final RandomAdjacentProvider rand = new RandomAdjacentProvider();
-        PatrolOrRandom() { this.patrol = null; }
+
         @Override public Optional<List<Vector2i>> nextPath(AIAgent agent, Blackboard bb) {
+            if (patrol == null) {
+                List<Vector2i> waypoints = agent.world().patrolWaypoints();
+                if (!waypoints.isEmpty()) patrol = new PatrolProvider(waypoints);
+            }
             if (patrol != null) {
                 Optional<List<Vector2i>> p = patrol.nextPath(agent, bb);
                 if (p.isPresent()) return p;
             }
             return rand.nextPath(agent, bb);
         }
-    }
-    private static final class CompositeProvider implements PathProvider {
-        private final PathProvider p;
-        CompositeProvider(PathProvider p) { this.p = p; }
-        @Override public Optional<List<Vector2i>> nextPath(AIAgent agent, Blackboard bb) { return p.nextPath(agent, bb); }
     }
 }

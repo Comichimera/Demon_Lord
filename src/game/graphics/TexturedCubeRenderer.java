@@ -17,7 +17,6 @@ public class TexturedCubeRenderer {
     private ShaderProgram shaderProgram;
     private FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 
-    // Cube dimensions: the cube will span from -halfSize to +halfSize in x and z, and from 0 to roomHeight in y.
     private final float halfSize;
     private final float roomHeight;
 
@@ -49,13 +48,9 @@ public class TexturedCubeRenderer {
     }
 
     private void generateCubeGeometry() {
-        // We define a cube with 6 faces.
-        // For each face, we define two triangles.
-        // Vertex format: x, y, z, u, v.
         float hs = halfSize;
         float h = roomHeight;
         float[] vertices = {
-                // Front face (z = +hs)
                 -hs,  h,  hs,   0, 0,
                 hs,   h,  hs,   1, 0,
                 hs,   0,  hs,   1, 1,
@@ -63,7 +58,6 @@ public class TexturedCubeRenderer {
                 hs,   0,  hs,   1, 1,
                 -hs,  0,  hs,   0, 1,
 
-                // Back face (z = -hs) – interior ordering for consistency.
                 hs,   h, -hs,   0, 0,
                 -hs,  h, -hs,   1, 0,
                 -hs,  0, -hs,   1, 1,
@@ -71,7 +65,6 @@ public class TexturedCubeRenderer {
                 -hs,  0, -hs,   1, 1,
                 hs,   0, -hs,   0, 1,
 
-                // Left face (x = -hs)
                 -hs,  h, -hs,   0, 0,
                 -hs,  h,  hs,   1, 0,
                 -hs,  0,  hs,   1, 1,
@@ -79,7 +72,6 @@ public class TexturedCubeRenderer {
                 -hs,  0,  hs,   1, 1,
                 -hs,  0, -hs,   0, 1,
 
-                // Right face (x = +hs)
                 hs,   h,  hs,   0, 0,
                 hs,   h, -hs,   1, 0,
                 hs,   0, -hs,   1, 1,
@@ -87,7 +79,6 @@ public class TexturedCubeRenderer {
                 hs,   0, -hs,   1, 1,
                 hs,   0,  hs,   0, 1,
 
-                // Top face (y = h)
                 -hs,  h, -hs,   0, 1,
                 hs,   h, -hs,   1, 1,
                 hs,   h,  hs,   1, 0,
@@ -95,7 +86,6 @@ public class TexturedCubeRenderer {
                 hs,   h,  hs,   1, 0,
                 -hs,  h,  hs,   0, 0,
 
-                // Bottom face (y = 0)
                 -hs, 0,  hs,    0, 1,
                 hs,  0,  hs,    1, 1,
                 hs,  0, -hs,    1, 0,

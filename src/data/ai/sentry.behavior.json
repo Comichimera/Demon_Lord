@@ -5,25 +5,23 @@
       {
         "type": "sequence",
         "children": [
-          {"type":"condition","name":"playerVisible","params":{"recentSeconds":0.15}},
-          {"type":"action","name":"look","params":{"target":"player","duration":0.6}},
-          {"type":"action","name":"move","params":{"toward":"lastSeenPlayer","speed":1.15}}
+          {"type": "condition", "name": "suspicionAbove", "params": {"threshold": 0.85}},
+          {"type": "action", "name": "scan", "params": {"duration": 1.0, "rotate": true, "mode": "oscillate", "deg_per_sec": 150, "sweep_deg": 90, "random_start": false}},
+          {"type": "action", "name": "move", "params": {"toward": "lastSeenPlayer", "speed": 1.15}}
         ]
       },
       {
         "type": "sequence",
         "children": [
-          {"type":"condition","name":"heardNoiseWithin","params":{"radius":8,"recentSeconds":3.0}},
-          {"type":"action","name":"listen","params":{"duration":1.0}},
-          {"type":"action","name":"move","params":{"toward":"lastHeardNoise","speed":1.0}}
+          {"type": "condition", "name": "suspicionAbove", "params": {"threshold": 0.25}},
+          {"type": "action", "name": "scan", "params": {"duration": 2.0, "rotate": true, "mode": "oscillate", "deg_per_sec": 60, "sweep_deg": 150, "random_start": true}}
         ]
       },
       {
         "type": "sequence",
-        "name": "idle_spin",
         "children": [
-          {"type":"action","name":"scan","params":{"duration":2.5,"rotate":true,"mode":"spin","deg_per_sec":180,"random_start":false}},
-          {"type":"wait","seconds":0.25}
+          {"type": "action", "name": "scan", "params": {"duration": 2.5, "rotate": true, "mode": "spin", "deg_per_sec": 180, "random_start": false}},
+          {"type": "wait", "seconds": 0.25}
         ]
       }
     ]

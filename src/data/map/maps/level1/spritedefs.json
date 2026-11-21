@@ -14,5 +14,15 @@
     "side_right": "/data/assets/sprites/zombie-sideright.png",
     "back":  "/data/assets/sprites/zombie-back-2.png",
     "scale": { "width": 1, "height": 1 }
+  },
+  "demon": {
+    "front": { "sheet": "/data/assets/sprites/damon_front_sheet.png", "cols": 4, "rows": 1, "fps": 10 },
+    "side":  { "sheet": "/data/assets/sprites/damon_front_sheet.png",  "cols": 4, "rows": 1, "fps": 10 },
+    "back":  { "sheet": "/data/assets/sprites/damon_front_sheet.png",  "cols": 4, "rows": 1, "fps": 10 },
+
+    "scale": { "width": 1, "height": 1 },
+
+    "hover_tiles": 0.25,
+    "bob": { "amp_tiles": 0.30, "hz": 5 }
   }
 }

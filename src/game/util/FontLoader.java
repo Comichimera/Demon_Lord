@@ -16,7 +16,6 @@ public class FontLoader {
             return font.deriveFont(Font.PLAIN, size);
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
-            // Fallback to a default monospaced font if something goes wrong.
             return new Font("Monospaced", Font.PLAIN, (int) size);
         }
     }

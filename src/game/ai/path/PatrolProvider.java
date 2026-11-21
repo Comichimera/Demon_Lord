@@ -13,6 +13,7 @@ public final class PatrolProvider implements PathProvider {
         if (waypoints.isEmpty()) return Optional.empty();
         Vector2i target = waypoints.get(idx);
         idx = (idx + 1) % waypoints.size();
-        return Optional.of(java.util.List.of(new Vector2i(target)));
+        if (agent.getCell().equals(target)) return Optional.empty();
+        return Optional.of(List.of(new Vector2i(target)));
     }
 }

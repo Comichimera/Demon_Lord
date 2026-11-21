@@ -15,7 +15,7 @@ public final class Sequence implements Node {
             Action.Status s = child.tick(dt, agent, bb);
             if (s == Action.Status.RUNNING) return s;
             if (s == Action.Status.FAILURE) { index = 0; return s; }
-            index++; // SUCCESS → advance
+            index++;
         }
         index = 0;
         return Action.Status.SUCCESS;

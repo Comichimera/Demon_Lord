@@ -16,10 +16,9 @@ public class PlayerDefeatedState implements IGameState {
     private float elapsedSeconds = 0f;
     private boolean enterPressed = false;
 
-    // Animation tuning
-    private static final float START_SCALE   = 0.9f;  // starting size
-    private static final float END_SCALE     = 1.2f;  // final size
-    private static final float GROW_DURATION = 1.5f;  // seconds
+    private static final float START_SCALE   = 0.9f;
+    private static final float END_SCALE     = 1.2f;
+    private static final float GROW_DURATION = 1.5f;
 
     public PlayerDefeatedState(Game game) {
         this.game = game;
@@ -27,7 +26,7 @@ public class PlayerDefeatedState implements IGameState {
 
     @Override
     public void enter() {
-        Font font = FontLoader.loadFont("/fonts/RubikMonoOne.ttf", 72f);
+        Font font = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 72f);
 
         youDiedTexture = new TextTexture(
                 "YOU DIEDED",
@@ -50,7 +49,8 @@ public class PlayerDefeatedState implements IGameState {
         if (state == GLFW_PRESS && !enterPressed) {
             enterPressed = true;
 
-            // Restart the current level
+            game.player.getInventory().clear();
+
             game.changeState(new PlayingState(game));
         } else if (state == GLFW_RELEASE) {
             enterPressed = false;

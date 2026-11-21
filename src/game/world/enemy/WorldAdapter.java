@@ -5,6 +5,7 @@ import game.config.GameConfig;
 import game.map.MapData;
 import game.world.Player;
 import org.joml.Vector2i;
+import game.map.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,29 +29,80 @@ public final class WorldAdapter implements WorldAPI {
 
     @Override
     public boolean isWalkable(Vector2i c) {
-        return inBounds(c.x, c.y);
+        if (!inBounds(c.x, c.y)) return false;
+        return map.getTile(c.y, c.x).isWalkable();
     }
 
     @Override
     public boolean hasLineOfSight(Vector2i from, Vector2i to) {
-        int x0 = from.x, y0 = from.y;
-        int x1 = to.x,   y1 = to.y;
+        if (from == null || to == null) return false;
+        if (!inBounds(from.x, from.y) || !inBounds(to.x, to.y)) return false;
+        if (from.x == to.x && from.y == to.y) return true;
 
-        int dx = Math.abs(x1 - x0);
-        int sx = x0 < x1 ? 1 : -1;
-        int dy = -Math.abs(y1 - y0);
-        int sy = y0 < y1 ? 1 : -1;
-        int err = dx + dy;
+        float x0 = from.x + 0.5f;
+        float y0 = from.y + 0.5f;
+        float x1 = to.x   + 0.5f;
+        float y1 = to.y   + 0.5f;
 
-        int x = x0, y = y0;
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+
+        int stepX = (dx > 0) ? 1 : (dx < 0) ? -1 : 0;
+        int stepY = (dy > 0) ? 1 : (dy < 0) ? -1 : 0;
+
+        float absDx = Math.abs(dx);
+        float absDy = Math.abs(dy);
+
+        float tDeltaX = (stepX == 0) ? Float.POSITIVE_INFINITY : (1f / absDx);
+        float tDeltaY = (stepY == 0) ? Float.POSITIVE_INFINITY : (1f / absDy);
+
+        int x = from.x;
+        int y = from.y;
+
+        float nextBoundaryX = (stepX > 0) ? (x + 1) : x;
+        float nextBoundaryY = (stepY > 0) ? (y + 1) : y;
+
+        float tMaxX = (stepX == 0) ? Float.POSITIVE_INFINITY : (Math.abs(nextBoundaryX - x0) / absDx);
+        float tMaxY = (stepY == 0) ? Float.POSITIVE_INFINITY : (Math.abs(nextBoundaryY - y0) / absDy);
+
         while (true) {
+            if (x == to.x && y == to.y) return true;
+
+            if (tMaxX < tMaxY) {
+                x += stepX;
+                tMaxX += tDeltaX;
+            } else if (tMaxY < tMaxX) {
+                y += stepY;
+                tMaxY += tDeltaY;
+            } else {
+                int nx = x + stepX;
+                int ny = y + stepY;
+
+                if (blocksSight(nx, y) || blocksSight(x, ny)) return false;
+
+                x = nx;
+                y = ny;
+                tMaxX += tDeltaX;
+                tMaxY += tDeltaY;
+            }
+
             if (!inBounds(x, y)) return false;
-            if (x == x1 && y == y1) break;
-            int e2 = 2 * err;
-            if (e2 >= dy) { err += dy; x += sx; }
-            if (e2 <= dx) { err += dx; y += sy; }
+
+            if (x != to.x || y != to.y) {
+                if (blocksSight(x, y)) return false;
+            }
         }
-        return true;
+    }
+
+    private boolean blocksSight(int tx, int ty) {
+        if (!inBounds(tx, ty)) return true;
+
+        Tile t = map.getTile(ty, tx);
+        if (t == null) return true;
+
+        if (t.isOpenable()) return !t.isOpen();
+
+        return !t.isWalkable();
     }
 
     @Override
@@ -66,7 +118,6 @@ public final class WorldAdapter implements WorldAPI {
 
     @Override
     public float heuristicCost(Vector2i a, Vector2i b) {
-        // Manhattan works well on 4-connected grids
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
 
@@ -82,12 +133,14 @@ public final class WorldAdapter implements WorldAPI {
 
     @Override
     public Vector2i lastNoiseCell() {
-        return lastNoiseCell; // may be null
+        return lastNoiseCell;
     }
+    @Override
+    public List<Vector2i> patrolWaypoints() { return patrol; }
+
     public void accumulateTime(float dt) { timeSeconds += dt; }
     public void onNoise(Vector2i cell) { this.lastNoiseCell = new Vector2i(cell); }
     public void setPatrol(List<Vector2i> patrol) { this.patrol = List.copyOf(patrol); }
-    public List<Vector2i> getPatrol() { return patrol; }
 
     private void tryAdd(List<Vector2i> out, int tx, int ty) {
         if (inBounds(tx, ty)) out.add(new Vector2i(tx, ty));

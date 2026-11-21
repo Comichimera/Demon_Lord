@@ -5,6 +5,8 @@ import game.util.FontLoader;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -14,25 +16,40 @@ import org.lwjgl.BufferUtils;
 
 public class MenuOverlay {
     private final OverlayRenderer renderer;
+    private final Window window;
     private final Font font;
     private final List<String> items;
     private int selected = 0;
     private TextTexture tex;
     private String lastText = "";
+    private final TextTexture creditsTex;
 
     private boolean upPressed = false, downPressed = false, enterPressed = false;
 
     public MenuOverlay(Window window, List<String> items) {
         this.renderer = new OverlayRenderer(window);
+        this.window   = window;
         this.font     = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 24f);
         this.items    = items;
+        this.creditsTex = loadCredits();
         rebuild();
+    }
+
+    private TextTexture loadCredits() {
+        try (InputStream is = MenuOverlay.class.getResourceAsStream("/data/credits.txt")) {
+            if (is == null) return null;
+            String text = new String(is.readAllBytes(), StandardCharsets.UTF_8).strip();
+            Font creditsFont = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 14f);
+            return new TextTexture(text, creditsFont, 6, 4, new Color(1f, 1f, 1f, 0.6f));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public int update(long windowHandle, float deltaTime) {
         int prev = selected;
 
-        // UP arrow debounce
         if (glfwGetKey(windowHandle, GLFW_KEY_UP) == GLFW_PRESS && !upPressed) {
             upPressed = true;
             selected = (selected + items.size() - 1) % items.size();
@@ -41,7 +58,6 @@ public class MenuOverlay {
             upPressed = false;
         }
 
-        // DOWN arrow debounce
         if (glfwGetKey(windowHandle, GLFW_KEY_DOWN) == GLFW_PRESS && !downPressed) {
             downPressed = true;
             selected = (selected + 1) % items.size();
@@ -56,10 +72,10 @@ public class MenuOverlay {
 
         if (glfwGetKey(windowHandle, GLFW_KEY_ENTER) == GLFW_PRESS && !enterPressed) {
             enterPressed = true;
-            return selected;          // only fires once per press
+            return selected;
         }
         if (glfwGetKey(windowHandle, GLFW_KEY_ENTER) == GLFW_RELEASE) {
-            enterPressed = false;     // reset so the next press can fire again
+            enterPressed = false;
         }
 
         return -1;
@@ -87,9 +103,15 @@ public class MenuOverlay {
 
     public void render() {
         renderer.render(tex, 20, 20, true, 0.75f, 0f, 0f, 0f);
+        if (creditsTex != null) {
+            int x = window.getWidth() - creditsTex.getWidth() - 10;
+            int y = window.getHeight() - creditsTex.getHeight() - 10;
+            renderer.render(creditsTex, x, y, false, 0f, 0f, 0f, 0f);
+        }
     }
 
     public void cleanup() {
         if (tex != null) tex.cleanup();
+        if (creditsTex != null) creditsTex.cleanup();
     }
 }

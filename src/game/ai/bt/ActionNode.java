@@ -14,4 +14,8 @@ public final class ActionNode implements Node {
         if (s != Action.Status.RUNNING) { action.exit(agent, bb); entered = false; }
         return s;
     }
+
+    @Override public void onExit(AIAgent agent, Blackboard bb) {
+        if (entered) { action.exit(agent, bb); entered = false; }
+    }
 }

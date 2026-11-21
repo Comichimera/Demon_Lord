@@ -1,0 +1,28 @@
+[
+  {
+    "id": "key",
+    "name": "Key",
+    "description": "Opens certain locked doors",
+    "icon": "/data/assets/items/key-2.png",
+    "stackable": false,
+    "maxStack": 1
+  },
+  {
+    "id": "bandage",
+    "name": "Bandage",
+    "description": "Bandages cuts",
+    "icon": "/data/assets/items/bandage.png",
+    "stackable": true,
+    "maxStack": 5,
+    "effects": [{ "type": "heal", "amount": 30 }]
+  },
+  {
+    "id": "splint",
+    "name": "Splint",
+    "description": "Stabilises a broken limb",
+    "icon": "/data/assets/items/splint2.png",
+    "stackable": true,
+    "maxStack": 3,
+    "effects": [{ "type": "treat_injury", "amount": 30 }]
+  }
+]

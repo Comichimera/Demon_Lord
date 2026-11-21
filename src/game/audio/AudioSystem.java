@@ -22,7 +22,7 @@ public final class AudioSystem {
     private static final Map<String, SoundDef>    SFX     = new HashMap<>();
     private static final Map<String, MusicDef>    MUSIC   = new HashMap<>();
 
-    private static int musicSource = 0; // looped-music
+    private static int musicSource = 0;
     private static int musicBuffer = 0;
 
     public static boolean init() {
@@ -36,7 +36,6 @@ public final class AudioSystem {
 
         if (ok) {
             AudioSystemData.loadFromJson("/data/audio/sounds.json", SFX, MUSIC);
-            // Preload SFX into OpenAL buffers:
             for (var e : SFX.entrySet()) {
                 BUFFERS.put(e.getKey(), SoundBuffer.load(e.getValue().path));
             }
@@ -58,7 +57,6 @@ public final class AudioSystem {
     }
 
     public static void update(float dt) {
-        // placeholder
     }
 
     public static void setListener(float x, float y, float z, float yawDegrees) {

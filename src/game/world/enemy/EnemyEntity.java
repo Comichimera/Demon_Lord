@@ -20,8 +20,8 @@ import java.util.Random;
 public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {
     private final BehaviorController ai;
     private final Random rng;
-    private final WorldAdapter world;     // wraps MapData+Player+EventBus
-    private final String spriteKey;       // used by EnemySpriteRenderer cache
+    private final WorldAdapter world;
+    private final String spriteKey;
 
     private Vector2i moveIntentCell = null;
     private float moveSpeedMul = 1f;
@@ -46,18 +46,26 @@ public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {
 
         List<Sensor> sensors = List.of(
                 new VisionSensor(fovDeg, viewTiles),
-                new HearingSensor(3.0f)
+                new HearingSensor(3.0f),
+                new game.ai.sensors.SuspicionSensor()
         );
 
         this.ai = BehaviorController.fromJsonResource(behaviorJson, sensors, 10f);
 
-        world.setPatrol(patrol); // used by PathProvider if needed
+        world.setPatrol(patrol);
     }
 
     @Override public void update(float dt, MapData map, Player player, EventBus events) {
         world.accumulateTime(dt);
         ai.tick(dt, this);
-        // Apply movement intent
+
+        if (moveIntentCell == null && aimTarget != null) {
+            float cx = (aimTarget.x + 0.5f) * game.config.GameConfig.TILE_SIZE;
+            float cz = (aimTarget.y + 0.5f) * game.config.GameConfig.TILE_SIZE;
+            faceToward(cx, cz);
+        }
+        aimTarget = null;
+
         if (moveIntentCell != null) {
             float cx = (moveIntentCell.x + 0.5f) * game.config.GameConfig.TILE_SIZE;
             float cz = (moveIntentCell.y + 0.5f) * game.config.GameConfig.TILE_SIZE;
@@ -68,13 +76,13 @@ public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {
                 move(nx * speed * moveSpeedMul * dt, nz * speed * moveSpeedMul * dt, map);
                 faceToward(cx, cz);
             } else {
-                moveIntentCell = null; // reached
+                moveIntentCell = null;
             }
         }
     }
 
     @Override public boolean canSeePlayer(MapData map, Player player) {
-        float recent = 0.2f; // seconds
+        float recent = 0.2f;
         return ai.bb().lastSeenPlayerCell.isPresent() && ai.bb().timeSinceSeenPlayer <= recent;
     }
     @Override public org.joml.Vector2i getCell() {
@@ -90,7 +98,9 @@ public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {
     @Override public Random rng() { return rng; }
     @Override public WorldAPI world() { return world; }
 
-    @Override public String getType() { return spriteKey; } // drives sprite set
+    @Override public String getType() { return spriteKey; }
+
+    @Override public float getYawDeg() { return getYaw(); }
 
     @Override
     public float getY() { return 0f; }

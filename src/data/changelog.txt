@@ -1,0 +1,5 @@
+pre-alpha 0.9.5
+
+Changed:
+
+Json-centered item registery, replacing hardcoded

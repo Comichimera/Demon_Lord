@@ -20,7 +20,7 @@ public class TileDefinitionLoader {
 
         JSONObject root = new JSONObject(new JSONTokener(new InputStreamReader(in)));
         for (String key : root.keySet()) {
-            if (key.length() != 1) continue;  // skip invalid keys
+            if (key.length() != 1) continue;
             char id = key.charAt(0);
             JSONObject obj = root.getJSONObject(key);
 
@@ -43,14 +43,13 @@ public class TileDefinitionLoader {
     }
 
     public static void loadAndMergeMapDefinitions(String mapJsonPath) {
-        // compute the directory containing the map
         int slash = mapJsonPath.lastIndexOf('/');
         if (slash < 0) return;
         String dir = mapJsonPath.substring(0, slash);
         String overridePath = dir + "/tiledefs.json";
 
         InputStream in = TileDefinitionLoader.class.getResourceAsStream(overridePath);
-        if (in == null) return;  // no per-map defs
+        if (in == null) return;
 
         JSONObject root = new JSONObject(new JSONTokener(new InputStreamReader(in)));
         for (String key : root.keySet()) {

@@ -1,4 +1,3 @@
-// game/logic/GameEvent.java
 package game.logic;
 public final class GameEvent {
     public final GameEventType type;

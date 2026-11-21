@@ -25,8 +25,10 @@ public class TexturedQuadRenderer {
                 "uniform mat4 projection;\n" +
                 "uniform mat4 view;\n" +
                 "uniform mat4 model;\n" +
+                "uniform vec2 uvOffset;\n" +
+                "uniform vec2 uvScale;\n" +
                 "void main() {\n" +
-                "    passTexCoord = texCoord;\n" +
+                "    passTexCoord = texCoord * uvScale + uvOffset;\n" +
                 "    gl_Position = projection * view * model * vec4(position, 1.0);\n" +
                 "}";
         String fragmentShaderSource = "#version 330 core\n" +
@@ -38,7 +40,6 @@ public class TexturedQuadRenderer {
                 "}";
         shaderProgram = new ShaderProgram(vertexShaderSource, fragmentShaderSource);
 
-        // Create a quad centered at the origin.
         float hw = width / 2.0f;
         float hh = height / 2.0f;
         float[] vertices = {
@@ -65,23 +66,42 @@ public class TexturedQuadRenderer {
     }
 
     public void render(Matrix4f projection, Matrix4f view, Matrix4f model) {
+        render(projection, view, model, 0f, 0f, 1f, 1f);
+    }
+
+    public void render(Matrix4f projection, Matrix4f view, Matrix4f model,
+                       float uvOffX, float uvOffY, float uvScaleX, float uvScaleY) {
+
         shaderProgram.use();
+
         int projLocation = shaderProgram.getUniformLocation("projection");
         projection.get(matrixBuffer);
         glUniformMatrix4fv(projLocation, false, matrixBuffer);
+
         int viewLocation = shaderProgram.getUniformLocation("view");
         view.get(matrixBuffer);
         glUniformMatrix4fv(viewLocation, false, matrixBuffer);
+
         int modelLocation = shaderProgram.getUniformLocation("model");
         model.get(matrixBuffer);
         glUniformMatrix4fv(modelLocation, false, matrixBuffer);
+
+        int uvOffsetLoc = shaderProgram.getUniformLocation("uvOffset");
+        glUniform2f(uvOffsetLoc, uvOffX, uvOffY);
+
+        int uvScaleLoc = shaderProgram.getUniformLocation("uvScale");
+        glUniform2f(uvScaleLoc, uvScaleX, uvScaleY);
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureId);
+
         int samplerLocation = shaderProgram.getUniformLocation("quadTexture");
         glUniform1i(samplerLocation, 0);
+
         glBindVertexArray(vaoId);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         glBindVertexArray(0);
+
         shaderProgram.stop();
     }
 

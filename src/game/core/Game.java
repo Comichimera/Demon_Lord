@@ -48,8 +48,8 @@ public class Game {
         currentState.enter();
 
         long win = window.getWindowHandle();
-        InputEdge.onStateEnter(win);  // edge detector gate
-        InputGate.arm();              // simple global “ignore until keys released”
+        InputEdge.onStateEnter(win);
+        InputGate.arm();
     }
     public void run() {
         init();
@@ -57,7 +57,8 @@ public class Game {
         cleanup();
     }
     private void init() {
-        window       = new Window(800, 600, "pre alpha");
+        window       = new Window(800, 600, "Demon_Lord Pre Alpha");
+
         levelManager = new LevelManager("/data/map/levels.json");
         versionOverlay = new VersionOverlay(window, game.core.GameData.getVersion());
 
@@ -65,7 +66,6 @@ public class Game {
             System.err.println("Audio init failed; continuing without sound.");
         }
 
-        // Initialize tile definitions
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
         TileRegistry.initialize(baseDefs);
 
@@ -111,12 +111,12 @@ public class Game {
             System.exit(-1);
         }
 
-        // Reset player position based on map config
         float ts = GameConfig.TILE_SIZE;
         int sx = mapData.getPlayerSpawnX();
         int sy = mapData.getPlayerSpawnY();
         player.setPosition(sx * ts + ts / 2f, sy * ts + ts / 2f);
         player.setYaw(mapData.getCameraYaw());
+        player.resetHealth();
     }
     private void render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

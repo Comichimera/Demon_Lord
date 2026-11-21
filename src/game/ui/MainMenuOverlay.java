@@ -84,7 +84,6 @@ public class MainMenuOverlay {
     }
 
     public void render() {
-        // Set up an orthographic projection for a full-screen overlay.
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
@@ -102,7 +101,6 @@ public class MainMenuOverlay {
         glVertex2f(0, 600);
         glEnd();
 
-        // Draw the menu text centered.
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, textureId);
         glEnable(GL_BLEND);

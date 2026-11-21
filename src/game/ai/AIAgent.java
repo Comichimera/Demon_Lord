@@ -10,6 +10,10 @@ public interface AIAgent {
 
     void aimAt(Vector2i cell);
 
+    float getYawDeg();
+
+    void faceToward(float worldX, float worldZ);
+
     Random rng();
 
     WorldAPI world();

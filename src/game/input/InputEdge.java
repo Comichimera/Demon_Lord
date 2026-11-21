@@ -8,12 +8,11 @@ public final class InputEdge {
             GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_W, GLFW_KEY_S
     };
 
-    private static boolean gate = false;                 // ignore until released after a state switch
+    private static boolean gate = false;
     private static final boolean[] prev = new boolean[GLFW_KEY_LAST + 1];
 
     public static void onStateEnter(long window) {
         gate = true;
-        // snapshot current states so nothing edges until a clean release
         for (int k : UI_KEYS) prev[k] = glfwGetKey(window, k) == GLFW_PRESS;
     }
 
@@ -22,7 +21,6 @@ public final class InputEdge {
         boolean once = now && !prev[key] && !gate;
         prev[key] = now;
 
-        // auto-disarm the gate once ALL UI keys are released
         if (gate) {
             boolean anyDown = false;
             for (int k : UI_KEYS) {

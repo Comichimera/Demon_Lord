@@ -45,7 +45,6 @@ public final class AchievementsManager {
     public void printStartupSummary() {
         System.out.println("=== Achievements at startup ===");
         for (Achievement a : list()) {
-            // ✓ for unlocked, ✗ for locked
             System.out.printf("%s  %-18s  %-28s  %s%n",
                     a.unlocked ? "✓" : "✗",
                     a.id,

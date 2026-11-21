@@ -16,7 +16,6 @@ public class LevelCompleteState implements IGameState {
 
     @Override
     public void enter() {
-        // Commit the level exactly once on entering this state.
         game.timers.completeLevel();
 
         String lvlTime = TimerService.mmss(game.timers.levelSeconds());
@@ -42,7 +41,7 @@ public class LevelCompleteState implements IGameState {
             enterPressed = true;
 
             if (game.levelManager.advanceToNextLevel()) {
-                game.changeState(new PlayingState(game)); // PlayingState.enter() will startLevel()
+                game.changeState(new PlayingState(game));
             } else {
                 game.changeState(new MainMenuState(game));
             }

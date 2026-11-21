@@ -14,11 +14,16 @@ import java.util.List;
 import game.map.TileRegistry;
 import game.map.TileDefinition;
 import game.map.TileDefinitionLoader;
+import game.inventory.ItemRegistry;
+import game.inventory.ItemDefinitionLoader;
 
 public class MapLoader {
     public static MapData loadMap(String path) {
         TileRegistry.reset();
         TileDefinitionLoader.loadAndMergeMapDefinitions(path);
+        ItemRegistry.reset();
+        ItemDefinitionLoader.loadGlobal();
+        ItemDefinitionLoader.loadAndMergeLevel(path);
 
         try (InputStream is = MapLoader.class.getResourceAsStream(path)) {
             if (is == null) throw new RuntimeException("Map file not found: " + path);
@@ -30,7 +35,6 @@ public class MapLoader {
 
             JSONObject json = new JSONObject(sb.toString());
 
-            // Build raw Tile grid from layout
             JSONArray layoutArr = json.getJSONArray("layout");
             int rows = layoutArr.length();
             int cols = layoutArr.getJSONArray(0).length();
@@ -44,7 +48,6 @@ public class MapLoader {
                 }
             }
 
-            // Apply per-type overrides
             if (json.has("per-type")) {
                 JSONObject typeSection = json.getJSONObject("per-type").getJSONObject("overrides");
                 for (String typeKey : typeSection.keySet()) {
@@ -64,7 +67,6 @@ public class MapLoader {
                 }
             }
 
-            // Apply per-tile overrides
             if (json.has("per-tile")) {
                 JSONArray perTileArr = json.getJSONObject("per-tile").getJSONArray("overrides");
                 for (int i = 0; i < perTileArr.length(); i++) {
@@ -76,7 +78,6 @@ public class MapLoader {
                 }
             }
 
-            // Parse player spawn & camera yaw
             JSONObject playerObj = json.getJSONObject("player");
             int spawnX = playerObj.getJSONObject("spawn").getInt("x");
             int spawnY = playerObj.getJSONObject("spawn").getInt("y");
@@ -90,6 +91,25 @@ public class MapLoader {
                 }
             }
 
+            if (json.has("items")) {
+                JSONArray items = json.getJSONArray("items");
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject obj = items.getJSONObject(i);
+
+                    int x = obj.getInt("x");
+                    int y = obj.getInt("y");
+                    String itemId = obj.getString("id");
+
+                    if (y >= 0 && y < tiles.length && x >= 0 && x < tiles[0].length) {
+                        Tile t = tiles[y][x];
+                        t.setItem(itemId);
+                    } else {
+                        System.err.println("Item placement out of bounds in " + path
+                                + " at x=" + x + ", y=" + y + " for id=" + itemId);
+                    }
+                }
+            }
+
             List<JSONObject> enemySpecs = Collections.emptyList();
             if (json.has("enemies")) {
                 JSONArray arr = json.getJSONArray("enemies");
@@ -99,7 +119,6 @@ public class MapLoader {
                 }
             }
 
-            // Return the assembled MapData
             return new MapData(tiles, spawnX, spawnY, yaw, objectiveSpecs, enemySpecs, path);
 
         } catch (Exception e) {
