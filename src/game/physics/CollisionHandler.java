@@ -9,8 +9,8 @@ public class CollisionHandler {
     public static final float MARGIN    = 0.25f;
 
     public static boolean isColliding(float x, float z, MapData mapData) {
-        int col = (int)(x / TILE_SIZE);
-        int row = (int)(z / TILE_SIZE);
+        int col = (int) Math.floor(x / TILE_SIZE);
+        int row = (int) Math.floor(z / TILE_SIZE);
 
         if (row < 0 || row >= mapData.getHeight() ||
                 col < 0 || col >= mapData.getWidth()) {
