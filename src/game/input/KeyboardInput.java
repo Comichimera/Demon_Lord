@@ -2,6 +2,7 @@ package game.input;
 
 import game.map.MapData;
 import game.world.Player;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyboardInput {

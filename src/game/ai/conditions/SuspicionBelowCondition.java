@@ -1,6 +1,8 @@
 package game.ai.conditions;
 
-import game.ai.*;
+import game.ai.AIAgent;
+import game.ai.AICondition;
+import game.ai.Blackboard;
 import org.json.JSONObject;
 
 public final class SuspicionBelowCondition implements AICondition {

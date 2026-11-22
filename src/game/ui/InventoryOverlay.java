@@ -5,8 +5,7 @@ import game.inventory.Inventory;
 import game.inventory.InventoryEntry;
 import game.util.FontLoader;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

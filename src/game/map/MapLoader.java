@@ -1,21 +1,16 @@
 package game.map;
 
+import game.inventory.ItemDefinitionLoader;
+import game.inventory.ItemRegistry;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import game.map.TileRegistry;
-import game.map.TileDefinition;
-import game.map.TileDefinitionLoader;
-import game.inventory.ItemRegistry;
-import game.inventory.ItemDefinitionLoader;
 
 public class MapLoader {
     public static MapData loadMap(String path) {

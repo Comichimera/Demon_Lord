@@ -10,8 +10,7 @@ import game.util.FontLoader;
 import game.world.Player;
 import game.world.enemy.EnemyManager;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 public class DebugOverlay {
     private static final Color COLOR = new Color(0f, 1f, 0f, 1f);

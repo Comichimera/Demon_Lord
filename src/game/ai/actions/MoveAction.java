@@ -1,10 +1,16 @@
 package game.ai.actions;
 
-import java.util.*;
-import org.json.JSONObject;
+import game.ai.AIAgent;
+import game.ai.Action;
+import game.ai.Blackboard;
+import game.ai.path.PathProvider;
+import game.ai.path.PatrolProvider;
+import game.ai.path.RandomAdjacentProvider;
 import org.joml.Vector2i;
-import game.ai.*;
-import game.ai.path.*;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Optional;
 
 public final class MoveAction implements Action {
     public enum Mode { PATH_PROVIDER, TOWARD_LAST_SEEN, TOWARD_LAST_HEARD }

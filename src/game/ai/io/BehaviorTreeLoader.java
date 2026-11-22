@@ -1,13 +1,25 @@
 package game.ai.io;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import org.json.*;
-import game.ai.*;
+import game.ai.AICondition;
+import game.ai.Action;
+import game.ai.ActionRegistry;
+import game.ai.ConditionRegistry;
+import game.ai.actions.ListenAction;
+import game.ai.actions.LookAction;
+import game.ai.actions.MoveAction;
+import game.ai.actions.ScanAction;
 import game.ai.bt.*;
-import game.ai.actions.*;
-import game.ai.conditions.*;
+import game.ai.conditions.HeardNoiseWithinCondition;
+import game.ai.conditions.PlayerVisibleCondition;
+import game.ai.conditions.SuspicionAboveCondition;
+import game.ai.conditions.SuspicionBelowCondition;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public final class BehaviorTreeLoader {
 

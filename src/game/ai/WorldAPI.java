@@ -1,7 +1,8 @@
 package game.ai;
 
-import java.util.List;
 import org.joml.Vector2i;
+
+import java.util.List;
 
 public interface WorldAPI {
     boolean isWalkable(Vector2i cell);

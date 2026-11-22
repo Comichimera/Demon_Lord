@@ -1,9 +1,11 @@
 package game.ui;
 
+import org.lwjgl.BufferUtils;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
-import org.lwjgl.BufferUtils;
+
 import static org.lwjgl.opengl.GL11.*;
 
 public class TextTexture {

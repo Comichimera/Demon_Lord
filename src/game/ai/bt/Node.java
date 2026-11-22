@@ -1,6 +1,8 @@
 package game.ai.bt;
 
-import game.ai.*;
+import game.ai.AIAgent;
+import game.ai.Action;
+import game.ai.Blackboard;
 
 public interface Node {
     Action.Status tick(float dt, AIAgent agent, Blackboard bb);

@@ -1,8 +1,11 @@
 package game.ai.bt;
 
+import game.ai.AIAgent;
+import game.ai.Action;
+import game.ai.Blackboard;
+
 import java.util.Arrays;
 import java.util.List;
-import game.ai.*;
 
 public final class Parallel implements Node {
     public enum Policy { REQUIRE_ONE, REQUIRE_ALL }

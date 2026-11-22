@@ -3,9 +3,9 @@ package game.world.enemy;
 import game.ai.WorldAPI;
 import game.config.GameConfig;
 import game.map.MapData;
+import game.map.Tile;
 import game.world.Player;
 import org.joml.Vector2i;
-import game.map.Tile;
 
 import java.util.ArrayList;
 import java.util.List;

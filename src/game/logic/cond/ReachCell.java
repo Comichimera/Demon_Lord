@@ -1,5 +1,10 @@
 package game.logic.cond;
-import game.logic.*;
+
+import game.logic.Condition;
+import game.logic.GameEvent;
+import game.logic.GameEventType;
+import game.logic.RuntimeContext;
+
 public final class ReachCell implements Condition {
     private final int tx, ty;
     private boolean reached = false;

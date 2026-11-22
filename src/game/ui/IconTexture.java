@@ -1,12 +1,12 @@
 package game.ui;
 
+import org.lwjgl.BufferUtils;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-
-import org.lwjgl.BufferUtils;
 
 import static org.lwjgl.opengl.GL11.*;
 

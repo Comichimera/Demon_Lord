@@ -1,12 +1,13 @@
 package game.graphics;
 
 import org.lwjgl.BufferUtils;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
 
 public class TextureLoader {
     public static int loadTexture(String path) throws Exception {

@@ -1,8 +1,10 @@
 package game.ai.conditions;
 
-import game.ai.*;
-import org.json.JSONObject;
+import game.ai.AIAgent;
+import game.ai.AICondition;
+import game.ai.Blackboard;
 import org.joml.Vector2i;
+import org.json.JSONObject;
 
 public final class HeardNoiseWithinCondition implements AICondition {
     private final int radius;

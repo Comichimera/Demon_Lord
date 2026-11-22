@@ -1,19 +1,17 @@
 package game.ui;
 
-import game.core.Window;
-import game.util.FontLoader;
 import game.achievements.Achievement;
 import game.achievements.AchievementsManager;
+import game.core.Window;
 import game.graphics.TextureLoader;
+import game.util.FontLoader;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.reflect.Field;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
 
 public class AchievementsOverlay {
 
@@ -48,8 +46,8 @@ public class AchievementsOverlay {
     public AchievementsOverlay(Window window) {
         this.renderer = new OverlayRenderer(window);
 
-        Font headerFont = FontLoader.loadFont("/data/font.ttf", 28f);
-        Font bodyFont   = FontLoader.loadFont("/data/font.ttf", 18f);
+        Font headerFont = FontLoader.loadFont("/data/fonts/arial-bold.ttf", 28f);
+        Font bodyFont   = FontLoader.loadFont("/data/fonts/arial-bold.ttf", 18f);
 
         headerTex = new TextTexture("Achievements", headerFont, 4, 4, Color.WHITE);
 

@@ -1,10 +1,11 @@
 package game.ai;
 
+import org.joml.Vector2i;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import org.joml.Vector2i;
 
 public final class Blackboard {
     public Optional<Vector2i> lastSeenPlayerCell = Optional.empty();

@@ -3,8 +3,7 @@ package game.core;
 import game.ui.TextTexture;
 import game.util.FontLoader;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;

@@ -1,8 +1,10 @@
 package game.ai.actions;
 
-import game.ai.*;
-import org.json.JSONObject;
+import game.ai.AIAgent;
+import game.ai.Action;
+import game.ai.Blackboard;
 import org.joml.Vector2i;
+import org.json.JSONObject;
 
 public final class LookAction implements Action {
     private enum Target { PLAYER, POINT }

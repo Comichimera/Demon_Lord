@@ -1,7 +1,6 @@
 package game.graphics;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 
 public class ShaderProgram {
     private int programId;

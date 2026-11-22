@@ -1,8 +1,11 @@
 package game.ai.path;
 
-import java.util.*;
+import game.ai.AIAgent;
+import game.ai.Blackboard;
 import org.joml.Vector2i;
-import game.ai.*;
+
+import java.util.List;
+import java.util.Optional;
 
 public final class PatrolProvider implements PathProvider {
     private final List<Vector2i> waypoints;

@@ -1,6 +1,7 @@
 package game.audio;
 
-import org.lwjgl.openal.*;
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.ALC;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.openal.AL10.*;
-import static org.lwjgl.openal.AL11.*;
+import static org.lwjgl.openal.AL11.AL_LINEAR_DISTANCE_CLAMPED;
 import static org.lwjgl.openal.ALC10.*;
 
 public final class AudioSystem {

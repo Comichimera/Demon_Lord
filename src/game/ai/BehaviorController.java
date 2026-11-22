@@ -1,9 +1,10 @@
 package game.ai;
 
+import game.ai.bt.Node;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
-import game.ai.bt.Node;
 
 public final class BehaviorController {
     private final Node root;

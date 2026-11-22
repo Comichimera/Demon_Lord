@@ -1,20 +1,18 @@
 package game.world.enemy;
 
-import game.ai.*;
-import game.ai.bt.Node;
-import game.ai.io.BehaviorTreeLoader;
-import game.ai.sensors.*;
-import game.ai.path.*;
+import game.ai.AIAgent;
+import game.ai.BehaviorController;
+import game.ai.Sensor;
+import game.ai.WorldAPI;
+import game.ai.sensors.HearingSensor;
+import game.ai.sensors.VisionSensor;
 import game.logic.EventBus;
-import game.logic.GameEvent;
 import game.map.MapData;
 import game.world.Player;
-import org.json.JSONObject;
 import org.joml.Vector2i;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {

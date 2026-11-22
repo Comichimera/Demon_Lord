@@ -1,34 +1,22 @@
 package game.core;
 
 import game.audio.AudioSystem;
+import game.config.GameConfig;
 import game.debug.DebugConfig;
 import game.debug.DebugOverlay;
 import game.input.KeyboardInput;
 import game.inventory.InventoryEntry;
 import game.inventory.ItemDefinition;
 import game.inventory.ItemEffect;
+import game.logic.*;
+import game.map.Tile;
 import game.ui.HpOverlay;
+import game.ui.InventoryOverlay;
 import game.ui.StatusOverlay;
 import game.ui.TimerOverlay;
-import game.world.Player;
 import game.world.enemy.BaseEnemy;
 import game.world.enemy.Enemy;
-import game.config.GameConfig;
-import game.graphics.Renderer;
-import game.map.MapData;
-import game.map.Tile;
-import game.ui.InventoryOverlay;
-
-import game.logic.EventBus;
-import game.logic.ObjectiveManager;
-import game.logic.RuntimeContext;
-import game.logic.GameEvent;
-import game.logic.GameEventType;
-import game.logic.Registries;
-import game.logic.Condition;
-import game.logic.ConditionFactory;
 import game.world.enemy.EnemyManager;
-
 import org.json.JSONObject;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -317,7 +305,6 @@ public class PlayingState implements IGameState {
                 boolean canFinish = (objectives == null) || objectives.allMandatoryComplete();
                 if (canFinish) {
                     game.changeState(new LevelCompleteState(game));
-                } else {
                 }
             }
         }

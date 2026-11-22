@@ -1,8 +1,8 @@
 package game.world.enemy;
 
+import game.logic.EventBus;
 import game.map.MapData;
 import game.world.Player;
-import game.logic.EventBus;
 
 public interface Enemy {
     String getType();

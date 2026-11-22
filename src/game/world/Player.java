@@ -36,7 +36,6 @@ public class Player {
     }
 
     public void rotate(float angle) { yaw += angle; }
-    public void applyCameraTransform() {}
 
     public float getYaw() { return yaw; }
     public float getX()   { return x; }

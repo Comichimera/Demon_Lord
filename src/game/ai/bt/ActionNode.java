@@ -1,6 +1,8 @@
 package game.ai.bt;
 
-import game.ai.*;
+import game.ai.AIAgent;
+import game.ai.Action;
+import game.ai.Blackboard;
 
 public final class ActionNode implements Node {
     private final Action action;

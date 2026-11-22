@@ -1,7 +1,8 @@
 package game.ai;
 
-import java.util.Random;
 import org.joml.Vector2i;
+
+import java.util.Random;
 
 public interface AIAgent {
     Vector2i getCell();

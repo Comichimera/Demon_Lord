@@ -4,8 +4,7 @@ import game.core.Window;
 import game.util.FontLoader;
 import game.world.Player;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 public class HpOverlay {
     private final OverlayRenderer renderer;

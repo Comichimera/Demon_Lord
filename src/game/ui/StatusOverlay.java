@@ -4,8 +4,7 @@ import game.core.Window;
 import game.util.FontLoader;
 import game.world.Player;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 public class StatusOverlay {
     private static final Color WHITE  = Color.WHITE;
@@ -69,8 +68,8 @@ public class StatusOverlay {
 
     private Color damageColor(Player p) {
         float d = p.getDamageAcc();
-        if (d >= 150f) return RED;
-        if (d >= 60f)  return ORANGE;
+        if (d >= 75f) return RED;
+        if (d >= 50f)  return ORANGE;
         return WHITE;
     }
 

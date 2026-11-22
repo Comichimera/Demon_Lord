@@ -1,8 +1,9 @@
 package game.logic;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 public final class ObjectiveManager implements EventListener {
     private final List<Objective> list = new ArrayList<>();

@@ -5,8 +5,6 @@ import game.ui.MenuOverlay;
 
 import java.util.List;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 public class LevelSelectState implements IGameState {
     private final Game game;
     private final MenuOverlay menu;

@@ -1,7 +1,10 @@
 package game.ai.bt;
 
+import game.ai.AIAgent;
+import game.ai.Action;
+import game.ai.Blackboard;
+
 import java.util.List;
-import game.ai.*;
 
 public final class Sequence implements Node {
     private final List<Node> children;

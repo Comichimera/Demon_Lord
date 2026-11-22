@@ -1,6 +1,8 @@
 package game.ai.actions;
 
-import game.ai.*;
+import game.ai.AIAgent;
+import game.ai.Action;
+import game.ai.Blackboard;
 import org.json.JSONObject;
 
 public final class ListenAction implements Action {

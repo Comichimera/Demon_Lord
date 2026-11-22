@@ -1,8 +1,12 @@
 package game.ai.path;
 
-import java.util.*;
+import game.ai.AIAgent;
+import game.ai.Blackboard;
 import org.joml.Vector2i;
-import game.ai.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public final class RandomAdjacentProvider implements PathProvider {
     @Override public Optional<List<Vector2i>> nextPath(AIAgent agent, Blackboard bb) {

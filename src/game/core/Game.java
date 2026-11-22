@@ -5,22 +5,19 @@ import game.graphics.Renderer;
 import game.input.InputEdge;
 import game.input.InputGate;
 import game.input.KeyboardInput;
+import game.logic.Condition;
+import game.logic.ConditionFactory;
+import game.logic.Registries;
+import game.logic.TimerService;
+import game.logic.cond.ReachCell;
 import game.map.*;
+import game.ui.VersionOverlay;
 import game.world.Player;
+import org.json.JSONObject;
 
 import java.util.Map;
 
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-
-import game.logic.Registries;
-import game.logic.ConditionFactory;
-import game.logic.Condition;
-import game.logic.cond.ReachCell;
-import org.json.JSONObject;
-
-import game.logic.TimerService;
-import game.ui.VersionOverlay;
 
 
 public class Game {

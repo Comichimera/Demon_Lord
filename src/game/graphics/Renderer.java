@@ -1,22 +1,21 @@
 package game.graphics;
 
 import game.config.GameConfig;
+import game.inventory.ItemDefinition;
+import game.inventory.ItemRegistry;
 import game.map.MapData;
 import game.map.Tile;
 import game.map.TileDefinition;
 import game.world.Player;
+import game.world.enemy.EnemyManager;
 import org.joml.Matrix4f;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.lwjgl.opengl.GL11.*;
 import java.util.Map;
 
-import game.world.enemy.EnemyManager;
-
-import game.inventory.ItemDefinition;
-import game.inventory.ItemRegistry;
+import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
     private MapData mapData;

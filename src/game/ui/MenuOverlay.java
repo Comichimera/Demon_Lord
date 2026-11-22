@@ -3,16 +3,12 @@ package game.ui;
 import game.core.Window;
 import game.util.FontLoader;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-
-import org.lwjgl.BufferUtils;
 
 public class MenuOverlay {
     private final OverlayRenderer renderer;

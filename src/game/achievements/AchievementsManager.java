@@ -1,9 +1,13 @@
 package game.achievements;
 
 import org.json.JSONObject;
-import java.nio.file.*;
-import java.util.*;
+
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 
 public final class AchievementsManager {
     private static AchievementsManager INSTANCE;

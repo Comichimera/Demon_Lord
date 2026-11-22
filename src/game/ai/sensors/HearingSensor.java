@@ -1,6 +1,8 @@
 package game.ai.sensors;
 
-import game.ai.*;
+import game.ai.AIAgent;
+import game.ai.Blackboard;
+import game.ai.Sensor;
 import org.joml.Vector2i;
 
 public final class HearingSensor implements Sensor {

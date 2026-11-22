@@ -5,14 +5,14 @@ import java.util.Random;
 public class InjuryHealthSystem implements IHealthSystem {
 
     private static final float DAMAGE_MAX      = 100;
-    private static final float INJURY_MAX      = 99999f;
+    private static final float INJURY_MAX      = 100f;
     private static final float DEATH_THRESHOLD = 100f;
 
     private static final float DAMAGE_BLEED_THRESHOLD = 20f;
-    private static final float DAMAGE_BLEED_CURVE = 0.0003f;
-    private static final float INJURY_BLEED_RATE  = 0.002f;
+    private static final float DAMAGE_BLEED_CURVE = 0.001f;
+    private static final float INJURY_BLEED_RATE  = 0.01f;
 
-    private static final float INJURY_BASE_CHANCE    = 0.04f;
+    private static final float INJURY_BASE_CHANCE    = 0.12f;
     private static final float INJURY_DAMAGE_SCALING = 4.0f;
 
     private static final float DAMAGE_MILD_THRESHOLD   = 20f;
@@ -34,7 +34,7 @@ public class InjuryHealthSystem implements IHealthSystem {
 
         float injuryChance = INJURY_BASE_CHANCE * severity * (1f + (damage / DAMAGE_MAX) * INJURY_DAMAGE_SCALING);
         if (rng.nextFloat() < injuryChance) {
-            injuries = Math.min(INJURY_MAX, injuries + amount * 0.4f);
+            injuries = Math.min(INJURY_MAX, injuries + amount * 1);
         }
     }
 
@@ -95,10 +95,10 @@ public class InjuryHealthSystem implements IHealthSystem {
 
     @Override
     public String getDamageStatus() {
-        if (damage >= 150f) return "You are completely cut up";
-        if (damage >= 100f) return "You are lacerated";
-        if (damage >= 60f)  return "You are seriously wounded";
-        if (damage >= 40f)  return "You have some cuts";
+        if (damage >= 90f) return "You are completely cut up";
+        if (damage >= 75f) return "You are lacerated";
+        if (damage >= 50f)  return "You are seriously wounded";
+        if (damage >= 20f)  return "You have some cuts";
         return null;
     }
 
@@ -114,9 +114,9 @@ public class InjuryHealthSystem implements IHealthSystem {
     @Override
     public String getBleedStatus() {
         float rate = getBleedRate();
-        if (rate >= 2.0f)  return "You are deathly hurt";
-        if (rate >= 0.5f)  return "You are bleeding heavily";
-        if (rate >= 0.05f) return "You are bleeding";
+        if (rate >= 4.0f)  return "You are deathly hurt";
+        if (rate >= 1.0f)  return "You are bleeding heavily";
+        if (rate >= 0f) return "You are bleeding";
         return null;
     }
 

@@ -1,9 +1,10 @@
 package game.ai;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import org.json.JSONObject;
 
 public final class ConditionRegistry {
     public interface Factory extends Function<JSONObject, AICondition> {}

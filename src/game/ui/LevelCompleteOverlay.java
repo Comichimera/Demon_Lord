@@ -3,8 +3,7 @@ package game.ui;
 import game.core.Window;
 import game.util.FontLoader;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 public class LevelCompleteOverlay {
     private final OverlayRenderer renderer;

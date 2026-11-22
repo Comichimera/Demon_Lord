@@ -1,6 +1,8 @@
 package game.ai.sensors;
 
-import game.ai.*;
+import game.ai.AIAgent;
+import game.ai.Blackboard;
+import game.ai.Sensor;
 
 public final class SuspicionSensor implements Sensor {
     private static final float RISE_SIGHT  = 1.5f;
