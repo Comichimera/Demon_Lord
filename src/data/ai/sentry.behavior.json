@@ -14,7 +14,7 @@
         "type": "sequence",
         "children": [
           {"type": "condition", "name": "suspicionAbove", "params": {"threshold": 0.25}},
-          {"type": "action", "name": "scan", "params": {"duration": 2.0, "rotate": true, "mode": "oscillate", "deg_per_sec": 60, "sweep_deg": 150, "random_start": true}}
+          {"type": "action", "name": "scan", "params": {"duration": 2.0, "rotate": true, "mode": "oscillate", "deg_per_sec": 60, "sweep_deg": 150, "random_start": false}}
         ]
       },
       {

@@ -1,2 +1,2 @@
-version=pre-alpha 0.9.5
-build=12425
+version=pre-alpha 0.9.6
+build=12435

@@ -49,20 +49,21 @@ public class StatusOverlay {
             lastBleed = bs;
         }
 
+        int winW = renderer.window.getWidth();
         int y = renderer.window.getHeight() - 8;
         if (bleedTex != null) {
             y -= bleedTex.getHeight();
-            renderer.render(bleedTex, 8, y, false, 0, 0, 0, 0);
+            renderer.render(bleedTex, winW - bleedTex.getWidth() - 8, y, false, 0, 0, 0, 0);
             y -= GAP;
         }
         if (injuryTex != null) {
             y -= injuryTex.getHeight();
-            renderer.render(injuryTex, 8, y, false, 0, 0, 0, 0);
+            renderer.render(injuryTex, winW - injuryTex.getWidth() - 8, y, false, 0, 0, 0, 0);
             y -= GAP;
         }
         if (damageTex != null) {
             y -= damageTex.getHeight();
-            renderer.render(damageTex, 8, y, false, 0, 0, 0, 0);
+            renderer.render(damageTex, winW - damageTex.getWidth() - 8, y, false, 0, 0, 0, 0);
         }
     }
 

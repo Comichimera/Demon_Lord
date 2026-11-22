@@ -116,7 +116,7 @@ public class InjuryHealthSystem implements IHealthSystem {
         float rate = getBleedRate();
         if (rate >= 4.0f)  return "You are deathly hurt";
         if (rate >= 1.0f)  return "You are bleeding heavily";
-        if (rate >= 0f) return "You are bleeding";
+        if (rate > 0f) return "You are bleeding";
         return null;
     }
 

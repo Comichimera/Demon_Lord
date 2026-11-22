@@ -30,7 +30,7 @@ public class HpOverlay {
 
         if (hpTex != null) {
             int y = renderer.window.getHeight() - hpTex.getHeight() - 8;
-            renderer.render(hpTex, 8, y, false, 0, 0, 0, 0);
+            renderer.render(hpTex, renderer.window.getWidth() - hpTex.getWidth() - 8, y, false, 0, 0, 0, 0);
         }
     }
 

@@ -64,8 +64,8 @@ public final class ScanAction implements Action {
 
             float rad = (float) Math.toRadians(angleDeg);
             Vector2i cell = agent.getCell();
-            float cx = cell.x * game.config.GameConfig.TILE_SIZE;
-            float cz = cell.y * game.config.GameConfig.TILE_SIZE;
+            float cx = (cell.x + 0.5f) * game.config.GameConfig.TILE_SIZE;
+            float cz = (cell.y + 0.5f) * game.config.GameConfig.TILE_SIZE;
             agent.faceToward(cx + (float) Math.sin(rad), cz + (float) Math.cos(rad));
         }
 
