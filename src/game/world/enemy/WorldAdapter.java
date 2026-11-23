@@ -1,6 +1,6 @@
 package game.world.enemy;
 
-import game.ai.WorldAPI;
+import game.ai.IWorldAPI;
 import game.config.GameConfig;
 import game.map.MapData;
 import game.map.Tile;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class WorldAdapter implements WorldAPI {
+public final class WorldAdapter implements IWorldAPI {
 
     private final MapData map;
     private final Player player;

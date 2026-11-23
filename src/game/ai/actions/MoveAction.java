@@ -1,9 +1,9 @@
 package game.ai.actions;
 
-import game.ai.AIAgent;
-import game.ai.Action;
+import game.ai.IAIAgent;
+import game.ai.IAction;
 import game.ai.Blackboard;
-import game.ai.path.PathProvider;
+import game.ai.path.IPathProvider;
 import game.ai.path.PatrolProvider;
 import game.ai.path.RandomAdjacentProvider;
 import org.joml.Vector2i;
@@ -12,13 +12,13 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Optional;
 
-public final class MoveAction implements Action {
+public final class MoveAction implements IAction {
     public enum Mode { PATH_PROVIDER, TOWARD_LAST_SEEN, TOWARD_LAST_HEARD }
     private final Mode mode;
     private final float speedMul;
-    private final PathProvider provider;
+    private final IPathProvider provider;
 
-    public static Action fromJson(JSONObject p) {
+    public static IAction fromJson(JSONObject p) {
         float spd = (float)p.optDouble("speed", 1.0);
         if (p.has("toward")) {
             String t = p.getString("toward");
@@ -29,17 +29,17 @@ public final class MoveAction implements Action {
             }
         }
         String mode = p.optString("mode", "randomAdjacent");
-        PathProvider prov = "patrolOrRandom".equals(mode)
+        IPathProvider prov = "patrolOrRandom".equals(mode)
                 ? new PatrolOrRandom()
                 : new RandomAdjacentProvider();
         return new MoveAction(Mode.PATH_PROVIDER, spd, prov);
     }
 
-    public MoveAction(Mode mode, float speedMul, PathProvider provider) {
+    public MoveAction(Mode mode, float speedMul, IPathProvider provider) {
         this.mode = mode; this.speedMul = speedMul; this.provider = provider;
     }
 
-    @Override public Status tick(float dt, AIAgent agent, Blackboard bb) {
+    @Override public Status tick(float dt, IAIAgent agent, Blackboard bb) {
         switch (mode) {
             case TOWARD_LAST_SEEN:
                 if (bb.lastSeenPlayerCell.isEmpty()) return Status.FAILURE;
@@ -70,7 +70,7 @@ public final class MoveAction implements Action {
         }
     }
 
-    private Status stepToward(AIAgent agent, Blackboard bb, Vector2i target) {
+    private Status stepToward(IAIAgent agent, Blackboard bb, Vector2i target) {
         if (agent.getCell().equals(target)) return Status.SUCCESS;
         List<Vector2i> path = game.ai.path.AStar.findPath(agent.getCell(), target, agent.world());
         if (path.isEmpty()) return Status.FAILURE;
@@ -78,11 +78,11 @@ public final class MoveAction implements Action {
         return Status.RUNNING;
     }
 
-    private static final class PatrolOrRandom implements PathProvider {
+    private static final class PatrolOrRandom implements IPathProvider {
         private PatrolProvider patrol;
         private final RandomAdjacentProvider rand = new RandomAdjacentProvider();
 
-        @Override public Optional<List<Vector2i>> nextPath(AIAgent agent, Blackboard bb) {
+        @Override public Optional<List<Vector2i>> nextPath(IAIAgent agent, Blackboard bb) {
             if (patrol == null) {
                 List<Vector2i> waypoints = agent.world().patrolWaypoints();
                 if (!waypoints.isEmpty()) patrol = new PatrolProvider(waypoints);

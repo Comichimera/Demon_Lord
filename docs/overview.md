@@ -151,7 +151,7 @@ and achievement unlocks.
 - **Objectives registry** — `Registries.CONDITIONS` only has `"reach"` registered. Any
   objective in a map JSON using a different condition type will silently fail to instantiate.
 
-- **`ScanAction`** unsafely casts `AIAgent` to `EnemyEntity` — will throw `ClassCastException`
+- **`ScanAction`** unsafely casts `IAIAgent` to `EnemyEntity` — will throw `ClassCastException`
   if anything other than `EnemyEntity` ever runs a scan action.
 
 - **`BaseEnemy.hasLineOfSight()`** is a stub that throws `UnsupportedOperationException`.

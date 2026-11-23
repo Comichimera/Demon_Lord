@@ -1,23 +1,23 @@
 package game.ai.bt;
 
-import game.ai.AIAgent;
-import game.ai.Action;
+import game.ai.IAIAgent;
+import game.ai.IAction;
 import game.ai.Blackboard;
 
-public final class ActionNode implements Node {
-    private final Action action;
+public final class ActionNode implements INode {
+    private final IAction action;
     private boolean entered = false;
 
-    public ActionNode(Action action) { this.action = action; }
+    public ActionNode(IAction action) { this.action = action; }
 
-    @Override public Action.Status tick(float dt, AIAgent agent, Blackboard bb) {
+    @Override public IAction.Status tick(float dt, IAIAgent agent, Blackboard bb) {
         if (!entered) { action.enter(agent, bb); entered = true; }
-        Action.Status s = action.tick(dt, agent, bb);
-        if (s != Action.Status.RUNNING) { action.exit(agent, bb); entered = false; }
+        IAction.Status s = action.tick(dt, agent, bb);
+        if (s != IAction.Status.RUNNING) { action.exit(agent, bb); entered = false; }
         return s;
     }
 
-    @Override public void onExit(AIAgent agent, Blackboard bb) {
+    @Override public void onExit(IAIAgent agent, Blackboard bb) {
         if (entered) { action.exit(agent, bb); entered = false; }
     }
 }

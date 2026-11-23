@@ -1,9 +1,9 @@
 package game.inventory.effect;
 
-import game.inventory.ItemEffect;
+import game.inventory.IItemEffect;
 import game.world.Player;
 
-public class TreatInjuryEffect implements ItemEffect {
+public class TreatInjuryEffect implements IItemEffect {
     private final float amount;
 
     public TreatInjuryEffect(float amount) {

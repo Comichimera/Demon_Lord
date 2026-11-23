@@ -1,21 +1,21 @@
 package game.ai.bt;
 
-import game.ai.AIAgent;
-import game.ai.Action;
+import game.ai.IAIAgent;
+import game.ai.IAction;
 import game.ai.Blackboard;
 
 import java.util.List;
 
-public final class Selector implements Node {
-    private final List<Node> children;
+public final class Selector implements INode {
+    private final List<INode> children;
 
-    public Selector(List<Node> children) { this.children = children; }
+    public Selector(List<INode> children) { this.children = children; }
 
-    @Override public Action.Status tick(float dt, AIAgent agent, Blackboard bb) {
-        for (Node child : children) {
-            Action.Status s = child.tick(dt, agent, bb);
-            if (s != Action.Status.FAILURE) return s;
+    @Override public IAction.Status tick(float dt, IAIAgent agent, Blackboard bb) {
+        for (INode child : children) {
+            IAction.Status s = child.tick(dt, agent, bb);
+            if (s != IAction.Status.FAILURE) return s;
         }
-        return Action.Status.FAILURE;
+        return IAction.Status.FAILURE;
     }
 }

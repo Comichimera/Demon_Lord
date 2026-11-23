@@ -1,6 +1,7 @@
 package game.ui;
 
 import game.core.Window;
+import game.graphics.TextTexture;
 
 import static org.lwjgl.opengl.GL11.*;
 

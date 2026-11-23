@@ -49,7 +49,7 @@ public class ItemDefinitionLoader {
                 String icon        = obj.has("icon")        ? obj.getString("icon")        : base.getIconPath();
                 boolean stackable  = obj.has("stackable")   ? obj.getBoolean("stackable")  : base.isStackable();
                 int maxStack       = obj.has("maxStack")    ? obj.getInt("maxStack")       : base.getMaxStack();
-                List<ItemEffect> effects = obj.has("effects") ? parseEffects(obj.getJSONArray("effects"), sourcePath) : base.getEffects();
+                List<IItemEffect> effects = obj.has("effects") ? parseEffects(obj.getJSONArray("effects"), sourcePath) : base.getEffects();
                 ItemRegistry.override(id, new ItemDefinition(id, name, description, icon, stackable, maxStack, new ArrayList<>(effects)));
             } else {
                 String name        = obj.optString("name", id);
@@ -57,14 +57,14 @@ public class ItemDefinitionLoader {
                 String icon        = obj.optString("icon", "");
                 boolean stackable  = obj.optBoolean("stackable", false);
                 int maxStack       = obj.optInt("maxStack", 1);
-                List<ItemEffect> effects = obj.has("effects") ? parseEffects(obj.getJSONArray("effects"), sourcePath) : Collections.emptyList();
+                List<IItemEffect> effects = obj.has("effects") ? parseEffects(obj.getJSONArray("effects"), sourcePath) : Collections.emptyList();
                 ItemRegistry.register(new ItemDefinition(id, name, description, icon, stackable, maxStack, effects));
             }
         }
     }
 
-    private static List<ItemEffect> parseEffects(JSONArray arr, String sourcePath) {
-        List<ItemEffect> effects = new ArrayList<>();
+    private static List<IItemEffect> parseEffects(JSONArray arr, String sourcePath) {
+        List<IItemEffect> effects = new ArrayList<>();
         for (int i = 0; i < arr.length(); i++) {
             JSONObject e = arr.getJSONObject(i);
             String type = e.getString("type");

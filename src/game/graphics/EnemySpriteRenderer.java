@@ -1,8 +1,9 @@
 package game.graphics;
 
 import game.config.GameConfig;
+import game.map.SpriteDefsLoader;
 import game.world.Player;
-import game.world.enemy.Enemy;
+import game.world.enemy.IEnemy;
 import game.world.enemy.EnemyManager;
 import org.joml.Matrix4f;
 
@@ -49,7 +50,7 @@ public final class EnemySpriteRenderer {
 
         final float camYaw = cameraPlayer.getYaw();
 
-        for (Enemy e : manager.getEnemies()) {
+        for (IEnemy e : manager.getEnemies()) {
             QuadSet qs = cache.computeIfAbsent(e.getType().toLowerCase(), this::buildQuadSetForType);
 
             float delta = normalizeDeg(e.getYaw() - camYaw);

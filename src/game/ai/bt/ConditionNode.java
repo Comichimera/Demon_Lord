@@ -1,15 +1,15 @@
 package game.ai.bt;
 
-import game.ai.AIAgent;
-import game.ai.AICondition;
-import game.ai.Action;
+import game.ai.IAIAgent;
+import game.ai.IAICondition;
+import game.ai.IAction;
 import game.ai.Blackboard;
 
-public final class ConditionNode implements Node {
-    private final AICondition cond;
-    public ConditionNode(AICondition cond) { this.cond = cond; }
+public final class ConditionNode implements INode {
+    private final IAICondition cond;
+    public ConditionNode(IAICondition cond) { this.cond = cond; }
 
-    @Override public Action.Status tick(float dt, AIAgent agent, Blackboard bb) {
-        return cond.test(agent, bb) ? Action.Status.SUCCESS : Action.Status.FAILURE;
+    @Override public IAction.Status tick(float dt, IAIAgent agent, Blackboard bb) {
+        return cond.test(agent, bb) ? IAction.Status.SUCCESS : IAction.Status.FAILURE;
     }
 }

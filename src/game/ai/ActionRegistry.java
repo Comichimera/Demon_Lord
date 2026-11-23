@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 public final class ActionRegistry {
-    public interface Factory extends Function<JSONObject, Action> {}
+    public interface Factory extends Function<JSONObject, IAction> {}
 
     private static final Map<String, Factory> map = new HashMap<>();
 
     public static void register(String name, Factory f) { map.put(name, f); }
-    public static Action create(String name, JSONObject params) {
+    public static IAction create(String name, JSONObject params) {
         Factory f = map.get(name);
         if (f == null) throw new IllegalArgumentException("Unknown action: " + name);
         return f.apply(params == null ? new JSONObject() : params);

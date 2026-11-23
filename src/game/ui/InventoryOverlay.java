@@ -1,6 +1,8 @@
 package game.ui;
 
 import game.core.Window;
+import game.graphics.IconTexture;
+import game.graphics.TextTexture;
 import game.inventory.Inventory;
 import game.inventory.InventoryEntry;
 import game.util.FontLoader;

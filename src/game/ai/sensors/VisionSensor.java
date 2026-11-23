@@ -1,11 +1,11 @@
 package game.ai.sensors;
 
-import game.ai.AIAgent;
+import game.ai.IAIAgent;
 import game.ai.Blackboard;
-import game.ai.Sensor;
+import game.ai.ISensor;
 import org.joml.Vector2i;
 
-public final class VisionSensor implements Sensor {
+public final class VisionSensor implements ISensor {
     private final float fovDeg;
     private final float maxDist;
 
@@ -13,7 +13,7 @@ public final class VisionSensor implements Sensor {
         this.fovDeg = fovDeg; this.maxDist = maxTiles;
     }
 
-    @Override public void sample(float dt, AIAgent agent, Blackboard bb) {
+    @Override public void sample(float dt, IAIAgent agent, Blackboard bb) {
         Vector2i me = agent.getCell();
         Vector2i player = agent.world().playerCell();
         if (me == null || player == null) {

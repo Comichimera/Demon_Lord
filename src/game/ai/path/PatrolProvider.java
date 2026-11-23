@@ -1,18 +1,18 @@
 package game.ai.path;
 
-import game.ai.AIAgent;
+import game.ai.IAIAgent;
 import game.ai.Blackboard;
 import org.joml.Vector2i;
 
 import java.util.List;
 import java.util.Optional;
 
-public final class PatrolProvider implements PathProvider {
+public final class PatrolProvider implements IPathProvider {
     private final List<Vector2i> waypoints;
     private int idx = 0;
     public PatrolProvider(List<Vector2i> waypoints) { this.waypoints = waypoints; }
 
-    @Override public Optional<List<Vector2i>> nextPath(AIAgent agent, Blackboard bb) {
+    @Override public Optional<List<Vector2i>> nextPath(IAIAgent agent, Blackboard bb) {
         if (waypoints.isEmpty()) return Optional.empty();
         Vector2i target = waypoints.get(idx);
         idx = (idx + 1) % waypoints.size();

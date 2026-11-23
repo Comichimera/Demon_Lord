@@ -1,9 +1,9 @@
 package game.world.enemy;
 
 import game.config.GameConfig;
-import game.logic.EventBus;
-import game.logic.GameEvent;
-import game.logic.GameEventType;
+import game.logic.event.EventBus;
+import game.logic.event.GameEvent;
+import game.logic.event.EGameEventType;
 import game.map.MapData;
 import game.world.Player;
 import org.joml.Vector2i;
@@ -15,9 +15,9 @@ import java.util.*;
 
 public class EnemyManager {
 
-    private final List<Enemy> enemies = new ArrayList<>();
+    private final List<IEnemy> enemies = new ArrayList<>();
     private boolean playerDefeated = false;
-    private final Set<Enemy> spottingLastFrame = new HashSet<>();
+    private final Set<IEnemy> spottingLastFrame = new HashSet<>();
     private final EventBus events;
     private final Player player;
 
@@ -26,13 +26,13 @@ public class EnemyManager {
         this.player = player;
         if (map.getEnemySpecs() != null) {
             for (JSONObject spec : map.getEnemySpecs()) {
-                Enemy e = buildEnemyFromSpec(spec, map, events);
+                IEnemy e = buildEnemyFromSpec(spec, map, events);
                 if (e != null) enemies.add(e);
             }
         }
     }
 
-    public List<Enemy> getEnemies() { return Collections.unmodifiableList(enemies); }
+    public List<IEnemy> getEnemies() { return Collections.unmodifiableList(enemies); }
 
     public boolean isPlayerDefeated() { return playerDefeated; }
 
@@ -43,7 +43,7 @@ public class EnemyManager {
     public float nearestEnemyDistanceTiles(Player player) {
         if (enemies.isEmpty()) return -1f;
         float min2 = Float.MAX_VALUE;
-        for (Enemy e : enemies) {
+        for (IEnemy e : enemies) {
             float dx = e.getX() - player.getX(), dz = e.getZ() - player.getZ();
             float d2 = dx * dx + dz * dz;
             if (d2 < min2) min2 = d2;
@@ -54,8 +54,8 @@ public class EnemyManager {
     public void update(float dt, MapData map, Player player) {
         if (playerDefeated) return;
 
-        Set<Enemy> spottingNow = new HashSet<>();
-        for (Enemy e : enemies) {
+        Set<IEnemy> spottingNow = new HashSet<>();
+        for (IEnemy e : enemies) {
             e.update(dt, map, player, events);
 
             if (e.canSeePlayer(map, player)) {
@@ -63,7 +63,7 @@ public class EnemyManager {
                 if (!spottingLastFrame.contains(e)) {
                     final int tx = (int)(player.getX() / GameConfig.TILE_SIZE);
                     final int ty = (int)(player.getZ() / GameConfig.TILE_SIZE);
-                    events.post(new GameEvent(GameEventType.ENEMY_SPOTTED_PLAYER, tx, ty));
+                    events.post(new GameEvent(EGameEventType.ENEMY_SPOTTED_PLAYER, tx, ty));
                 }
             }
 
@@ -82,7 +82,7 @@ public class EnemyManager {
                     final int ty = (int)(player.getZ() / GameConfig.TILE_SIZE);
                     float severity = Math.min(1.0f, be.getAttackDamage() / 30f);
                     player.applyHit(be.getAttackDamage(), severity);
-                    events.post(new GameEvent(GameEventType.PLAYER_TOOK_DAMAGE, tx, ty));
+                    events.post(new GameEvent(EGameEventType.PLAYER_TOOK_DAMAGE, tx, ty));
                 }
             }
         }
@@ -96,10 +96,10 @@ public class EnemyManager {
             playerDefeated = true;
             final int tx = (int)(player.getX() / GameConfig.TILE_SIZE);
             final int ty = (int)(player.getZ() / GameConfig.TILE_SIZE);
-            events.post(new GameEvent(GameEventType.PLAYER_DEFEATED_BY_ENEMY, tx, ty));
+            events.post(new GameEvent(EGameEventType.PLAYER_DEFEATED_BY_ENEMY, tx, ty));
         }
     }
-    private Enemy buildEnemyFromSpec(JSONObject spec, MapData map, EventBus events) {
+    private IEnemy buildEnemyFromSpec(JSONObject spec, MapData map, EventBus events) {
         final String legacyType = spec.optString("type", "sentry").toLowerCase();
 
         final String spriteKey = spec.optString("sprite", legacyType);

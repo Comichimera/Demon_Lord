@@ -1,12 +1,12 @@
 package game.world.enemy;
 
-import game.ai.AIAgent;
+import game.ai.IAIAgent;
 import game.ai.BehaviorController;
-import game.ai.Sensor;
-import game.ai.WorldAPI;
+import game.ai.ISensor;
+import game.ai.IWorldAPI;
 import game.ai.sensors.HearingSensor;
 import game.ai.sensors.VisionSensor;
-import game.logic.EventBus;
+import game.logic.event.EventBus;
 import game.map.MapData;
 import game.world.Player;
 import org.joml.Vector2i;
@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 
-public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {
+public final class EnemyEntity extends BaseEnemy implements IEnemy, IAIAgent {
     private final BehaviorController ai;
     private final Random rng;
     private final WorldAdapter world;
@@ -42,7 +42,7 @@ public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {
         this.rng = new Random(seed);
         this.world = new WorldAdapter(map, player);
 
-        List<Sensor> sensors = List.of(
+        List<ISensor> sensors = List.of(
                 new VisionSensor(fovDeg, viewTiles),
                 new HearingSensor(3.0f),
                 new game.ai.sensors.SuspicionSensor()
@@ -94,7 +94,7 @@ public final class EnemyEntity extends BaseEnemy implements Enemy, AIAgent {
     }
     @Override public void aimAt(Vector2i cell) { this.aimTarget = new Vector2i(cell); }
     @Override public Random rng() { return rng; }
-    @Override public WorldAPI world() { return world; }
+    @Override public IWorldAPI world() { return world; }
 
     @Override public String getType() { return spriteKey; }
 

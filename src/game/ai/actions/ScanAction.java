@@ -1,12 +1,12 @@
 package game.ai.actions;
 
-import game.ai.AIAgent;
-import game.ai.Action;
+import game.ai.IAIAgent;
+import game.ai.IAction;
 import game.ai.Blackboard;
 import org.joml.Vector2i;
 import org.json.JSONObject;
 
-public final class ScanAction implements Action {
+public final class ScanAction implements IAction {
     private final float duration;
     private final boolean rotate;
     private final String mode;
@@ -18,7 +18,7 @@ public final class ScanAction implements Action {
     private float baseAngleDeg;
     private float elapsed;
 
-    public static Action fromJson(JSONObject p) {
+    public static IAction fromJson(JSONObject p) {
         float  duration     = (float) p.optDouble("duration", 0.5);
         boolean rotate      = p.optBoolean("rotate", false);
         String mode         = p.optString("mode", "spin");
@@ -38,7 +38,7 @@ public final class ScanAction implements Action {
         this.randomStart  = randomStart;
     }
 
-    @Override public void enter(AIAgent agent, Blackboard bb) {
+    @Override public void enter(IAIAgent agent, Blackboard bb) {
         remaining = duration;
         elapsed   = 0f;
 
@@ -49,7 +49,7 @@ public final class ScanAction implements Action {
         }
     }
 
-    @Override public Status tick(float dt, AIAgent agent, Blackboard bb) {
+    @Override public Status tick(float dt, IAIAgent agent, Blackboard bb) {
         if (rotate) {
             elapsed += dt;
 
@@ -73,7 +73,7 @@ public final class ScanAction implements Action {
         return remaining > 0f ? Status.RUNNING : Status.SUCCESS;
     }
 
-    @Override public void exit(AIAgent agent, Blackboard bb) {
+    @Override public void exit(IAIAgent agent, Blackboard bb) {
         if (rotate && !"oscillate".equals(mode)) {
             baseAngleDeg = (baseAngleDeg + degPerSec * elapsed) % 360f;
         }

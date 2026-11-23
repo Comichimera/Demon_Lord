@@ -1,15 +1,17 @@
 package game.core;
 
 import game.config.GameConfig;
+import game.config.GameData;
+import game.core.state.MainMenuState;
 import game.graphics.Renderer;
 import game.input.InputEdge;
 import game.input.InputGate;
 import game.input.KeyboardInput;
-import game.logic.Condition;
-import game.logic.ConditionFactory;
-import game.logic.Registries;
+import game.logic.objective.ICondition;
+import game.logic.objective.IConditionFactory;
+import game.logic.objective.Registries;
 import game.logic.TimerService;
-import game.logic.cond.ReachCell;
+import game.logic.objective.cond.ReachCell;
 import game.map.*;
 import game.ui.VersionOverlay;
 import game.world.Player;
@@ -21,13 +23,13 @@ import static org.lwjgl.opengl.GL11.*;
 
 
 public class Game {
-    boolean running;
-    Window window;
-    Renderer renderer;
-    Player player;
+    public boolean running;
+    public Window window;
+    public Renderer renderer;
+    public Player player;
     private KeyboardInput keyboard;
-    MapData mapData;
-    LevelManager levelManager;
+    public MapData mapData;
+    public LevelManager levelManager;
     private IGameState currentState;
 
     public final TimerService timers = new TimerService();
@@ -39,7 +41,7 @@ public class Game {
         return String.format("%d:%02d", minutes, seconds);
     }
 
-    void changeState(IGameState newState) {
+    public void changeState(IGameState newState) {
         if (currentState != null) currentState.exit();
         currentState = newState;
         currentState.enter();
@@ -57,7 +59,7 @@ public class Game {
         window       = new Window(800, 600, "Demon_Lord Pre Alpha");
 
         levelManager = new LevelManager( GameConfig.path("levels","/data/map/levels.json"));
-        versionOverlay = new VersionOverlay(window, game.core.GameData.getVersion());
+        versionOverlay = new VersionOverlay(window, GameData.getVersion());
 
         if (!game.audio.AudioSystem.init()) {
             System.err.println("Audio init failed; continuing without sound.");
@@ -66,9 +68,9 @@ public class Game {
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
         TileRegistry.initialize(baseDefs);
 
-        Registries.CONDITIONS.put("reach", new ConditionFactory() {
+        Registries.CONDITIONS.put("reach", new IConditionFactory() {
             @Override public String id(){ return "reach"; }
-            @Override public Condition create(JSONObject cfg){
+            @Override public ICondition create(JSONObject cfg){
                 return new ReachCell(cfg.getInt("x"), cfg.getInt("y"));
             }
         });
@@ -96,7 +98,7 @@ public class Game {
             window.update();
         }
     }
-    void reloadLevel() {
+    public void reloadLevel() {
         String mapPath = levelManager.getCurrentLevel().mapPath;
         mapData = MapLoader.loadMap(mapPath);
 

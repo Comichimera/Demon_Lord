@@ -1,0 +1,74 @@
+package game.core.state;
+
+import game.achievements.AchievementsManager;
+import game.audio.AudioSystem;
+import game.core.*;
+import game.input.InputGate;
+import game.ui.MenuOverlay;
+
+import java.util.List;
+
+import static org.lwjgl.glfw.GLFW.*;
+
+
+
+public class MainMenuState implements IGameState {
+    private final Game game;
+    private final MenuOverlay menu;
+    private boolean f3Pressed = false;
+
+    public MainMenuState(Game game) {
+        this.game = game;
+        this.menu = new MenuOverlay(
+                game.window,
+                List.of("Start Game", "Level Select", "Achievements", "Exit")
+        );
+    }
+
+    @Override
+    public void enter() {
+        menu.rebuild();
+        AudioSystem.playMusic("menu");
+    }
+
+    @Override
+    public void update(float dt) {
+        if (InputGate.isGated(game.window.getWindowHandle())) return;
+
+        long win = game.window.getWindowHandle();
+        if (glfwGetKey(win, GLFW_KEY_F3) == GLFW_PRESS && !f3Pressed) {
+            f3Pressed = true;
+            game.changeState(new DebugMenuState(game));
+            return;
+        } else if (glfwGetKey(win, GLFW_KEY_F3) == GLFW_RELEASE) { f3Pressed = false; }
+        int choice = menu.update(game.window.getWindowHandle(), dt);
+        if (choice != -1) {
+            switch (choice) {
+                case 0:
+                    game.changeState(new PlayingState(game));
+                    break;
+                case 1:
+                    game.changeState(new LevelSelectState(game));
+                    break;
+                case 2:
+                    game.changeState(new AchievementsState(game));
+                    break;
+                case 3:
+                    AchievementsManager.get().unlock("go_outside");
+                    game.running = false;
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void render() {
+        menu.render();
+    }
+
+    @Override
+    public void exit() {
+        AudioSystem.stopMusic();
+        menu.cleanup();
+    }
+}

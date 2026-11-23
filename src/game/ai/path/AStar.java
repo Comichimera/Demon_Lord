@@ -1,6 +1,6 @@
 package game.ai.path;
 
-import game.ai.WorldAPI;
+import game.ai.IWorldAPI;
 import org.joml.Vector2i;
 
 import java.util.*;
@@ -9,7 +9,7 @@ public final class AStar {
 
     private AStar() {}
 
-    public static List<Vector2i> findPath(Vector2i start, Vector2i goal, WorldAPI world) {
+    public static List<Vector2i> findPath(Vector2i start, Vector2i goal, IWorldAPI world) {
         if (start.equals(goal)) return List.of();
 
         PriorityQueue<float[]> open = new PriorityQueue<>(Comparator.comparingDouble(e -> e[2]));

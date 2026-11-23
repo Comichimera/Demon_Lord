@@ -1,16 +1,16 @@
 package game.ai.sensors;
 
-import game.ai.AIAgent;
+import game.ai.IAIAgent;
 import game.ai.Blackboard;
-import game.ai.Sensor;
+import game.ai.ISensor;
 import org.joml.Vector2i;
 
-public final class HearingSensor implements Sensor {
+public final class HearingSensor implements ISensor {
     private final float decaySeconds;
 
     public HearingSensor(float decaySeconds) { this.decaySeconds = decaySeconds; }
 
-    @Override public void sample(float dt, AIAgent agent, Blackboard bb) {
+    @Override public void sample(float dt, IAIAgent agent, Blackboard bb) {
         Vector2i noise = agent.world().lastNoiseCell();
         if (noise != null) {
             bb.lastHeardNoiseCell = java.util.Optional.of(new Vector2i(noise));

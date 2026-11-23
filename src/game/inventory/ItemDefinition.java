@@ -11,7 +11,7 @@ public final class ItemDefinition {
     private final String iconPath;
     private final boolean stackable;
     private final int maxStack;
-    private final List<ItemEffect> effects;
+    private final List<IItemEffect> effects;
 
     public ItemDefinition(String id,
                           String name,
@@ -28,7 +28,7 @@ public final class ItemDefinition {
                           String iconPath,
                           boolean stackable,
                           int maxStack,
-                          List<ItemEffect> effects) {
+                          List<IItemEffect> effects) {
 
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("Item id must not be empty");
@@ -70,7 +70,7 @@ public final class ItemDefinition {
         return maxStack;
     }
 
-    public List<ItemEffect> getEffects() {
+    public List<IItemEffect> getEffects() {
         return effects;
     }
 }

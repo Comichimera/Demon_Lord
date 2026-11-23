@@ -1,6 +1,7 @@
 package game.ui;
 
 import game.core.Window;
+import game.graphics.TextTexture;
 import game.util.FontLoader;
 
 import java.awt.*;

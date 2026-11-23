@@ -2,6 +2,7 @@ package game.ui;
 
 import game.config.GameConfig;
 import game.core.Window;
+import game.graphics.TextTexture;
 import game.util.FontLoader;
 
 import java.awt.*;

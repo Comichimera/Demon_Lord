@@ -3,6 +3,7 @@ package game.ui;
 import game.achievements.Achievement;
 import game.achievements.AchievementsManager;
 import game.core.Window;
+import game.graphics.TextTexture;
 import game.graphics.TextureLoader;
 import game.util.FontLoader;
 

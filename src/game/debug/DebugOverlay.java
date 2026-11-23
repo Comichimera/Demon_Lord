@@ -5,7 +5,7 @@ import game.core.Window;
 import game.map.MapData;
 import game.map.Tile;
 import game.ui.OverlayRenderer;
-import game.ui.TextTexture;
+import game.graphics.TextTexture;
 import game.util.FontLoader;
 import game.world.Player;
 import game.world.enemy.EnemyManager;
@@ -32,7 +32,7 @@ public class DebugOverlay {
         int ty = (int)(player.getZ() / GameConfig.TILE_SIZE);
 
         StringBuilder sb = new StringBuilder("[DEBUG]\n");
-        for (DebugValue v : DebugValue.values()) {
+        for (EDebugValue v : EDebugValue.values()) {
             if (!DebugConfig.enabled.contains(v)) continue;
             switch (v) {
                 case POSITION ->
