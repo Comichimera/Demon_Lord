@@ -1,5 +1,6 @@
 package game.audio;
 
+import game.config.GameConfig;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.system.MemoryUtil;
@@ -36,7 +37,7 @@ public final class AudioSystem {
         ok = alGetError()==AL_NO_ERROR;
 
         if (ok) {
-            AudioSystemData.loadFromJson("/data/audio/sounds.json", SFX, MUSIC);
+            AudioSystemData.loadFromJson((GameConfig.path("sounds","/data/audio/sounds.json")), SFX, MUSIC);
             for (var e : SFX.entrySet()) {
                 BUFFERS.put(e.getKey(), SoundBuffer.load(e.getValue().path));
             }

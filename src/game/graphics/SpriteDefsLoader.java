@@ -1,5 +1,6 @@
 package game.graphics;
 
+import game.config.GameConfig;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -80,7 +81,7 @@ public final class SpriteDefsLoader {
     public static SpriteDefsLoader loadForMap(String mapJsonPath) {
         Map<String, SpriteDef> merged = new HashMap<>();
 
-        try (InputStream in = resource("/data/map/spritedefs.json")) {
+        try (InputStream in = resource(GameConfig.path("sprites","/data/map/spritedefs.json"))) {
             if (in != null) {
                 JSONObject root = new JSONObject(new JSONTokener(new InputStreamReader(in, StandardCharsets.UTF_8)));
                 putAll(merged, root);

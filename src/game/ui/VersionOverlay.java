@@ -16,7 +16,7 @@ public class VersionOverlay {
 
     public VersionOverlay(Window window, String version) {
         this.renderer = new OverlayRenderer(window);
-        this.font = FontLoader.loadFont("/data/fonts/arial.ttf", 16f);
+        this.font = FontLoader.regular( 16f);
         setVersion(version);
     }
 

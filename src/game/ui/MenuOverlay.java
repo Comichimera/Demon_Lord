@@ -1,5 +1,6 @@
 package game.ui;
 
+import game.config.GameConfig;
 import game.core.Window;
 import game.util.FontLoader;
 
@@ -25,17 +26,17 @@ public class MenuOverlay {
     public MenuOverlay(Window window, List<String> items) {
         this.renderer = new OverlayRenderer(window);
         this.window   = window;
-        this.font     = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 24f);
+        this.font     = FontLoader.menu( 24f);
         this.items    = items;
         this.creditsTex = loadCredits();
         rebuild();
     }
 
     private TextTexture loadCredits() {
-        try (InputStream is = MenuOverlay.class.getResourceAsStream("/data/credits.txt")) {
+        try (InputStream is = MenuOverlay.class.getResourceAsStream(GameConfig.path("credits","/data/credits.txt"))) {
             if (is == null) return null;
             String text = new String(is.readAllBytes(), StandardCharsets.UTF_8).strip();
-            Font creditsFont = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 14f);
+            Font creditsFont = FontLoader.menu( 14f);
             return new TextTexture(text, creditsFont, 6, 4, new Color(1f, 1f, 1f, 0.6f));
         } catch (Exception e) {
             e.printStackTrace();

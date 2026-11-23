@@ -39,7 +39,7 @@ public class DebugMenuState implements IGameState {
     public DebugMenuState(Game game) {
         this.game     = game;
         this.renderer = new OverlayRenderer(game.window);
-        this.font     = FontLoader.loadFont("/data/fonts/arial.ttf", 14f);
+        this.font     = FontLoader.regular( 14f);
     }
 
     @Override

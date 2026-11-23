@@ -1,5 +1,6 @@
 package game.core;
 
+import game.config.GameConfig;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.stb.STBImage;
@@ -34,7 +35,7 @@ public class Window {
             IntBuffer h = stack.mallocInt(1);
             IntBuffer comp = stack.mallocInt(1);
 
-            try (var is = getClass().getResourceAsStream("/data/assets/Logo_TransBG.png")) {
+            try (var is = getClass().getResourceAsStream(GameConfig.path("logo","/data/assets/Logo_TransBG.png"))) {
                 if (is == null) {
                     System.err.println("Icon not found in resources");
                 } else {

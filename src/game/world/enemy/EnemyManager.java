@@ -106,15 +106,7 @@ public class EnemyManager {
 
         String behavior = spec.optString("behavior", null);
         if (behavior == null) {
-            switch (legacyType) {
-                case "patroller":
-                    behavior = "/data/ai/patroller.behavior.json";
-                    break;
-                case "sentry":
-                default:
-                    behavior = "/data/ai/sentry.behavior.json";
-                    break;
-            }
+            behavior = "/data/ai/" + legacyType + ".behaviour.json";
         }
 
         final float speed = (float) spec.optDouble("speed", 1.5);

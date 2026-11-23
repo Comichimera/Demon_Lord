@@ -25,7 +25,7 @@ public class StatusOverlay {
 
     public StatusOverlay(Window window) {
         this.renderer = new OverlayRenderer(window);
-        this.font     = FontLoader.loadFont("/data/fonts/arial.ttf", 16f);
+        this.font     = FontLoader.regular( 16f);
     }
 
     public void render(Player player) {

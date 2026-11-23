@@ -46,8 +46,8 @@ public class AchievementsOverlay {
     public AchievementsOverlay(Window window) {
         this.renderer = new OverlayRenderer(window);
 
-        Font headerFont = FontLoader.loadFont("/data/fonts/arial-bold.ttf", 28f);
-        Font bodyFont   = FontLoader.loadFont("/data/fonts/arial-bold.ttf", 18f);
+        Font headerFont = FontLoader.bold( 28f);
+        Font bodyFont   = FontLoader.bold( 18f);
 
         headerTex = new TextTexture("Achievements", headerFont, 4, 4, Color.WHITE);
 
