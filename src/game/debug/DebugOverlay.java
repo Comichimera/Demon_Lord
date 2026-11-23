@@ -22,7 +22,7 @@ public class DebugOverlay {
 
     public DebugOverlay(Window window) {
         this.renderer = new OverlayRenderer(window);
-        this.font     = FontLoader.loadFont("/data/fonts/arial.ttf", 13f);
+        this.font     = FontLoader.regular( 13f);
     }
 
     public void update(Player player, EnemyManager enemies, MapData map, float fps, float dt) {

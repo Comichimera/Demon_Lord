@@ -56,7 +56,7 @@ public class Game {
     private void init() {
         window       = new Window(800, 600, "Demon_Lord Pre Alpha");
 
-        levelManager = new LevelManager("/data/map/levels.json");
+        levelManager = new LevelManager( GameConfig.path("levels","/data/map/levels.json"));
         versionOverlay = new VersionOverlay(window, game.core.GameData.getVersion());
 
         if (!game.audio.AudioSystem.init()) {

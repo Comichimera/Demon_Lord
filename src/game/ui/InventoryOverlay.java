@@ -37,7 +37,7 @@ public class InventoryOverlay {
     public InventoryOverlay(Window window) {
         this.window = window;
         this.renderer = new OverlayRenderer(window);
-        this.font = FontLoader.loadFont("/data/fonts/arial.ttf", 16f);
+        this.font = FontLoader.regular( 16f);
     }
 
     public void rebuild(Inventory inventory) {

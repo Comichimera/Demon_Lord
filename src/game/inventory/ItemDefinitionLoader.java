@@ -1,5 +1,6 @@
 package game.inventory;
 
+import game.config.GameConfig;
 import game.inventory.effect.HealEffect;
 import game.inventory.effect.TreatInjuryEffect;
 import org.json.JSONArray;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ItemDefinitionLoader {
 
     public static void loadGlobal() {
-        loadFromPath("/data/items/items.json");
+        loadFromPath(GameConfig.path("items", "/data/items/items.json"));
     }
 
     public static void loadAndMergeLevel(String mapPath) {

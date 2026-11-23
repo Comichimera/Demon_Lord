@@ -1,5 +1,6 @@
 package game.map;
 
+import game.config.GameConfig;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -13,7 +14,7 @@ public class TileDefinitionLoader {
     public static Map<Character, TileDefinition> loadDefinitions() {
         Map<Character, TileDefinition> defs = new HashMap<>();
 
-        InputStream in = TileDefinitionLoader.class.getResourceAsStream("/data/map/tiledefs.json");
+        InputStream in = TileDefinitionLoader.class.getResourceAsStream(GameConfig.path("tiles","/data/map/tiledefs.json"));
         if (in == null) {
             throw new RuntimeException("tiledefs.json not found on classpath");
         }

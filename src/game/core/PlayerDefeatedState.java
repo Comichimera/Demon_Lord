@@ -25,7 +25,7 @@ public class PlayerDefeatedState implements IGameState {
 
     @Override
     public void enter() {
-        Font font = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 72f);
+        Font font = FontLoader.menu( 72f);
 
         youDiedTexture = new TextTexture(
                 "YOU DIEDED",

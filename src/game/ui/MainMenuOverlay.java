@@ -17,7 +17,7 @@ public class MainMenuOverlay {
 
     public MainMenuOverlay(String text) {
         this.text = text;
-        font = FontLoader.loadFont("/data/fonts/Rubik-Regular.ttf", 24f);
+        font = FontLoader.menu( 24f);
         generateTexture();
     }
 

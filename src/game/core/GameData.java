@@ -12,7 +12,7 @@ public class GameData {
     }
 
     private static void loadVersion() {
-        try (InputStream input = GameData.class.getResourceAsStream("/data/version.txt")) {
+        try (InputStream input = GameData.class.getResourceAsStream("/version.txt")) {
             if (input != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                 String line;

@@ -1,5 +1,6 @@
 package game.achievements;
 
+import game.config.GameConfig;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -18,14 +19,14 @@ public final class AchievementsManager {
         register(new Achievement(
                 "open_game", "God Gamer",
                 "You opened the game.",
-                "/data/assets/achievements/locked_achievement.png",
-                "/data/assets/achievements/unlocked_achievement_test.jpg"
+                GameConfig.path("achievement.locked","/data/assets/achievements/locked_achievement.png"),
+                GameConfig.path("achievement.unlocked","/data/assets/achievements/unlocked_achievement_test.jpg")
         ));
         register(new Achievement(
                 "go_outside", "God Human",
                 "You quit the game.",
-                "/data/assets/achievements/locked_achievement.png",
-                "/data/assets/achievements/unlocked_achievement_test.jpg"
+                GameConfig.path("achivement.locked","/data/assets/achievements/locked_achievement.png"),
+                GameConfig.path("achievement.unlocked","/data/assets/achievements/unlocked_achievement_test.jpg")
         ));
         load();
     }

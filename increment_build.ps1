@@ -1,4 +1,4 @@
-$path = Join-Path $PSScriptRoot "src\data\version.txt"
+$path = Join-Path $PSScriptRoot "src\version.txt"
 $lines = Get-Content $path
 $lines = $lines | ForEach-Object {
     if ($_ -match '^build=(\d+)$') {

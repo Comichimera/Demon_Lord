@@ -11,7 +11,7 @@ public class LevelCompleteOverlay {
 
     public LevelCompleteOverlay(Window window, String text) {
         this.renderer = new OverlayRenderer(window);
-        Font f = FontLoader.loadFont("/data/fonts/Rubik-BoldItalic.ttf", 32f);
+        Font f = FontLoader.title( 32f);
         this.tex = new TextTexture(text, f, 20, 10, Color.YELLOW);
     }
 
