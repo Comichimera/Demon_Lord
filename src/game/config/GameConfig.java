@@ -28,7 +28,7 @@ public class GameConfig {
         String result = v != null ? v.trim() : fallback;
         if (LOGGED.add(key)) {
             String missing = GameConfig.class.getResource(result) == null ? " MISSING!" : "";
-            System.out.println("[config " + key + " = " + result + (v != null ? " (game.properties)" : " (default)") + missing);
+            System.out.println("[config] " + key + " = " + result + (v != null ? " (game.properties)" : " (default)") + missing);
         }
         return result;
     }

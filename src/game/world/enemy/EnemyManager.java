@@ -106,7 +106,7 @@ public class EnemyManager {
 
         String behavior = spec.optString("behavior", null);
         if (behavior == null) {
-            behavior = "/data/ai/" + legacyType + ".behaviour.json";
+            behavior = "/data/ai/" + legacyType + ".behavior.json";
         }
 
         final float speed = (float) spec.optDouble("speed", 1.5);
