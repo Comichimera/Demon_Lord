@@ -149,13 +149,7 @@ public class PlayingState implements IGameState {
         timer.update(game.timers.levelSeconds());
         game.player.tickHealth(dt);
 
-        if (DebugConfig.gameplayTogglable) {
-            int f3 = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_F3);
-            if (f3 == GLFW_PRESS && !f3Pressed) {
-                f3Pressed = true;
-                DebugConfig.overlayVisible = !DebugConfig.overlayVisible;
-            } else if (f3 == GLFW_RELEASE) { f3Pressed = false; }
-        }
+        handleDebugToggle();
 
         debugOverlay.update(game.player, enemies, game.mapData, fps, dt);
 
@@ -163,34 +157,7 @@ public class PlayingState implements IGameState {
 
         AudioSystem.setListener(game.player.getX(), game.player.getY(), game.player.getZ(), game.player.getYaw());
 
-        playerAttackCooldown -= dt;
-        int fKeyState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_F);
-        if (fKeyState == GLFW_PRESS && !attackPressed && playerAttackCooldown <= 0f && game.player.isAlive()) {
-            attackPressed = true;
-            playerAttackCooldown = PLAYER_ATTACK_RATE / game.player.getAttackSpeedMultiplier();
-            float px = game.player.getX(), pz = game.player.getZ();
-            float attackRange = 1.5f * GameConfig.TILE_SIZE;
-            int finalDamage = Math.max(1, (int)(game.player.getAttackDamage() * game.player.getDamageMultiplier()));
-            for (IEnemy e : enemies.getEnemies()) {
-                if (!(e instanceof BaseEnemy)) continue;
-                BaseEnemy be = (BaseEnemy) e;
-                if (!be.isAlive()) continue;
-                float dx = e.getX() - px, dz = e.getZ() - pz;
-                if (dx * dx + dz * dz > attackRange * attackRange) continue;
-                float toAngle = (float) Math.toDegrees(Math.atan2(dx, -dz));
-                float delta = Math.abs(((toAngle - game.player.getYaw() + 540f) % 360f) - 180f);
-                if (delta <= 50f) {
-                    be.takeDamage(finalDamage);
-                    if (!be.isAlive()) {
-                        int etx = (int)(e.getX() / GameConfig.TILE_SIZE);
-                        int ety = (int)(e.getZ() / GameConfig.TILE_SIZE);
-                        events.post(new GameEvent(EGameEventType.ENEMY_KILLED, etx, ety));
-                    }
-                }
-            }
-        } else if (fKeyState == GLFW_RELEASE) {
-            attackPressed = false;
-        }
+        handleCombat(dt);
 
         int tx = (int)(game.player.getX() / GameConfig.TILE_SIZE);
         int ty = (int)(game.player.getZ() / GameConfig.TILE_SIZE);
@@ -205,30 +172,74 @@ public class PlayingState implements IGameState {
             }
         }
 
+        handlePickups(ty, tx);
+
+        handleDoors(tx, ty);
+
+        handleInventoryKeys();
+
+        checkLevelExit(ty, tx);
+
+        if (enemies != null) {
+            enemies.update(dt, game.mapData, game.player);
+        }
+    }
+
+    private void handleDebugToggle() {
+        if (DebugConfig.gameplayTogglable) {
+            int f3 = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_F3);
+            if (f3 == GLFW_PRESS && !f3Pressed) {
+                f3Pressed = true;
+                DebugConfig.overlayVisible = !DebugConfig.overlayVisible;
+            } else if (f3 == GLFW_RELEASE) { f3Pressed = false; }
+        }
+    }
+
+    private void checkLevelExit(int ty, int tx) {
         if (ty >= 0 && ty < game.mapData.getHeight()
                 && tx >= 0 && tx < game.mapData.getWidth()) {
 
-            Tile current = game.mapData.getTile(ty, tx);
-
-            if (current.hasItem()) {
-                String itemId = current.getItemId();
-
-                boolean added = game.player.getInventory().addItem(itemId, 1);
-                if (added) {
-                    current.clearItem();
-                    System.out.println("Picked up item '" + itemId + "'");
-
-                    if (inventoryOverlay != null) {
-                        inventoryOverlay.rebuild(game.player.getInventory());
-                    }
-
-                    game.renderer.updateFloorGeometry();
-                } else {
-                    System.out.println("Inventory full, could not pick up '" + itemId + "'");
+            Tile t = game.mapData.getTile(ty, tx);
+            if (t.isEndsLevel()) {
+                boolean canFinish = (objectives == null) || objectives.allMandatoryComplete();
+                if (canFinish) {
+                    game.changeState(new LevelCompleteState(game));
                 }
             }
         }
+    }
 
+    private void handleInventoryKeys() {
+        int tabState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_TAB);
+        if (tabState == GLFW_PRESS && !tabPressed) {
+            tabPressed = true;
+            game.player.getInventory().selectNext();
+            inventoryOverlay.rebuild(game.player.getInventory());
+        } else if (tabState == GLFW_RELEASE) {
+            tabPressed = false;
+        }
+
+        int gKeyState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_G);
+        if (gKeyState == GLFW_PRESS && !useItemPressed && game.player.isAlive()) {
+            useItemPressed = true;
+            InventoryEntry selected = game.player.getInventory().getSelectedEntry();
+            if (selected != null) {
+                ItemDefinition def = selected.getDefinition();
+                if (!def.getEffects().isEmpty()) {
+                    for (IItemEffect effect : def.getEffects()) {
+                        effect.apply(game.player);
+                    }
+                    game.player.getInventory().removeItem(def.getId(), 1);
+                    inventoryOverlay.rebuild(game.player.getInventory());
+                    timer.pushPopup("Used: " + def.getName(), 1.5f);
+                }
+            }
+        } else if (gKeyState == GLFW_RELEASE) {
+            useItemPressed = false;
+        }
+    }
+
+    private void handleDoors(int tx, int ty) {
         int interactState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_E);
         if (interactState == GLFW_PRESS && !interactPressed) {
             interactPressed = true;
@@ -273,49 +284,62 @@ public class PlayingState implements IGameState {
         } else if (interactState == GLFW_RELEASE) {
             interactPressed = false;
         }
+    }
 
-        int tabState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_TAB);
-        if (tabState == GLFW_PRESS && !tabPressed) {
-            tabPressed = true;
-            game.player.getInventory().selectNext();
-            inventoryOverlay.rebuild(game.player.getInventory());
-        } else if (tabState == GLFW_RELEASE) {
-            tabPressed = false;
-        }
-
-        int gKeyState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_G);
-        if (gKeyState == GLFW_PRESS && !useItemPressed && game.player.isAlive()) {
-            useItemPressed = true;
-            InventoryEntry selected = game.player.getInventory().getSelectedEntry();
-            if (selected != null) {
-                ItemDefinition def = selected.getDefinition();
-                if (!def.getEffects().isEmpty()) {
-                    for (IItemEffect effect : def.getEffects()) {
-                        effect.apply(game.player);
-                    }
-                    game.player.getInventory().removeItem(def.getId(), 1);
-                    inventoryOverlay.rebuild(game.player.getInventory());
-                    timer.pushPopup("Used: " + def.getName(), 1.5f);
-                }
-            }
-        } else if (gKeyState == GLFW_RELEASE) {
-            useItemPressed = false;
-        }
-
+    private void handlePickups(int ty, int tx) {
         if (ty >= 0 && ty < game.mapData.getHeight()
                 && tx >= 0 && tx < game.mapData.getWidth()) {
 
-            Tile t = game.mapData.getTile(ty, tx);
-            if (t.isEndsLevel()) {
-                boolean canFinish = (objectives == null) || objectives.allMandatoryComplete();
-                if (canFinish) {
-                    game.changeState(new LevelCompleteState(game));
+            Tile current = game.mapData.getTile(ty, tx);
+
+            if (current.hasItem()) {
+                String itemId = current.getItemId();
+
+                boolean added = game.player.getInventory().addItem(itemId, 1);
+                if (added) {
+                    current.clearItem();
+                    System.out.println("Picked up item '" + itemId + "'");
+
+                    if (inventoryOverlay != null) {
+                        inventoryOverlay.rebuild(game.player.getInventory());
+                    }
+
+                    game.renderer.updateFloorGeometry();
+                } else {
+                    System.out.println("Inventory full, could not pick up '" + itemId + "'");
                 }
             }
         }
+    }
 
-        if (enemies != null) {
-            enemies.update(dt, game.mapData, game.player);
+    private void handleCombat(float dt) {
+        playerAttackCooldown -= dt;
+        int fKeyState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_F);
+        if (fKeyState == GLFW_PRESS && !attackPressed && playerAttackCooldown <= 0f && game.player.isAlive()) {
+            attackPressed = true;
+            playerAttackCooldown = PLAYER_ATTACK_RATE / game.player.getAttackSpeedMultiplier();
+            float px = game.player.getX(), pz = game.player.getZ();
+            float attackRange = 1.5f * GameConfig.TILE_SIZE;
+            int finalDamage = Math.max(1, (int)(game.player.getAttackDamage() * game.player.getDamageMultiplier()));
+            for (IEnemy e : enemies.getEnemies()) {
+                if (!(e instanceof BaseEnemy)) continue;
+                BaseEnemy be = (BaseEnemy) e;
+                if (!be.isAlive()) continue;
+                float dx = e.getX() - px, dz = e.getZ() - pz;
+                if (dx * dx + dz * dz > attackRange * attackRange) continue;
+                float toAngle = (float) Math.toDegrees(Math.atan2(dx, -dz));
+                float delta = Math.abs(((toAngle - game.player.getYaw() + 540f) % 360f) - 180f);
+                if (delta <= 50f) {
+                    be.takeDamage(finalDamage);
+                    if (!be.isAlive()) {
+                        int etx = (int)(e.getX() / GameConfig.TILE_SIZE);
+                        int ety = (int)(e.getZ() / GameConfig.TILE_SIZE);
+                        events.post(new GameEvent(EGameEventType.ENEMY_KILLED, etx, ety));
+                    }
+                }
+            }
+        } else if (fKeyState == GLFW_RELEASE) {
+            attackPressed = false;
         }
     }
 
