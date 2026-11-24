@@ -56,7 +56,6 @@ public final class EnemyEntity extends BaseEnemy implements IEnemy, IAIAgent {
     }
 
     @Override public void update(float dt, MapData map, Player player, EventBus events) {
-        world.accumulateTime(dt);
         ai.tick(dt, this);
 
         if (moveIntentCell == null && aimTarget != null) {

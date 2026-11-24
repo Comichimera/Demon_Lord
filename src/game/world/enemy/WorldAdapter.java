@@ -16,8 +16,6 @@ public final class WorldAdapter implements IWorldAPI {
     private final MapData map;
     private final Player player;
 
-    private float timeSeconds = 0f;
-
     private Vector2i lastNoiseCell = null;
 
     private List<Vector2i> patrol = List.of();
@@ -133,7 +131,6 @@ public final class WorldAdapter implements IWorldAPI {
     @Override
     public List<Vector2i> patrolWaypoints() { return patrol; }
 
-    public void accumulateTime(float dt) { timeSeconds += dt; }
     public void onNoise(Vector2i cell) { this.lastNoiseCell = new Vector2i(cell); }
     public void setPatrol(List<Vector2i> patrol) { this.patrol = List.copyOf(patrol); }
 
