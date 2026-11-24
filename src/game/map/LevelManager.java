@@ -1,5 +1,6 @@
 package game.map;
 
+import game.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,7 +63,7 @@ public class LevelManager {
                 levels.add(new Level(id, name, mapPath, target, musicId));
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            Log.error("Couldn't load level list " + path, e);
             throw new RuntimeException("Failed to load levels", e);
         }
     }

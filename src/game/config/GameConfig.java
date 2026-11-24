@@ -22,7 +22,9 @@ public class GameConfig {
         try (InputStream is = GameConfig.class.getResourceAsStream("/data/game.properties")) {
             if (is != null) props.load(is);
             else Log.info("[config] game.properties not found, using defaults");
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            Log.warn("Couldn't read game.properties", e);
+        }
         String val = props.getProperty("health.system", "injuries").trim().toLowerCase();
         healthSystem = val.equals("classic") ? HealthSystem.CLASSIC : HealthSystem.INJURIES;
     }

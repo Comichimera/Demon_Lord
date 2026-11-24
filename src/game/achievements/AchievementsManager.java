@@ -76,7 +76,9 @@ public final class AchievementsManager {
                     }
                 }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            Log.warn("Couldn't read achievements save, starting fresh", e);
+        }
     }
 
     private void save() {
@@ -88,7 +90,7 @@ public final class AchievementsManager {
             JSONObject root = new JSONObject().put("unlocked", unlocked);
             Files.writeString(saveFile, root.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warn("Couldn't save achievements", e);
         }
     }
 }

@@ -22,7 +22,7 @@ public class FontLoader {
             Font font = Font.createFont(Font.TRUETYPE_FONT, is);
             return font.deriveFont(Font.PLAIN, size);
         } catch (FontFormatException | IOException e) {
-            e.printStackTrace();
+            Log.warn("Couldn't load font " + path + ", using fallback", e);
             return new Font("Monospaced", Font.PLAIN, (int) size);
         }
     }

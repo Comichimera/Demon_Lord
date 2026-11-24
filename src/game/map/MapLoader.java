@@ -119,7 +119,7 @@ public class MapLoader {
             return new MapData(tiles, spawnX, spawnY, yaw, objectiveSpecs, enemySpecs, path);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.error("Couldn't load map " + path, e);
             throw new RuntimeException("Failed to load map", e);
         }
     }

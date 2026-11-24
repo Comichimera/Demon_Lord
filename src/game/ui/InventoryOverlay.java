@@ -6,6 +6,7 @@ import game.graphics.TextTexture;
 import game.inventory.Inventory;
 import game.inventory.InventoryEntry;
 import game.util.FontLoader;
+import game.util.Log;
 
 import java.awt.*;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class InventoryOverlay {
             iconCache.put(path, tex);
             return tex;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warn("Couldn't load item icon " + path, e);
             return null;
         }
     }

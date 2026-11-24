@@ -1,6 +1,7 @@
 package game.map;
 
 import game.config.GameConfig;
+import game.util.Log;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -86,7 +87,8 @@ public final class SpriteDefsLoader {
                 JSONObject root = new JSONObject(new JSONTokener(new InputStreamReader(in, StandardCharsets.UTF_8)));
                 putAll(merged, root);
             }
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            Log.warn("Couldn't read shared sprite defs", e);
         }
 
         String dir = parentDir(mapJsonPath);

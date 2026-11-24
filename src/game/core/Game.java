@@ -109,7 +109,7 @@ public class Game {
         try {
             renderer = new Renderer(mapData);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.error("Couldn't create the renderer", e);
             System.exit(-1);
         }
 

@@ -4,6 +4,7 @@ import game.config.GameConfig;
 import game.core.Window;
 import game.graphics.TextTexture;
 import game.util.FontLoader;
+import game.util.Log;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -40,7 +41,7 @@ public class MenuOverlay {
             Font creditsFont = FontLoader.menu( 14f);
             return new TextTexture(text, creditsFont, 6, 4, new Color(1f, 1f, 1f, 0.6f));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.warn("Couldn't load credits", e);
             return null;
         }
     }

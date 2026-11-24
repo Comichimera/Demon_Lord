@@ -6,6 +6,7 @@ import game.core.Window;
 import game.graphics.TextTexture;
 import game.graphics.TextureLoader;
 import game.util.FontLoader;
+import game.util.Log;
 
 import java.awt.*;
 import java.lang.reflect.Field;
@@ -156,7 +157,7 @@ public class AchievementsOverlay {
             String p = (path.startsWith("/")) ? path : ("/" + path);
             return TextureLoader.loadTexture(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.warn("Couldn't load achievement image " + path, e);
             return 0;
         }
     }
