@@ -43,6 +43,7 @@ public class LevelCompleteState implements IGameState {
             enterPressed = true;
 
             if (game.levelManager.advanceToNextLevel()) {
+                game.markLevelStart();
                 game.changeState(new PlayingState(game));
             } else {
                 game.changeState(new MainMenuState(game));

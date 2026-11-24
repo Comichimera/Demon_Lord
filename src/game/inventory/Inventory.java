@@ -114,6 +114,17 @@ public final class Inventory {
         selectedSlot = 0;
     }
 
+    public List<InventoryEntry> snapshot() {
+        List<InventoryEntry> copy = new ArrayList<>();
+        for (InventoryEntry e : entries) copy.add(new InventoryEntry(e.getDefinition(), e.getCount()));
+        return copy;
+    }
+
+    public void restore(List<InventoryEntry> saved) {
+        clear();
+        for (InventoryEntry e : saved) entries.add(new InventoryEntry(e.getDefinition(), e.getCount()));
+    }
+
     public int getSelectedSlot() {
         return selectedSlot;
     }

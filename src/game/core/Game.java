@@ -9,6 +9,7 @@ import game.graphics.Renderer;
 import game.input.InputEdge;
 import game.input.InputGate;
 import game.input.KeyboardInput;
+import game.inventory.InventoryEntry;
 import game.logic.objective.ICondition;
 import game.logic.objective.IConditionFactory;
 import game.logic.objective.Registries;
@@ -20,6 +21,7 @@ import game.util.Log;
 import game.world.Player;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -101,6 +103,13 @@ public class Game {
             window.update();
         }
     }
+
+    private List<InventoryEntry> levelStartItems = List.of();
+
+    public void markLevelStart() {
+        levelStartItems = player.getInventory().snapshot();
+    }
+
     public void reloadLevel() {
         String mapPath = levelManager.getCurrentLevel().mapPath;
         mapData = MapLoader.loadMap(mapPath);
@@ -119,6 +128,7 @@ public class Game {
         player.setPosition(sx * ts + ts / 2f, sy * ts + ts / 2f);
         player.setYaw(mapData.getCameraYaw());
         player.resetHealth();
+        player.getInventory().restore(levelStartItems);
     }
     private void render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

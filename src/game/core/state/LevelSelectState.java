@@ -36,6 +36,7 @@ public class LevelSelectState implements IGameState {
                 game.timers.startRun();
             }
             game.player.getInventory().clear();
+            game.markLevelStart();
             game.changeState(new PlayingState(game));
         }
     }

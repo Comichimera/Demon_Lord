@@ -50,8 +50,6 @@ public class PlayerDefeatedState implements IGameState {
         if (state == GLFW_PRESS && !enterPressed) {
             enterPressed = true;
 
-            game.player.getInventory().clear();
-
             game.changeState(new PlayingState(game));
         } else if (state == GLFW_RELEASE) {
             enterPressed = false;
