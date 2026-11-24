@@ -122,11 +122,6 @@ public final class WorldAdapter implements IWorldAPI {
     }
 
     @Override
-    public float seconds() {
-        return timeSeconds;
-    }
-
-    @Override
     public Vector2i playerCell() {
         return worldToCell(player.getX(), player.getZ());
     }

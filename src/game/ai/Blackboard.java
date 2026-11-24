@@ -2,11 +2,10 @@ package game.ai;
 
 import org.joml.Vector2i;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class Blackboard {
     public Optional<Vector2i> lastSeenPlayerCell = Optional.empty();
     public float timeSinceSeenPlayer = Float.POSITIVE_INFINITY;
@@ -17,9 +16,6 @@ public final class Blackboard {
     public float suspicion = 0f;
 
     public Optional<List<Vector2i>> currentPath = Optional.empty();
-    public int currentPathIndex = 0;
 
-    public final Deque<String> debugNotes = new ArrayDeque<>();
-
-    public void clearPath() { currentPath = Optional.empty(); currentPathIndex = 0; }
+    public void clearPath() { currentPath = Optional.empty(); }
 }

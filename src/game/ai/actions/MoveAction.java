@@ -24,9 +24,13 @@ public final class MoveAction implements IAction {
         if (p.has("toward")) {
             String t = p.getString("toward");
             switch (t) {
-                case "lastSeenPlayer": return new MoveAction(Mode.TOWARD_LAST_SEEN, spd, null);
-                case "lastHeardNoise": return new MoveAction(Mode.TOWARD_LAST_HEARD, spd, null);
-                default: throw new IllegalArgumentException("Unknown 'toward': " + t);
+                case "lastSeenPlayer" -> {
+                    return new MoveAction(Mode.TOWARD_LAST_SEEN, spd, null);
+                }
+                case "lastHeardNoise" -> {
+                    return new MoveAction(Mode.TOWARD_LAST_HEARD, spd, null);
+                }
+                default -> throw new IllegalArgumentException("Unknown 'toward': " + t);
             }
         }
         String mode = p.optString("mode", "randomAdjacent");
@@ -44,10 +48,10 @@ public final class MoveAction implements IAction {
         switch (mode) {
             case TOWARD_LAST_SEEN:
                 if (bb.lastSeenPlayerCell.isEmpty()) return Status.FAILURE;
-                return stepToward(agent, bb, bb.lastSeenPlayerCell.get());
+                return stepToward(agent, bb.lastSeenPlayerCell.get());
             case TOWARD_LAST_HEARD:
                 if (bb.lastHeardNoiseCell.isEmpty()) return Status.FAILURE;
-                return stepToward(agent, bb, bb.lastHeardNoiseCell.get());
+                return stepToward(agent, bb.lastHeardNoiseCell.get());
             case PATH_PROVIDER:
             default:
                 if (bb.currentPath.isEmpty()) {
@@ -55,7 +59,7 @@ public final class MoveAction implements IAction {
                     if (np.isEmpty()) return Status.FAILURE;
                     bb.currentPath = np;
                 }
-                List<Vector2i> stored = bb.currentPath.get();
+                List<Vector2i> stored = bb.currentPath.orElseThrow();
                 Vector2i goal = stored.get(stored.size() - 1);
                 if (agent.getCell().equals(goal)) {
                     bb.clearPath();
@@ -71,7 +75,7 @@ public final class MoveAction implements IAction {
         }
     }
 
-    private Status stepToward(IAIAgent agent, Blackboard bb, Vector2i target) {
+    private Status stepToward(IAIAgent agent, Vector2i target) {
         if (agent.getCell().equals(target)) return Status.SUCCESS;
         List<Vector2i> path = AStar.findPath(agent.getCell(), target, agent.world());
         if (path.isEmpty()) return Status.FAILURE;
