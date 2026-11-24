@@ -19,11 +19,9 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
-    private MapData mapData;
+    private final MapData mapData;
 
     private final float tileSize = GameConfig.TILE_SIZE;
-    private final float roomHalfSize = GameConfig.ROOM_HALF_SIZE;
-    private final float roomHeight = GameConfig.ROOM_HEIGHT;
 
     private final Map<String,TexturedCubeRenderer> cubeRenderers = new HashMap<>();
     private final Map<String,TexturedQuadRenderer> quadRenderers = new HashMap<>();
@@ -47,6 +45,7 @@ public class Renderer {
         generateFloorGeometry();
 
         for (String tex : cubeInstances.keySet()) {
+            float roomHeight = GameConfig.ROOM_HEIGHT;
             cubeRenderers.put(tex, new TexturedCubeRenderer(tileSize, roomHeight, tex));
         }
 
@@ -90,6 +89,7 @@ public class Renderer {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 Tile t = tiles[row][col];
+                float roomHalfSize = GameConfig.ROOM_HALF_SIZE;
                 float centerX = col * tileSize + roomHalfSize;
                 float centerZ = row * tileSize + roomHalfSize;
 
@@ -140,41 +140,6 @@ public class Renderer {
                 }
             }
         }
-    }
-
-
-
-    private void addFloor(List<Float> list, float centerX, float centerZ) {
-        addQuad(list,
-                centerX - roomHalfSize, 0f, centerZ - roomHalfSize,
-                centerX + roomHalfSize, 0f, centerZ - roomHalfSize,
-                centerX + roomHalfSize, 0f, centerZ + roomHalfSize,
-                centerX - roomHalfSize, 0f, centerZ + roomHalfSize,
-                0.5f, 0f, 0f);
-    }
-
-    private void addQuad(List<Float> list,
-                         float x1, float y1, float z1,
-                         float x2, float y2, float z2,
-                         float x3, float y3, float z3,
-                         float x4, float y4, float z4,
-                         float r, float g, float b) {
-        addVertex(list, x1, y1, z1, r, g, b);
-        addVertex(list, x2, y2, z2, r, g, b);
-        addVertex(list, x3, y3, z3, r, g, b);
-        addVertex(list, x1, y1, z1, r, g, b);
-        addVertex(list, x3, y3, z3, r, g, b);
-        addVertex(list, x4, y4, z4, r, g, b);
-    }
-
-    private void addVertex(List<Float> list, float x, float y, float z,
-                           float r, float g, float b) {
-        list.add(x);
-        list.add(y);
-        list.add(z);
-        list.add(r);
-        list.add(g);
-        list.add(b);
     }
 
     public void render(Player player, float elapsedSeconds) {

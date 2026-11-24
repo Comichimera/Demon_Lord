@@ -22,7 +22,6 @@ public final class TimerService {
     }
 
     public void pause()  { running = false; }
-    public void resume() { running = true; }
 
     public void completeLevel() {
         if (!levelCommitted) {
@@ -32,11 +31,6 @@ public final class TimerService {
         running = false;
     }
 
-    public void resetLevel() {
-        levelElapsed = 0.0;
-        levelCommitted = false;
-    }
-
     public double levelSeconds() { return levelElapsed; }
     public double totalSeconds() { return totalElapsed; }
 
@@ -44,12 +38,5 @@ public final class TimerService {
         int m = (int)(secs / 60);
         int s = (int)(secs % 60);
         return String.format("%d:%02d", m, s);
-    }
-
-    public static String mmss_t(double secs) {
-        int m = (int)(secs / 60);
-        double s = secs - m * 60;
-        if (s >= 59.95) { s = 0; m++; }
-        return String.format("%d:%04.1f", m, s);
     }
 }

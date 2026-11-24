@@ -46,11 +46,6 @@ public final class ObjectiveManager implements IEventListener {
         return true;
     }
 
-    public String statusLine(){
-        int done = 0; for (Objective o: list) if (o.condition.isTrue()) done++;
-        return done + "/" + list.size() + " objectives";
-    }
-
     public List<String> drainCompletedPopups() {
         List<String> out = new ArrayList<>(popupQueue);
         popupQueue.clear();

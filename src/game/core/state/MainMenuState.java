@@ -41,7 +41,7 @@ public class MainMenuState implements IGameState {
             game.changeState(new DebugMenuState(game));
             return;
         } else if (glfwGetKey(win, GLFW_KEY_F3) == GLFW_RELEASE) { f3Pressed = false; }
-        int choice = menu.update(game.window.getWindowHandle(), dt);
+        int choice = menu.update(game.window.getWindowHandle());
         if (choice != -1) {
             switch (choice) {
                 case 0:

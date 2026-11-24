@@ -35,12 +35,10 @@ public final class Inventory {
                     if (space <= 0) continue;
 
                     int toAdd = Math.min(space, remaining);
-                    if (toAdd > 0) {
-                        e.increment(toAdd);
-                        remaining -= toAdd;
-                        if (remaining == 0) {
-                            return true;
-                        }
+                    e.increment(toAdd);
+                    remaining -= toAdd;
+                    if (remaining == 0) {
+                        return true;
                     }
                 }
             }
@@ -105,10 +103,6 @@ public final class Inventory {
 
     public List<InventoryEntry> getEntries() {
         return Collections.unmodifiableList(entries);
-    }
-
-    public int getMaxSlots() {
-        return MAX_SLOTS;
     }
 
     public int getUsedSlots() {

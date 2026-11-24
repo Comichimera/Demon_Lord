@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class MenuOverlay {
+public final class MenuOverlay {
     private final OverlayRenderer renderer;
     private final Window window;
     private final Font font;
@@ -46,7 +46,7 @@ public class MenuOverlay {
         }
     }
 
-    public int update(long windowHandle, float deltaTime) {
+    public int update(long windowHandle) {
         int prev = selected;
 
         if (glfwGetKey(windowHandle, GLFW_KEY_UP) == GLFW_PRESS && !upPressed) {
@@ -78,12 +78,6 @@ public class MenuOverlay {
         }
 
         return -1;
-    }
-
-    public void activate(long windowHandle) {
-        upPressed    = glfwGetKey(windowHandle, GLFW_KEY_UP)    == GLFW_PRESS;
-        downPressed  = glfwGetKey(windowHandle, GLFW_KEY_DOWN)  == GLFW_PRESS;
-        enterPressed = glfwGetKey(windowHandle, GLFW_KEY_ENTER) == GLFW_PRESS;
     }
 
     public void rebuild() {

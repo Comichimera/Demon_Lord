@@ -28,7 +28,7 @@ public class LevelSelectState implements IGameState {
         long win = game.window.getWindowHandle();
         if (InputGate.isGated(win)) return;
 
-        int choice = menu.update(win, dt);
+        int choice = menu.update(win);
         if (choice != -1) {
             game.levelManager.advanceToLevel(choice);
 

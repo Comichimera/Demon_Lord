@@ -127,13 +127,6 @@ public final class EnemySpriteRenderer {
         }
     }
 
-    private static TexturedQuadRenderer selectRenderer(QuadSet qs, float deltaDeg) {
-        float a = abs(deltaDeg);
-        if (a <= 45f)  return qs.front;
-        if (a >= 135f) return qs.back;
-        return (deltaDeg > 0f) ? qs.sideLeft : qs.sideRight;
-    }
-
     private static int frameAt(SpriteDefsLoader.AnimDef a, float tSeconds) {
         if (a.count <= 1) return a.start;
 

@@ -7,13 +7,15 @@ import game.util.FontLoader;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 
-public class VersionOverlay {
+public final class VersionOverlay {
+
+    private static final int MARGIN = 10;
+
     private final OverlayRenderer renderer;
     private final Font font;
     private TextTexture tex;
     private String lastRendered = "";
     private String lastVersion  = "";
-    private final int margin = 10;
 
     public VersionOverlay(Window window, String version) {
         this.renderer = new OverlayRenderer(window);
@@ -39,7 +41,7 @@ public class VersionOverlay {
         }
 
         String raw = version + suffix;
-        int maxW = renderer.window.getWidth() - margin * 2;
+        int maxW = renderer.window.getWidth() - MARGIN * 2;
 
         String fitted = fitToWidth(font, raw, maxW);
 
