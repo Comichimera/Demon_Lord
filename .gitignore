@@ -31,3 +31,10 @@ bin/
 ### Windows ###
 desktop.ini
 Thumbs.db
+
+### Java ###
+hs_err_pid*.log
+replay_pid*.log
+
+### Game ###
+achievements.json
