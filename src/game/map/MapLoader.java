@@ -2,6 +2,7 @@ package game.map;
 
 import game.inventory.ItemDefinitionLoader;
 import game.inventory.ItemRegistry;
+import game.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,6 +12,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class MapLoader {
     public static MapData loadMap(String path) {
@@ -49,7 +51,7 @@ public class MapLoader {
                     JSONObject overrideJson = typeSection.getJSONObject(typeKey);
                     TileFlags flags = TileFlags.fromJson(overrideJson);
 
-                    java.util.Set<Character> targets = TileRegistry.idsForCategory(typeKey);
+                    Set<Character> targets = TileRegistry.idsForCategory(typeKey);
                     if (targets.isEmpty()) continue;
 
                     for (int y = 0; y < rows; y++) {
@@ -78,9 +80,9 @@ public class MapLoader {
             int spawnY = playerObj.getJSONObject("spawn").getInt("y");
             float yaw  = playerObj.getJSONObject("camera").getFloat("yaw");
 
-            java.util.List<org.json.JSONObject> objectiveSpecs = new java.util.ArrayList<>();
+            List<JSONObject> objectiveSpecs = new ArrayList<>();
             if (json.has("objectives")) {
-                org.json.JSONArray arr = json.getJSONArray("objectives");
+                JSONArray arr = json.getJSONArray("objectives");
                 for (int i = 0; i < arr.length(); i++) {
                     objectiveSpecs.add(arr.getJSONObject(i));
                 }
@@ -99,7 +101,7 @@ public class MapLoader {
                         Tile t = tiles[y][x];
                         t.setItem(itemId);
                     } else {
-                        System.err.println("Item placement out of bounds in " + path
+                        Log.warn("Item placement out of bounds in " + path
                                 + " at x=" + x + ", y=" + y + " for id=" + itemId);
                     }
                 }

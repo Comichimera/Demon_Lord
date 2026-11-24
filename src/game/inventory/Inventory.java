@@ -1,5 +1,7 @@
 package game.inventory;
 
+import game.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +17,7 @@ public final class Inventory {
         if (amount <= 0) return true;
         ItemDefinition def = ItemRegistry.get(itemId);
         if (def == null) {
-            System.err.println("Inventory, unknown item id: " + itemId);
+            Log.warn("Inventory, unknown item id: " + itemId);
             return false;
         }
         return addItem(def, amount);

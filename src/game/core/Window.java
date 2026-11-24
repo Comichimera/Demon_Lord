@@ -1,6 +1,7 @@
 package game.core;
 
 import game.config.GameConfig;
+import game.util.Log;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.stb.STBImage;
@@ -37,7 +38,7 @@ public class Window {
 
             try (var is = getClass().getResourceAsStream(GameConfig.path("logo","/data/assets/Logo_TransBG.png"))) {
                 if (is == null) {
-                    System.err.println("Icon not found in resources");
+                    Log.warn("Icon not found in resources");
                 } else {
                     byte[] data = is.readAllBytes();
                     ByteBuffer buffer = ByteBuffer.allocateDirect(data.length);
@@ -57,7 +58,7 @@ public class Window {
                         icon.free();
                         STBImage.stbi_image_free(image);
                     } else {
-                        System.err.println("Failed to decode icon image");
+                        Log.warn("Failed to decode icon image");
                     }
                 }
             } catch (IOException e) {

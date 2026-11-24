@@ -3,6 +3,7 @@ package game.ai.actions;
 import game.ai.IAIAgent;
 import game.ai.IAction;
 import game.ai.Blackboard;
+import game.config.GameConfig;
 import org.joml.Vector2i;
 import org.json.JSONObject;
 
@@ -64,8 +65,8 @@ public final class ScanAction implements IAction {
 
             float rad = (float) Math.toRadians(angleDeg);
             Vector2i cell = agent.getCell();
-            float cx = (cell.x + 0.5f) * game.config.GameConfig.TILE_SIZE;
-            float cz = (cell.y + 0.5f) * game.config.GameConfig.TILE_SIZE;
+            float cx = (cell.x + 0.5f) * GameConfig.TILE_SIZE;
+            float cz = (cell.y + 0.5f) * GameConfig.TILE_SIZE;
             agent.faceToward(cx + (float) Math.sin(rad), cz + (float) Math.cos(rad));
         }
 

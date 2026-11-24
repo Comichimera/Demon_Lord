@@ -51,8 +51,8 @@ public final class ObjectiveManager implements IEventListener {
         return done + "/" + list.size() + " objectives";
     }
 
-    public java.util.List<String> drainCompletedPopups() {
-        java.util.List<String> out = new java.util.ArrayList<>(popupQueue);
+    public List<String> drainCompletedPopups() {
+        List<String> out = new ArrayList<>(popupQueue);
         popupQueue.clear();
         return out;
     }

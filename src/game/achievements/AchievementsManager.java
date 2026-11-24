@@ -1,6 +1,7 @@
 package game.achievements;
 
 import game.config.GameConfig;
+import game.util.Log;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -48,15 +49,14 @@ public final class AchievementsManager {
     }
 
     public void printStartupSummary() {
-        System.out.println("=== Achievements at startup ===");
+        Log.info("=== Achievements at startup ===");
         for (Achievement a : list()) {
-            System.out.printf("%s  %-18s  %-28s  %s%n",
+            Log.info(String.format("%s %-18s %-28s %s",
                     a.unlocked ? "✓" : "✗",
                     a.id,
                     a.title,
-                    a.unlocked ? "Unlocked" : "Locked");
+                    a.unlocked ? "Unlocked" : "Locked"));
         }
-        System.out.println();
     }
 
     private void register(Achievement a) { all.put(a.id, a); }

@@ -5,6 +5,7 @@ import game.input.InputEdge;
 import game.map.Tile;
 import game.ui.InventoryOverlay;
 import game.ui.TimerOverlay;
+import game.util.Log;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -56,7 +57,7 @@ public class InventoryController {
                 boolean added = game.player.getInventory().addItem(itemId, 1);
                 if (added) {
                     current.clearItem();
-                    System.out.println("Picked up item '" + itemId + "'");
+                    Log.info("Picked up item '" + itemId + "'");
 
                     if (inventoryOverlay != null) {
                         inventoryOverlay.rebuild(game.player.getInventory());
@@ -64,7 +65,7 @@ public class InventoryController {
 
                     game.renderer.updateFloorGeometry();
                 } else {
-                    System.out.println("Inventory full, could not pick up '" + itemId + "'");
+                    Log.info("Inventory full, could not pick up '" + itemId + "'");
                 }
             }
         }

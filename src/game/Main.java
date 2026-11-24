@@ -1,6 +1,7 @@
 package game;
 
 import game.core.Game;
+import game.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,11 +12,11 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        Log.init();
         String nativePath = extractNativeLibraries();
         System.setProperty("org.lwjgl.librarypath", nativePath);
 
         Game game = new Game();
-        Runtime.getRuntime().addShutdownHook(new Thread(game::cleanup));
         game.run();
     }
 

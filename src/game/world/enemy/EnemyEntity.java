@@ -5,7 +5,9 @@ import game.ai.BehaviorController;
 import game.ai.ISensor;
 import game.ai.IWorldAPI;
 import game.ai.sensors.HearingSensor;
+import game.ai.sensors.SuspicionSensor;
 import game.ai.sensors.VisionSensor;
+import game.config.GameConfig;
 import game.logic.event.EventBus;
 import game.map.MapData;
 import game.world.Player;
@@ -45,7 +47,7 @@ public final class EnemyEntity extends BaseEnemy implements IEnemy, IAIAgent {
         List<ISensor> sensors = List.of(
                 new VisionSensor(fovDeg, viewTiles),
                 new HearingSensor(3.0f),
-                new game.ai.sensors.SuspicionSensor()
+                new SuspicionSensor()
         );
 
         this.ai = BehaviorController.fromJsonResource(behaviorJson, sensors, 10f);
@@ -58,15 +60,15 @@ public final class EnemyEntity extends BaseEnemy implements IEnemy, IAIAgent {
         ai.tick(dt, this);
 
         if (moveIntentCell == null && aimTarget != null) {
-            float cx = (aimTarget.x + 0.5f) * game.config.GameConfig.TILE_SIZE;
-            float cz = (aimTarget.y + 0.5f) * game.config.GameConfig.TILE_SIZE;
+            float cx = (aimTarget.x + 0.5f) * GameConfig.TILE_SIZE;
+            float cz = (aimTarget.y + 0.5f) * GameConfig.TILE_SIZE;
             faceToward(cx, cz);
         }
         aimTarget = null;
 
         if (moveIntentCell != null) {
-            float cx = (moveIntentCell.x + 0.5f) * game.config.GameConfig.TILE_SIZE;
-            float cz = (moveIntentCell.y + 0.5f) * game.config.GameConfig.TILE_SIZE;
+            float cx = (moveIntentCell.x + 0.5f) * GameConfig.TILE_SIZE;
+            float cz = (moveIntentCell.y + 0.5f) * GameConfig.TILE_SIZE;
             float dx = cx - x, dz = cz - z;
             float len = (float)Math.sqrt(dx*dx + dz*dz);
             if (len > 1e-4f) {
@@ -83,9 +85,9 @@ public final class EnemyEntity extends BaseEnemy implements IEnemy, IAIAgent {
         float recent = 0.2f;
         return ai.bb().lastSeenPlayerCell.isPresent() && ai.bb().timeSinceSeenPlayer <= recent;
     }
-    @Override public org.joml.Vector2i getCell() {
-        int tx = (int)(x / game.config.GameConfig.TILE_SIZE);
-        int ty = (int)(z / game.config.GameConfig.TILE_SIZE);
+    @Override public Vector2i getCell() {
+        int tx = (int)(x / GameConfig.TILE_SIZE);
+        int ty = (int)(z / GameConfig.TILE_SIZE);
         return new Vector2i(tx, ty);
     }
     @Override public void requestMoveTo(Vector2i nextCell, float speedMul) {

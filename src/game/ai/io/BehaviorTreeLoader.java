@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 public final class BehaviorTreeLoader {
 
@@ -59,9 +60,9 @@ public final class BehaviorTreeLoader {
         }
     }
 
-    private static java.util.List<INode> children(JSONObject n) {
+    private static List<INode> children(JSONObject n) {
         JSONArray arr = n.getJSONArray("children");
-        java.util.List<INode> list = new ArrayList<>(arr.length());
+        List<INode> list = new ArrayList<>(arr.length());
         for (int i=0;i<arr.length();i++) list.add(build(arr.getJSONObject(i)));
         return list;
     }

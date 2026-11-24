@@ -3,6 +3,7 @@ package game.inventory;
 import game.config.GameConfig;
 import game.inventory.effect.HealEffect;
 import game.inventory.effect.TreatInjuryEffect;
+import game.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -76,7 +77,7 @@ public class ItemDefinitionLoader {
                     effects.add(new TreatInjuryEffect(e.getFloat("amount")));
                     break;
                 default:
-                    System.err.println("Unknown item effect type '" + type + "' in " + sourcePath);
+                    Log.warn("Unknown item effect type '" + type + "' in " + sourcePath);
             }
         }
         return effects;

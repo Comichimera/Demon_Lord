@@ -18,6 +18,7 @@ import game.ui.HpOverlay;
 import game.ui.InventoryOverlay;
 import game.ui.StatusOverlay;
 import game.ui.TimerOverlay;
+import game.util.Log;
 import game.world.TileInteraction;
 import game.world.PlayerCombat;
 import game.world.enemy.EnemyManager;
@@ -111,7 +112,7 @@ public class PlayingState implements IGameState {
                 String type = when.getString("type");
                 IConditionFactory f = Registries.CONDITIONS.get(type);
                 if (f == null) {
-                    System.err.println("Unknown objective type: " + type + " (skipping)");
+                    Log.warn("Unknown objective type: " + type + " (skipping)");
                     continue;
                 }
                 ICondition cond = f.create(when);

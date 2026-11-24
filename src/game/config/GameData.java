@@ -1,5 +1,7 @@
 package game.config;
 
+import game.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,12 +24,12 @@ public class GameData {
                         break;
                     }
                 }
-                System.out.println("Loaded version: " + version);
+                Log.info("Loaded version: " + version);
             } else {
-                System.err.println("Warning: version.txt not found in JAR. Defaulting to 'Unknown'.");
+                Log.warn("Warning: version.txt not found in JAR. Defaulting to 'Unknown'.");
             }
         } catch (Exception e) {
-            System.err.println("Failed to load version info: " + e.getMessage());
+            Log.warn("Failed to load version info: " + e.getMessage());
         }
     }
 

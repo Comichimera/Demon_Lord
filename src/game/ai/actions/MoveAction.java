@@ -3,6 +3,7 @@ package game.ai.actions;
 import game.ai.IAIAgent;
 import game.ai.IAction;
 import game.ai.Blackboard;
+import game.ai.path.AStar;
 import game.ai.path.IPathProvider;
 import game.ai.path.PatrolProvider;
 import game.ai.path.RandomAdjacentProvider;
@@ -60,7 +61,7 @@ public final class MoveAction implements IAction {
                     bb.clearPath();
                     return Status.SUCCESS;
                 }
-                List<Vector2i> fresh = game.ai.path.AStar.findPath(agent.getCell(), goal, agent.world());
+                List<Vector2i> fresh = AStar.findPath(agent.getCell(), goal, agent.world());
                 if (fresh.isEmpty()) {
                     bb.clearPath();
                     return Status.FAILURE;
@@ -72,7 +73,7 @@ public final class MoveAction implements IAction {
 
     private Status stepToward(IAIAgent agent, Blackboard bb, Vector2i target) {
         if (agent.getCell().equals(target)) return Status.SUCCESS;
-        List<Vector2i> path = game.ai.path.AStar.findPath(agent.getCell(), target, agent.world());
+        List<Vector2i> path = AStar.findPath(agent.getCell(), target, agent.world());
         if (path.isEmpty()) return Status.FAILURE;
         agent.requestMoveTo(path.get(0), speedMul);
         return Status.RUNNING;

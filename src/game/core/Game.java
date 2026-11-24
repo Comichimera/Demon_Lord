@@ -1,5 +1,7 @@
 package game.core;
 
+import game.achievements.AchievementsManager;
+import game.audio.AudioSystem;
 import game.config.GameConfig;
 import game.config.GameData;
 import game.core.state.MainMenuState;
@@ -14,6 +16,7 @@ import game.logic.TimerService;
 import game.logic.objective.cond.ReachCell;
 import game.map.*;
 import game.ui.VersionOverlay;
+import game.util.Log;
 import game.world.Player;
 import org.json.JSONObject;
 
@@ -61,8 +64,8 @@ public class Game {
         levelManager = new LevelManager( GameConfig.path("levels","/data/map/levels.json"));
         versionOverlay = new VersionOverlay(window, GameData.getVersion());
 
-        if (!game.audio.AudioSystem.init()) {
-            System.err.println("Audio init failed; continuing without sound.");
+        if (!AudioSystem.init()) {
+            Log.warn("Audio init failed; continuing without sound.");
         }
 
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
@@ -78,8 +81,8 @@ public class Game {
         player   = new Player();
         keyboard = new KeyboardInput();
 
-        game.achievements.AchievementsManager.get().printStartupSummary();
-        game.achievements.AchievementsManager.get().unlock("open_game");
+        AchievementsManager.get().printStartupSummary();
+        AchievementsManager.get().unlock("open_game");
 
         changeState(new MainMenuState(this));
 
@@ -93,7 +96,7 @@ public class Game {
             lastTime = now;
 
             currentState.update(deltaTime);
-            game.audio.AudioSystem.update(deltaTime);
+            AudioSystem.update(deltaTime);
             render();
             window.update();
         }
@@ -124,7 +127,7 @@ public class Game {
 
     }
     public void cleanup() {
-        game.audio.AudioSystem.shutdown();
+        AudioSystem.shutdown();
         if (renderer != null) renderer.cleanup();
         if (versionOverlay != null) versionOverlay.cleanup();
         if (window != null) window.destroy();

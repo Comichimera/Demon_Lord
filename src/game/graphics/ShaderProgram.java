@@ -1,5 +1,7 @@
 package game.graphics;
 
+import game.util.Log;
+
 import static org.lwjgl.opengl.GL20.*;
 
 public class ShaderProgram {
@@ -28,7 +30,7 @@ public class ShaderProgram {
         }
         glValidateProgram(programId);
         if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
-            System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
+            Log.warn("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
         }
     }
 

@@ -1,6 +1,7 @@
 package game.ai;
 
 import game.ai.bt.INode;
+import game.ai.io.BehaviorTreeLoader;
 
 import java.io.InputStream;
 import java.util.List;
@@ -19,7 +20,7 @@ public final class BehaviorController {
 
     public static BehaviorController fromJsonResource(InputStream in, List<ISensor> sensors, float sensorHz) {
         try {
-            INode n = game.ai.io.BehaviorTreeLoader.loadFromStream(Objects.requireNonNull(in));
+            INode n = BehaviorTreeLoader.loadFromStream(Objects.requireNonNull(in));
             return new BehaviorController(n, sensors, sensorHz);
         } catch (Exception e) {
             throw new RuntimeException("Failed to load behavior", e);

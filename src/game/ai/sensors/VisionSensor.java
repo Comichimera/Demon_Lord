@@ -5,6 +5,8 @@ import game.ai.Blackboard;
 import game.ai.ISensor;
 import org.joml.Vector2i;
 
+import java.util.Optional;
+
 public final class VisionSensor implements ISensor {
     private final float fovDeg;
     private final float maxDist;
@@ -39,7 +41,7 @@ public final class VisionSensor implements ISensor {
 
         boolean canSee = agent.world().hasLineOfSight(me, player);
         if (canSee) {
-            bb.lastSeenPlayerCell = java.util.Optional.of(new Vector2i(player));
+            bb.lastSeenPlayerCell = Optional.of(new Vector2i(player));
             bb.timeSinceSeenPlayer = 0f;
         } else {
             bb.timeSinceSeenPlayer += dt;
