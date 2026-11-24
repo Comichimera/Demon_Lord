@@ -142,13 +142,13 @@ public class Renderer {
         }
     }
 
-    public void render(Player player, float elapsedSeconds) {
+    public void render(Player player, float elapsedSeconds, float aspect) {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CULL_FACE);
 
         Matrix4f projection = new Matrix4f()
-                .perspective((float) Math.toRadians(60), 800f / 600f, 0.1f, 100f);
+                .perspective((float) Math.toRadians(60), aspect, 0.1f, 100f);
 
         Matrix4f view = new Matrix4f().identity()
                 .rotateY((float) Math.toRadians(player.getYaw()))

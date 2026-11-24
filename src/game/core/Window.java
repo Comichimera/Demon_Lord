@@ -11,13 +11,14 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
     private final long window;
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
 
     public Window(int width, int height, String title) {
         this.width  = width;
@@ -69,6 +70,8 @@ public class Window {
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
         glfwSwapInterval(1);
+        glfwSetWindowSizeCallback(window, (win, w, h) -> { this.width = 2; this.height = h;  });
+        glfwSetFramebufferSizeCallback(window, (win, w, h) -> glViewport(0, 0, w, h));
         glfwShowWindow(window);
     }
 

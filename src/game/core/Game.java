@@ -61,7 +61,7 @@ public class Game {
         cleanup();
     }
     private void init() {
-        window       = new Window(800, 600, "Demon_Lord Pre Alpha");
+        window       = new Window(1280, 720, "Demon_Lord Pre Alpha");
 
         levelManager = new LevelManager( GameConfig.path("levels","/data/map/levels.json"));
         versionOverlay = new VersionOverlay(window, GameData.getVersion());
@@ -131,6 +131,7 @@ public class Game {
         player.getInventory().restore(levelStartItems);
     }
     private void render() {
+        if (window.getWidth() == 0 || window.getHeight() == 0) return;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         currentState.render();
         if (versionOverlay != null) versionOverlay.render();

@@ -208,7 +208,7 @@ public class PlayingState implements IGameState {
 
     @Override
     public void render() {
-        game.renderer.render(game.player, (float)game.timers.levelSeconds());
+        game.renderer.render(game.player, (float)game.timers.levelSeconds(), (float) game.window.getWidth() / game.window.getHeight());
 
         if (timer != null) {
             timer.render();

@@ -26,7 +26,7 @@ public final class AchievementsManager {
         register(new Achievement(
                 "go_outside", "God Human",
                 "You quit the game.",
-                GameConfig.path("achivement.locked","/data/assets/achievements/locked_achievement.png"),
+                GameConfig.path("achievement.locked","/data/assets/achievements/locked_achievement.png"),
                 GameConfig.path("achievement.unlocked","/data/assets/achievements/unlocked_achievement_test.jpg")
         ));
         load();
