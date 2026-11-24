@@ -7,7 +7,6 @@ import game.ui.InventoryOverlay;
 import game.ui.TimerOverlay;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 public class TileInteraction {
 

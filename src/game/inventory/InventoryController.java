@@ -7,10 +7,6 @@ import game.ui.InventoryOverlay;
 import game.ui.TimerOverlay;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_G;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-import static org.lwjgl.glfw.GLFW.glfwGetKey;
 
 public class InventoryController {
 

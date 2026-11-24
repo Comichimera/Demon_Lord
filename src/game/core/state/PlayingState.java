@@ -6,6 +6,7 @@ import game.core.Game;
 import game.core.IGameState;
 import game.debug.DebugConfig;
 import game.debug.DebugOverlay;
+import game.input.InputEdge;
 import game.input.KeyboardInput;
 import game.inventory.InventoryController;
 import game.logic.event.EventBus;
@@ -32,7 +33,6 @@ public class PlayingState implements IGameState {
     private HpOverlay hpOverlay;
     private StatusOverlay statusOverlay;
     private DebugOverlay debugOverlay;
-    private boolean f3Pressed = false;
     private float fps = 0f;
 
     private EventBus events;
@@ -41,7 +41,7 @@ public class PlayingState implements IGameState {
     private EnemyManager enemies;
     private InventoryOverlay inventoryOverlay;
     private PlayerCombat combat;
-    private TileInteraction doors;
+    private TileInteraction interaction;
     private InventoryController inventory;
 
     private int lastTx = -1, lastTy = -1;
@@ -70,7 +70,7 @@ public class PlayingState implements IGameState {
 
         inventoryOverlay = new InventoryOverlay(game.window);
         inventoryOverlay.rebuild(game.player.getInventory());
-        doors = new TileInteraction(game, inventoryOverlay, timer);
+        interaction = new TileInteraction(game, inventoryOverlay, timer);
         inventory = new InventoryController(game, inventoryOverlay, timer);
 
         if (GameConfig.healthSystem == GameConfig.HealthSystem.CLASSIC) {
@@ -172,7 +172,7 @@ public class PlayingState implements IGameState {
 
         inventory.handlePickups(ty, tx);
 
-        doors.update(tx, ty);
+        interaction.update(tx, ty);
 
         inventory.handleKeys();
 
@@ -184,12 +184,8 @@ public class PlayingState implements IGameState {
     }
 
     private void handleDebugToggle() {
-        if (DebugConfig.gameplayTogglable) {
-            int f3 = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_F3);
-            if (f3 == GLFW_PRESS && !f3Pressed) {
-                f3Pressed = true;
-                DebugConfig.overlayVisible = !DebugConfig.overlayVisible;
-            } else if (f3 == GLFW_RELEASE) { f3Pressed = false; }
+        if (DebugConfig.gameplayTogglable && InputEdge.pressedOnce(game.window.getWindowHandle(), GLFW_KEY_F3)) {
+            DebugConfig.overlayVisible = !DebugConfig.overlayVisible;
         }
     }
 
