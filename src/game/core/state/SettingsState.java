@@ -134,7 +134,7 @@ public class SettingsState implements IGameState {
         StringBuilder marker = new StringBuilder(), labels = new StringBuilder(), values = new StringBuilder();
         for (int i = 0; i < LABELS.length; i++) {
             boolean sel = i == selected;
-            marker.append(LABELS[i]);
+            marker.append(sel ? ">" : " ");
             labels.append(LABELS[i]);
             values.append(sel ? "< " : "    ").append(valueText(i)).append(sel ? " >" : "");
             if (i < LABELS.length - 1) {
