@@ -18,7 +18,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class SettingsState implements IGameState {
     private static final String[] LABELS = {
-            "Master volume", "Music volume", "Effects volume", "Fullscreen", "Window size", "Vsync", "Field of view", "Turn speed", "UI size"
+            "Master volume", "Music volume", "Effects volume", "Fullscreen", "Window size", "Vertical Sync", "Field of view", "Turn speed", "UI size"
     };
 
     private static final Color FADED = new Color(1f, 1f, 1f, 0.6f);
@@ -26,7 +26,7 @@ public class SettingsState implements IGameState {
     private final Game game;
     private final OverlayRenderer renderer;
     private final Font font;
-    private TextTexture titleTex, labelsTex, valuesTex, helpTex;
+    private TextTexture titleTex, markerTex, labelsTex, valuesTex, helpTex;
     private int selected = 0;
 
     public SettingsState(Game game) {
@@ -123,7 +123,7 @@ public class SettingsState implements IGameState {
             case 3 -> Settings.fullscreen ? "On" : "Off";
             case 4 -> size[0] + " x " + size[1] + (Settings.fullscreen ? " (windowed only)" : "");
             case 5 -> Settings.vsync ? "On" : "Off";
-            case 6 -> Settings.fov + "°";
+            case 6 -> Settings.fov == 90 ? "Doom Pro" : Settings.fov + "°";
             case 7 -> Settings.turnSpeed + "°/s";
             case 8 -> percent(Settings.uiSize);
             default -> "";
@@ -131,18 +131,22 @@ public class SettingsState implements IGameState {
     }
 
     private void rebuild() {
-        StringBuilder labels = new StringBuilder(), values = new StringBuilder();
+        StringBuilder marker = new StringBuilder(), labels = new StringBuilder(), values = new StringBuilder();
         for (int i = 0; i < LABELS.length; i++) {
             boolean sel = i == selected;
-            labels.append(sel ? "> " : "    ").append(LABELS[i]);
+            marker.append(LABELS[i]);
+            labels.append(LABELS[i]);
             values.append(sel ? "< " : "    ").append(valueText(i)).append(sel ? " >" : "");
             if (i < LABELS.length - 1) {
+                marker.append('\n');
                 labels.append('\n'); values.append('\n');
             }
 
         }
+        if (markerTex != null) markerTex.cleanup();
         if (labelsTex != null) labelsTex.cleanup();
         if (valuesTex != null) valuesTex.cleanup();
+        markerTex = new TextTexture(marker.toString(), font, 10, 5, Color.WHITE);
         labelsTex = new TextTexture(labels.toString(), font, 10, 5, Color.WHITE);
         valuesTex = new TextTexture(values.toString(), font, 10, 5, Color.WHITE);
     }
@@ -153,8 +157,10 @@ public class SettingsState implements IGameState {
         int y = UiScale.px(20);
         renderer.render(titleTex, x, y, true, 0.75f, 0f, 0f, 0f);
         y += titleTex.getHeight() + UiScale.px(10);
-        renderer.render(labelsTex, x, y, false, 0f, 0f, 0f, 0f);
-        renderer.render(valuesTex, x + labelsTex.getWidth() + UiScale.px(40), y, false, 0f, 0f, 0f, 0f);
+        int labelsX = x + UiScale.px(24);
+        renderer.render(markerTex, x, y, false, 0f, 0f, 0f, 0f);
+        renderer.render(labelsTex, labelsX, y, false, 0f, 0f, 0f, 0f);
+        renderer.render(valuesTex, labelsX + labelsTex.getWidth() + UiScale.px(40), y, false, 0f, 0f, 0f, 0f);
         y += labelsTex.getHeight() + UiScale.px(10);
         renderer.render(helpTex, x, y, false, 0f, 0f, 0f, 0f);
     }
@@ -162,6 +168,7 @@ public class SettingsState implements IGameState {
     @Override
     public void exit() {
         if (titleTex != null) titleTex.cleanup();
+        if (markerTex != null) markerTex.cleanup();
         if (labelsTex != null) labelsTex.cleanup();
         if (valuesTex != null) valuesTex.cleanup();
         if (helpTex != null) helpTex.cleanup();
