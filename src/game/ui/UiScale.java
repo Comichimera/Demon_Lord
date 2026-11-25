@@ -8,17 +8,25 @@ public class UiScale {
 
     private static float scale = 1f;
     private static int version = 0;
+    private static float userScale = 1f;
+    private static int lastHeight = (int) DESIGN_HEIGHT;
 
     private UiScale() {}
 
     public static void update(int windowHeight) {
         if (windowHeight <= 0) return;
+        lastHeight = windowHeight;
         float s = Math.round(windowHeight / DESIGN_HEIGHT / STEP) * STEP;
         s = Math.max(MIN, s);
         if (s != scale) {
             scale = s;
             version++;
         }
+    }
+
+    public static void setUserScale(float multiplier) {
+        userScale = multiplier;
+        update(lastHeight);
     }
 
     public static float get()               { return scale; }

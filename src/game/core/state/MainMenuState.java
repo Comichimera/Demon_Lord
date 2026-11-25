@@ -21,7 +21,7 @@ public class MainMenuState implements IGameState {
         this.game = game;
         this.menu = new MenuOverlay(
                 game.window,
-                List.of("Start Game", "Level Select", "Achievements", "Exit")
+                List.of("Start Game", "Level Select", "Achievements", "Settings", "Exit")
         );
     }
 
@@ -54,6 +54,9 @@ public class MainMenuState implements IGameState {
                     game.changeState(new AchievementsState(game));
                     break;
                 case 3:
+                    game.changeState(new SettingsState(game));
+                    break;
+                case 4:
                     AchievementsManager.get().unlock("go_outside");
                     game.running = false;
                     break;

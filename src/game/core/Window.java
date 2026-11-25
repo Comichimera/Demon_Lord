@@ -1,9 +1,11 @@
 package game.core;
 
 import game.config.GameConfig;
+import game.config.Settings;
 import game.ui.UiScale;
 import game.util.Log;
 import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.stb.STBImage;
 
@@ -75,6 +77,24 @@ public class Window {
         glfwSetWindowSizeCallback(window, (win, w, h) -> { this.width = w; this.height = h; UiScale.update(h); });
         glfwSetFramebufferSizeCallback(window, (win, w, h) -> glViewport(0, 0, w, h));
         glfwShowWindow(window);
+    }
+
+    public void setVsync(boolean on) {
+        glfwSwapInterval(on ? 1 : 0);
+    }
+
+    public void applyWindowMode() {
+        long monitor = glfwGetPrimaryMonitor();
+        GLFWVidMode mode = glfwGetVideoMode(monitor);
+        if (mode == null) return;
+        if (Settings.fullscreen) {
+            glfwSetWindowMonitor(window, monitor, 0, 0, mode.width(), mode.height(), mode.refreshRate());
+        } else {
+            int[] size = Settings.WINDOW_SIZES[Settings.windowSize];
+            int x = (mode.width() - size[0]) / 2;
+            int y = (mode.height() - size[1]) / 2;
+            glfwSetWindowMonitor(window, NULL, x, y, size[0], size[1], GLFW_DONT_CARE);
+        }
     }
 
     public int getWidth()  { return width;  }

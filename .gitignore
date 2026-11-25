@@ -39,3 +39,4 @@ replay_pid*.log
 ### Game ###
 achievements.json
 logs/
+settings.properties

@@ -1,6 +1,7 @@
 package game.graphics;
 
 import game.config.GameConfig;
+import game.config.Settings;
 import game.inventory.ItemDefinition;
 import game.inventory.ItemRegistry;
 import game.map.MapData;
@@ -148,7 +149,7 @@ public class Renderer {
         glDisable(GL_CULL_FACE);
 
         Matrix4f projection = new Matrix4f()
-                .perspective((float) Math.toRadians(60), aspect, 0.1f, 100f);
+                .perspective((float) Math.toRadians(Settings.fov), aspect, 0.1f, 100f);
 
         Matrix4f view = new Matrix4f().identity()
                 .rotateY((float) Math.toRadians(player.getYaw()))

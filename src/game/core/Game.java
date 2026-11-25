@@ -4,7 +4,9 @@ import game.achievements.AchievementsManager;
 import game.audio.AudioSystem;
 import game.config.GameConfig;
 import game.config.GameData;
+import game.config.Settings;
 import game.core.state.MainMenuState;
+import game.core.state.SettingsState;
 import game.graphics.Renderer;
 import game.input.InputEdge;
 import game.input.InputGate;
@@ -61,6 +63,7 @@ public class Game {
         cleanup();
     }
     private void init() {
+        Settings.load();
         window       = new Window(1280, 720, "Demon_Lord Pre Alpha");
 
         levelManager = new LevelManager( GameConfig.path("levels","/data/map/levels.json"));
@@ -69,6 +72,8 @@ public class Game {
         if (!AudioSystem.init()) {
             Log.warn("Audio init failed; continuing without sound.");
         }
+
+        SettingsState.applyAll(window);
 
         Map<Character, TileDefinition> baseDefs = TileDefinitionLoader.loadDefinitions();
         TileRegistry.initialize(baseDefs);
