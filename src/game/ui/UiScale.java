@@ -16,7 +16,7 @@ public class UiScale {
     public static void update(int windowHeight) {
         if (windowHeight <= 0) return;
         lastHeight = windowHeight;
-        float s = Math.round(windowHeight / DESIGN_HEIGHT / STEP) * STEP;
+        float s = Math.round(windowHeight / DESIGN_HEIGHT * userScale / STEP) * STEP;
         s = Math.max(MIN, s);
         if (s != scale) {
             scale = s;

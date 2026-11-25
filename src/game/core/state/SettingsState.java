@@ -92,7 +92,7 @@ public class SettingsState implements IGameState {
                 Settings.vsync = !Settings.vsync; game.window.setVsync(Settings.vsync);
             }
             case 6 -> {
-                Settings.fov = Math.max(50, Math.min(90, Settings.fov + dir + 5));
+                Settings.fov = Math.max(50, Math.min(90, Settings.fov + dir * 5));
             }
             case 7 -> {
                 Settings.turnSpeed = Math.max(45, Math.min(240, Settings.turnSpeed + dir * 15));
@@ -121,7 +121,7 @@ public class SettingsState implements IGameState {
             case 1 -> percent(Settings.musicVolume);
             case 2 -> percent(Settings.sfxVolume);
             case 3 -> Settings.fullscreen ? "On" : "Off";
-            case 4 -> size[0] + " x " + size[1] + (Settings.fullscreen ? " (windowed only" : "");
+            case 4 -> size[0] + " x " + size[1] + (Settings.fullscreen ? " (windowed only)" : "");
             case 5 -> Settings.vsync ? "On" : "Off";
             case 6 -> Settings.fov + "°";
             case 7 -> Settings.turnSpeed + "°/s";
@@ -135,7 +135,7 @@ public class SettingsState implements IGameState {
         for (int i = 0; i < LABELS.length; i++) {
             boolean sel = i == selected;
             labels.append(sel ? "> " : "    ").append(LABELS[i]);
-            values.append(sel ? "> " : "    ").append(valueText(i)).append(sel ? " >" : "");
+            values.append(sel ? "< " : "    ").append(valueText(i)).append(sel ? " >" : "");
             if (i < LABELS.length - 1) {
                 labels.append('\n'); values.append('\n');
             }
