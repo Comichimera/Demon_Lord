@@ -70,11 +70,12 @@ public class AchievementsOverlay {
     }
 
     public void render() {
-        int x = 40;
-        int y = 40;
+        int icon = UiScale.px(ICON_SIZE);
+        int x = UiScale.px(40);
+        int y = UiScale.px(40);
 
         renderer.render(headerTex, x, y, false, 0, 0, 0, 0);
-        y += headerTex.getHeight() + 16;
+        y += headerTex.getHeight() + UiScale.px(16);
 
         for (Entry e : entries) {
             int iconTex = e.achievement.unlocked ? e.unlockedTex : e.lockedTex;
@@ -97,9 +98,9 @@ public class AchievementsOverlay {
                 glColor3f(1, 1, 1);
                 glBegin(GL_QUADS);
                 glTexCoord2f(0, 0); glVertex2f(x,              y);
-                glTexCoord2f(1, 0); glVertex2f(x + ICON_SIZE,  y);
-                glTexCoord2f(1, 1); glVertex2f(x + ICON_SIZE,  y + ICON_SIZE);
-                glTexCoord2f(0, 1); glVertex2f(x,              y + ICON_SIZE);
+                glTexCoord2f(1, 0); glVertex2f(x + icon,  y);
+                glTexCoord2f(1, 1); glVertex2f(x + icon,  y + icon);
+                glTexCoord2f(0, 1); glVertex2f(x,              y + icon);
                 glEnd();
 
                 glDisable(GL_TEXTURE_2D);
@@ -112,10 +113,10 @@ public class AchievementsOverlay {
                 glPopMatrix();
             }
 
-            int textX = x + ICON_SIZE + 10;
+            int textX = x + icon + UiScale.px(10);
             renderer.render(e.text, textX, y, false, 0, 0, 0, 0);
 
-            y += Math.max(ICON_SIZE, e.text.getHeight()) + ROW_GAP;
+            y += Math.max(icon, e.text.getHeight()) + UiScale.px(ROW_GAP);
         }
     }
 

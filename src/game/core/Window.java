@@ -1,6 +1,7 @@
 package game.core;
 
 import game.config.GameConfig;
+import game.ui.UiScale;
 import game.util.Log;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
@@ -70,7 +71,8 @@ public class Window {
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
         glfwSwapInterval(1);
-        glfwSetWindowSizeCallback(window, (win, w, h) -> { this.width = 2; this.height = h;  });
+        UiScale.update(height);
+        glfwSetWindowSizeCallback(window, (win, w, h) -> { this.width = w; this.height = h; UiScale.update(h); });
         glfwSetFramebufferSizeCallback(window, (win, w, h) -> glViewport(0, 0, w, h));
         glfwShowWindow(window);
     }
