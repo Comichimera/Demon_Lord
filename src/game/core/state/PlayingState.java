@@ -8,7 +8,6 @@ import game.debug.DebugConfig;
 import game.debug.DebugOverlay;
 import game.input.EAction;
 import game.input.Input;
-import game.input.InputEdge;
 import game.input.KeyboardInput;
 import game.inventory.InventoryController;
 import game.logic.event.EventBus;

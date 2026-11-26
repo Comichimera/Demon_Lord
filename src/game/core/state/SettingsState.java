@@ -6,15 +6,14 @@ import game.core.Game;
 import game.core.IGameState;
 import game.core.Window;
 import game.graphics.TextTexture;
-import game.input.InputEdge;
+import game.input.EAction;
+import game.input.Input;
 import game.ui.OverlayRenderer;
 import game.ui.UiScale;
 import game.util.FontLoader;
 
 import java.awt.Color;
 import java.awt.Font;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class SettingsState implements IGameState {
     private static final String[] LABELS = {
@@ -54,19 +53,18 @@ public class SettingsState implements IGameState {
 
     @Override
     public void update(float dt) {
-        long win = game.window.getWindowHandle();
 
-        if (InputEdge.pressedOnce(win, GLFW_KEY_ESCAPE)) {
+        if (Input.pressed(EAction.BACK)) {
             Settings.save();
             game.popState();
             return;
         }
 
         boolean changed = false;
-        if (InputEdge.pressedOnce(win, GLFW_KEY_UP)) { selected = (selected + LABELS.length - 1) % LABELS.length; changed = true; }
-        if (InputEdge.pressedOnce(win, GLFW_KEY_DOWN)) { selected = (selected + 1) % LABELS.length; changed = true; }
-        if (InputEdge.pressedOnce(win, GLFW_KEY_LEFT)) { change(-1); changed = true; }
-        if (InputEdge.pressedOnce(win, GLFW_KEY_RIGHT)) { change(+1); changed = true; }
+        if (Input.pressed(EAction.MENU_UP)) { selected = (selected + LABELS.length - 1) % LABELS.length; changed = true; }
+        if (Input.pressed(EAction.MENU_DOWN)) { selected = (selected + 1) % LABELS.length; changed = true; }
+        if (Input.pressed(EAction.MENU_LEFT)) { change(-1); changed = true; }
+        if (Input.pressed(EAction.MENU_RIGHT)) { change(+1); changed = true; }
         if (changed) rebuild();
     }
 

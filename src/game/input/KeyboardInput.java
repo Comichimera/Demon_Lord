@@ -4,8 +4,6 @@ import game.config.Settings;
 import game.map.MapData;
 import game.world.Player;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 public class KeyboardInput {
     public void processInput(Player player, float deltaTime, MapData mapData) {
         float moveSpeed = 5.0f * player.getSpeedMultiplier();

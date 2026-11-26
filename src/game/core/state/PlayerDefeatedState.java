@@ -3,6 +3,8 @@ package game.core.state;
 import game.core.Game;
 import game.core.IGameState;
 import game.graphics.TextTexture;
+import game.input.EAction;
+import game.input.Input;
 import game.util.FontLoader;
 
 import java.awt.*;
@@ -15,7 +17,6 @@ public class PlayerDefeatedState implements IGameState {
     private final Game game;
     private TextTexture youDiedTexture;
     private float elapsedSeconds = 0f;
-    private boolean enterPressed = false;
 
     private static final float START_SCALE   = 0.9f;
     private static final float END_SCALE     = 1.2f;
@@ -37,22 +38,14 @@ public class PlayerDefeatedState implements IGameState {
         );
 
         elapsedSeconds = 0f;
-        enterPressed = false;
     }
 
     @Override
     public void update(float dt) {
-        elapsedSeconds += dt;
 
-        long handle = game.window.getWindowHandle();
-        int state = glfwGetKey(handle, GLFW_KEY_ENTER);
-
-        if (state == GLFW_PRESS && !enterPressed) {
-            enterPressed = true;
+        if (Input.pressed(EAction.CONFIRM)) {
 
             game.changeState(new PlayingState(game));
-        } else if (state == GLFW_RELEASE) {
-            enterPressed = false;
         }
     }
 

@@ -2,6 +2,8 @@ package game.core.state;
 
 import game.core.Game;
 import game.core.IGameState;
+import game.input.EAction;
+import game.input.Input;
 import game.logic.TimerService;
 import game.ui.LevelCompleteOverlay;
 
@@ -10,7 +12,6 @@ import static org.lwjgl.glfw.GLFW.*;
 public class LevelCompleteState implements IGameState {
     private final Game game;
     private LevelCompleteOverlay overlay;
-    private boolean enterPressed = false;
 
     public LevelCompleteState(Game game) {
         this.game = game;
@@ -38,9 +39,8 @@ public class LevelCompleteState implements IGameState {
 
     @Override
     public void update(float dt) {
-        int state = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_ENTER);
-        if (state == GLFW_PRESS && !enterPressed) {
-            enterPressed = true;
+
+        if (Input.pressed(EAction.CONFIRM)) {
 
             if (game.levelManager.advanceToNextLevel()) {
                 game.markLevelStart();
@@ -48,8 +48,6 @@ public class LevelCompleteState implements IGameState {
             } else {
                 game.changeState(new MainMenuState(game));
             }
-        } else if (state == GLFW_RELEASE) {
-            enterPressed = false;
         }
     }
 

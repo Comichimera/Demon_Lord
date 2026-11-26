@@ -4,6 +4,8 @@ import game.core.Game;
 import game.core.IGameState;
 import game.debug.DebugConfig;
 import game.debug.EDebugValue;
+import game.input.EAction;
+import game.input.Input;
 import game.ui.OverlayRenderer;
 import game.graphics.TextTexture;
 import game.util.FontLoader;
@@ -33,11 +35,6 @@ public class DebugMenuState implements IGameState {
     private int     selected    = 0;
     private boolean showPreview = false;
 
-    private boolean upPressed    = false;
-    private boolean downPressed  = false;
-    private boolean spacePressed = false;
-    private boolean escPressed   = false;
-
     public DebugMenuState(Game game) {
         this.game     = game;
         this.renderer = new OverlayRenderer(game.window);
@@ -46,42 +43,32 @@ public class DebugMenuState implements IGameState {
 
     @Override
     public void enter() {
-        long win = game.window.getWindowHandle();
-        upPressed    = glfwGetKey(win, GLFW_KEY_UP)    == GLFW_PRESS;
-        downPressed  = glfwGetKey(win, GLFW_KEY_DOWN)  == GLFW_PRESS;
-        spacePressed = glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_PRESS;
-        escPressed   = glfwGetKey(win, GLFW_KEY_ESCAPE)== GLFW_PRESS;
         rebuild();
     }
 
     @Override
     public void update(float dt) {
-        long win = game.window.getWindowHandle();
         boolean changed = false;
 
-        if (glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS && !upPressed) {
-            upPressed = true;
+        if (Input.pressed(EAction.MENU_UP)) {
             selected = (selected + ITEM_COUNT - 1) % ITEM_COUNT;
             changed = true;
-        } else if (glfwGetKey(win, GLFW_KEY_UP) == GLFW_RELEASE) { upPressed = false; }
+        }
 
-        if (glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS && !downPressed) {
-            downPressed = true;
+        if (Input.pressed(EAction.MENU_UP)) {
             selected = (selected + 1) % ITEM_COUNT;
             changed = true;
-        } else if (glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_RELEASE) { downPressed = false; }
+        }
 
-        if (glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_PRESS && !spacePressed) {
-            spacePressed = true;
+        if (Input.pressed(EAction.CONFIRM)) {
             activate();
             changed = true;
-        } else if (glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_RELEASE) { spacePressed = false; }
+        }
 
-        if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS && !escPressed) {
-            escPressed = true;
+        if (Input.pressed(EAction.BACK)) {
             game.changeState(new MainMenuState(game));
             return;
-        } else if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_RELEASE) { escPressed = false; }
+        }
 
         if (changed) rebuild();
     }

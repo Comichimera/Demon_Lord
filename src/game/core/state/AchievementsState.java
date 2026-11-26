@@ -2,17 +2,13 @@ package game.core.state;
 
 import game.core.Game;
 import game.core.IGameState;
-import game.input.InputEdge;
-import game.input.InputGate;
+import game.input.EAction;
+import game.input.Input;
 import game.ui.AchievementsOverlay;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class AchievementsState implements IGameState {
     private final Game game;
     private AchievementsOverlay overlay;
-
-    private boolean anyPressed = false;
 
     public AchievementsState(Game game) { this.game = game; }
 
@@ -20,19 +16,11 @@ public class AchievementsState implements IGameState {
 
     @Override
     public void update(float dt) {
-        long win = game.window.getWindowHandle();
-        if (InputGate.isGated(win)) return;
 
-        boolean pressed = glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS
-                || glfwGetKey(win, GLFW_KEY_ENTER)  == GLFW_PRESS
-                || glfwGetKey(win, GLFW_KEY_SPACE)  == GLFW_PRESS
-                || glfwGetKey(win, GLFW_KEY_BACKSPACE) == GLFW_PRESS;
-
-        if (InputEdge.anyPressedOnce(win, GLFW_KEY_ENTER, GLFW_KEY_SPACE, GLFW_KEY_ESCAPE, GLFW_KEY_BACKSPACE)) {
+        if (Input.pressed(EAction.BACK) || Input.pressed(EAction.CONFIRM)) {
             game.changeState(new MainMenuState(game));
             return;
         }
-        if (!pressed) anyPressed = false;
     }
 
     @Override public void render() { overlay.render(); }

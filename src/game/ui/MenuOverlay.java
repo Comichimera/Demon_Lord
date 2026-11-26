@@ -23,8 +23,6 @@ public final class MenuOverlay {
     private String lastText = "";
     private final TextTexture creditsTex;
 
-    private boolean upPressed = false, downPressed = false, enterPressed = false;
-
     public MenuOverlay(Window window, List<String> items) {
         this(window, items, true);
     }

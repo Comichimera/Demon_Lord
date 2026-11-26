@@ -11,9 +11,6 @@ import game.world.enemy.BaseEnemy;
 import game.world.enemy.EnemyManager;
 import game.world.enemy.IEnemy;
 
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-
 public class PlayerCombat {
 
     private boolean attackPressed    = false;

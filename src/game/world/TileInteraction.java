@@ -3,12 +3,9 @@ package game.world;
 import game.core.Game;
 import game.input.EAction;
 import game.input.Input;
-import game.input.InputEdge;
 import game.map.Tile;
 import game.ui.InventoryOverlay;
 import game.ui.TimerOverlay;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class TileInteraction {
 

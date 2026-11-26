@@ -5,7 +5,6 @@ import game.audio.AudioSystem;
 import game.core.*;
 import game.input.EAction;
 import game.input.Input;
-import game.input.InputGate;
 import game.ui.MenuOverlay;
 
 import java.util.List;

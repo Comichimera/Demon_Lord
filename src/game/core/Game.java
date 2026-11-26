@@ -9,8 +9,6 @@ import game.core.state.MainMenuState;
 import game.core.state.SettingsState;
 import game.graphics.Renderer;
 import game.input.Input;
-import game.input.InputEdge;
-import game.input.InputGate;
 import game.input.KeyboardInput;
 import game.inventory.InventoryEntry;
 import game.logic.objective.ICondition;
@@ -60,25 +58,17 @@ public class Game {
         }
         currentState = newState;
         currentState.enter();
-
-        long win = window.getWindowHandle();
-        InputEdge.onStateEnter(win);
-        InputGate.arm();
     }
 
     public void pushState(IGameState newState) {
         stateStack.push(currentState);
         currentState = newState;
         currentState.enter();
-        InputEdge.onStateEnter(window.getWindowHandle());
-        InputGate.arm();
     }
 
     public void popState() {
         currentState.exit();
         currentState = stateStack.pop();
-        InputEdge.onStateEnter(window.getWindowHandle());
-        InputGate.arm();
     }
 
     public void run() {
