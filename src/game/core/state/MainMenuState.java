@@ -19,7 +19,7 @@ public class MainMenuState implements IGameState {
         this.game = game;
         this.menu = new MenuOverlay(
                 game.window,
-                List.of("Start Game", "Level Select", "Achievements", "Settings", "Controls", "Exit")
+                List.of("Start Game", "Level Select", "Achievements", "Settings", "Keybinds", "Exit")
         );
     }
 

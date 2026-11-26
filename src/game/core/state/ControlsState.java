@@ -39,7 +39,7 @@ public class ControlsState implements IGameState {
     private void fillItems() {
         items.clear();
         for (int i = 0; i < ACTIONS.length; i++) {
-            String key = (1 == waiting) ? "press a key..." : Input.keyName(Input.getKey(ACTIONS[i]));
+            String key = (i == waiting) ? "press a key..." : Input.keyName(Input.getKey(ACTIONS[i]));
             items.add(ACTIONS[i].label + ": " + key);
         }
         items.add("Reset to defaults");
