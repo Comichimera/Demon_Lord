@@ -2,13 +2,11 @@ package game.core.state;
 
 import game.core.Game;
 import game.core.IGameState;
-import game.input.InputEdge;
-import game.input.InputGate;
+import game.input.EAction;
+import game.input.Input;
 import game.ui.MenuOverlay;
 
 import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class PauseState implements IGameState {
 
@@ -33,15 +31,13 @@ public class PauseState implements IGameState {
 
     @Override
     public void update(float dt) {
-        long win = game.window.getWindowHandle();
-        if(InputGate.isGated(win)) return;
 
-        if (InputEdge.pressedOnce(win, GLFW_KEY_ESCAPE)) {
+        if (Input.pressed(EAction.PAUSE) || Input.pressed(EAction.BACK)) {
             resume();
             return;
         }
 
-        int choice = menu.update(win);
+        int choice = menu.update();
         switch (choice) {
             case 0 -> resume();
             case 1 -> game.changeState(new PlayingState(game));

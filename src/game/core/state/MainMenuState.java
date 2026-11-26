@@ -3,19 +3,18 @@ package game.core.state;
 import game.achievements.AchievementsManager;
 import game.audio.AudioSystem;
 import game.core.*;
+import game.input.EAction;
+import game.input.Input;
 import game.input.InputGate;
 import game.ui.MenuOverlay;
 
 import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 
 
 public class MainMenuState implements IGameState {
     private final Game game;
     private final MenuOverlay menu;
-    private boolean f3Pressed = false;
 
     public MainMenuState(Game game) {
         this.game = game;
@@ -33,15 +32,12 @@ public class MainMenuState implements IGameState {
 
     @Override
     public void update(float dt) {
-        if (InputGate.isGated(game.window.getWindowHandle())) return;
 
-        long win = game.window.getWindowHandle();
-        if (glfwGetKey(win, GLFW_KEY_F3) == GLFW_PRESS && !f3Pressed) {
-            f3Pressed = true;
+        if (Input.pressed(EAction.DEBUG)) {
             game.changeState(new DebugMenuState(game));
             return;
-        } else if (glfwGetKey(win, GLFW_KEY_F3) == GLFW_RELEASE) { f3Pressed = false; }
-        int choice = menu.update(game.window.getWindowHandle());
+        }
+        int choice = menu.update();
         if (choice != -1) {
             switch (choice) {
                 case 0:

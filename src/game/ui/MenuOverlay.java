@@ -3,6 +3,8 @@ package game.ui;
 import game.config.GameConfig;
 import game.core.Window;
 import game.graphics.TextTexture;
+import game.input.EAction;
+import game.input.Input;
 import game.util.FontLoader;
 import game.util.Log;
 
@@ -10,8 +12,6 @@ import java.awt.*;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public final class MenuOverlay {
     private final OverlayRenderer renderer;
@@ -50,35 +50,23 @@ public final class MenuOverlay {
         }
     }
 
-    public int update(long windowHandle) {
+    public int update() {
         int prev = selected;
 
-        if (glfwGetKey(windowHandle, GLFW_KEY_UP) == GLFW_PRESS && !upPressed) {
-            upPressed = true;
+        if (Input.pressed(EAction.MENU_UP)) {
             selected = (selected + items.size() - 1) % items.size();
         }
-        if (glfwGetKey(windowHandle, GLFW_KEY_UP) == GLFW_RELEASE) {
-            upPressed = false;
-        }
 
-        if (glfwGetKey(windowHandle, GLFW_KEY_DOWN) == GLFW_PRESS && !downPressed) {
-            downPressed = true;
+        if (Input.pressed(EAction.MENU_DOWN)) {
             selected = (selected + 1) % items.size();
-        }
-        if (glfwGetKey(windowHandle, GLFW_KEY_DOWN) == GLFW_RELEASE) {
-            downPressed = false;
         }
 
         if (selected != prev) {
             rebuild();
         }
 
-        if (glfwGetKey(windowHandle, GLFW_KEY_ENTER) == GLFW_PRESS && !enterPressed) {
-            enterPressed = true;
+        if (Input.pressed(EAction.CONFIRM)) {
             return selected;
-        }
-        if (glfwGetKey(windowHandle, GLFW_KEY_ENTER) == GLFW_RELEASE) {
-            enterPressed = false;
         }
 
         return -1;
