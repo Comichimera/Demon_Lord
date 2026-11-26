@@ -136,9 +136,10 @@ public class PlayingState implements IGameState {
             return;
         }
 
-        if (glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        long win = game.window.getWindowHandle();
+        if (InputEdge.pressedOnce(win, GLFW_KEY_ESCAPE) || !game.window.isFocused()) {
             game.timers.pause();
-            game.changeState(new MainMenuState(game));
+            game.pushState(new PauseState(game, this));
             return;
         }
 

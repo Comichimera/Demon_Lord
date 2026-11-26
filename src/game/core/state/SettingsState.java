@@ -58,7 +58,7 @@ public class SettingsState implements IGameState {
 
         if (InputEdge.pressedOnce(win, GLFW_KEY_ESCAPE)) {
             Settings.save();
-            game.changeState(new MainMenuState(game));
+            game.popState();
             return;
         }
 

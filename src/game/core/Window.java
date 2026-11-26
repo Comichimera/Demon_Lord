@@ -23,6 +23,8 @@ public class Window {
     private int width;
     private int height;
 
+    private boolean focused = true;
+
     public Window(int width, int height, String title) {
         this.width  = width;
         this.height = height;
@@ -76,6 +78,7 @@ public class Window {
         UiScale.update(height);
         glfwSetWindowSizeCallback(window, (win, w, h) -> { this.width = w; this.height = h; UiScale.update(h); });
         glfwSetFramebufferSizeCallback(window, (win, w, h) -> glViewport(0, 0, w, h));
+        glfwSetWindowFocusCallback(window, (win, isFocused) -> this.focused = isFocused);
         glfwShowWindow(window);
     }
 
@@ -96,6 +99,8 @@ public class Window {
             glfwSetWindowMonitor(window, NULL, x, y, size[0], size[1], GLFW_DONT_CARE);
         }
     }
+
+    public boolean isFocused() { return focused; }
 
     public int getWidth()  { return width;  }
     public int getHeight() { return height; }

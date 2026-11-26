@@ -23,6 +23,8 @@ public final class TimerService {
 
     public void pause()  { running = false; }
 
+    public void resume() { running = true; }
+
     public void completeLevel() {
         if (!levelCommitted) {
             totalElapsed += levelElapsed;

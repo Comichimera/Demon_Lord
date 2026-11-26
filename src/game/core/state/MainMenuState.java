@@ -54,7 +54,7 @@ public class MainMenuState implements IGameState {
                     game.changeState(new AchievementsState(game));
                     break;
                 case 3:
-                    game.changeState(new SettingsState(game));
+                    game.pushState(new SettingsState(game));
                     break;
                 case 4:
                     AchievementsManager.get().unlock("go_outside");

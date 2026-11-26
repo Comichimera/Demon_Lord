@@ -23,6 +23,8 @@ import game.util.Log;
 import game.world.Player;
 import org.json.JSONObject;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,8 @@ public class Game {
     public LevelManager levelManager;
     private IGameState currentState;
 
+    private final Deque<IGameState> stateStack = new ArrayDeque<>();
+
     public final TimerService timers = new TimerService();
 
     private VersionOverlay versionOverlay;
@@ -50,6 +54,9 @@ public class Game {
 
     public void changeState(IGameState newState) {
         if (currentState != null) currentState.exit();
+        while (!stateStack.isEmpty()) {
+            stateStack.pop().exit();
+        }
         currentState = newState;
         currentState.enter();
 
@@ -57,6 +64,22 @@ public class Game {
         InputEdge.onStateEnter(win);
         InputGate.arm();
     }
+
+    public void pushState(IGameState newState) {
+        stateStack.push(currentState);
+        currentState = newState;
+        currentState.enter();
+        InputEdge.onStateEnter(window.getWindowHandle());
+        InputGate.arm();
+    }
+
+    public void popState() {
+        currentState.exit();
+        currentState = stateStack.pop();
+        InputEdge.onStateEnter((window.getWindowHandle()));
+        InputGate.arm();
+    }
+
     public void run() {
         init();
         loop();

@@ -26,11 +26,15 @@ public final class MenuOverlay {
     private boolean upPressed = false, downPressed = false, enterPressed = false;
 
     public MenuOverlay(Window window, List<String> items) {
+        this(window, items, true);
+    }
+
+    public MenuOverlay(Window window, List<String> items, boolean showCredits) {
         this.renderer = new OverlayRenderer(window);
         this.window   = window;
         this.font     = FontLoader.menu( 24f);
         this.items    = items;
-        this.creditsTex = loadCredits();
+        this.creditsTex = showCredits ? loadCredits() : null;
         rebuild();
     }
 
