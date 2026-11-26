@@ -10,11 +10,10 @@ public class Input {
     private static final boolean[] down = new boolean[ACTIONS.length];
     private static final boolean[] wasDown = new boolean[ACTIONS.length];
 
+    private static int lastPressedKey = GLFW_KEY_UNKNOWN;
+
     static {
-        for (EAction a : ACTIONS) {
-            keys[a.ordinal()] = a.defaultKey;
-            altKeys[a.ordinal()] = a.defaultAltKey;
-        }
+        resetToDefaults();
     }
 
     private Input() {}
@@ -47,4 +46,45 @@ public class Input {
     public static void setKey(EAction action, int key) {
         keys[action.ordinal()] = key;
     }
+
+    public static void resetToDefaults() {
+        for (EAction a : ACTIONS) {
+            keys[a.ordinal()] = a.defaultKey;
+            altKeys[a.ordinal()] = a.defaultAltKey;
+        }
+    }
+
+    public static void onKeyPressed(int key) {
+        lastPressedKey = key;
+    }
+
+    public static int takePressedKey() {
+        int key = lastPressedKey;
+        lastPressedKey = GLFW_KEY_UNKNOWN;
+        return key;
+    }
+
+    public static String keyName(int key) {
+        if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F25) return "F" + (key - GLFW_KEY_F1 + 1);
+        return switch (key) {
+            case GLFW_KEY_UNKNOWN -> "None";
+            case GLFW_KEY_SPACE -> "Space";
+            case GLFW_KEY_ESCAPE -> "Esc";
+            case GLFW_KEY_ENTER -> "Enter";
+            case GLFW_KEY_TAB -> "Tab";
+            case GLFW_KEY_BACKSPACE -> "Backspace";
+            case GLFW_KEY_UP -> "Up";
+            case GLFW_KEY_DOWN -> "Down";
+            case GLFW_KEY_LEFT -> "Left";
+            case GLFW_KEY_RIGHT -> "Right";
+            case GLFW_KEY_LEFT_SHIFT, GLFW_KEY_RIGHT_SHIFT -> "Shift";
+            case GLFW_KEY_LEFT_CONTROL, GLFW_KEY_RIGHT_CONTROL -> "Ctrl";
+            case GLFW_KEY_LEFT_ALT, GLFW_KEY_RIGHT_ALT -> "Alt";
+            default -> {
+                String name = glfwGetKeyName(key, 0);
+                yield name != null ? name.toUpperCase() : "Key " + key;
+            }
+        };
+    }
+
 }

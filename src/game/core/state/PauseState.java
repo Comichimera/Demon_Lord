@@ -19,7 +19,7 @@ public class PauseState implements IGameState {
         this.level = level;
         this.menu = new MenuOverlay(
                 game.window,
-                List.of("Resume", "Restart Level", "Settings", "Quit to Menu"),
+                List.of("Resume", "Restart Level", "Settings", "Controls", "Quit to Menu"),
                 false
         );
     }
@@ -42,7 +42,8 @@ public class PauseState implements IGameState {
             case 0 -> resume();
             case 1 -> game.changeState(new PlayingState(game));
             case 2 -> game.pushState(new SettingsState(game));
-            case 3 -> game.changeState(new MainMenuState(game));
+            case 3 -> game.pushState(new ControlsState(game));
+            case 4 -> game.changeState(new MainMenuState(game));
             default -> { }
         }
     }

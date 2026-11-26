@@ -2,6 +2,7 @@ package game.core;
 
 import game.config.GameConfig;
 import game.config.Settings;
+import game.input.Input;
 import game.ui.UiScale;
 import game.util.Log;
 import org.lwjgl.glfw.GLFWImage;
@@ -79,6 +80,11 @@ public class Window {
         glfwSetWindowSizeCallback(window, (win, w, h) -> { this.width = w; this.height = h; UiScale.update(h); });
         glfwSetFramebufferSizeCallback(window, (win, w, h) -> glViewport(0, 0, w, h));
         glfwSetWindowFocusCallback(window, (win, isFocused) -> this.focused = isFocused);
+
+        glfwSetKeyCallback(window, (win, key, scancode, action, mods) -> {
+            if (action == GLFW_PRESS) Input.onKeyPressed(key);
+        });
+
         glfwShowWindow(window);
     }
 

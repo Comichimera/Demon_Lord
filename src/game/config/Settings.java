@@ -1,5 +1,7 @@
 package game.config;
 
+import game.input.EAction;
+import game.input.Input;
 import game.util.Log;
 
 import java.io.IOException;
@@ -9,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Settings {
 
@@ -42,6 +46,11 @@ public class Settings {
             fov =           getInt      (p, "fov",              fov, 50, 90);
             turnSpeed =     getInt      (p, "turnSpeed",        turnSpeed, 45, 240);
             uiSize =        getFloat    (p, "uiSize",           uiSize, 0.75f, 1.5f);
+
+            for (EAction a : EAction.values()) {
+                Input.setKey(a, getInt(p, "key." + a.name(), a.defaultKey, GLFW_KEY_SPACE, GLFW_KEY_LAST));
+            }
+
             Log.info("Loaded settings from " + FILE.toAbsolutePath());
         } catch (Exception e) {
             Log.warn("Couldn't read settings, using defaults", e);
@@ -59,6 +68,11 @@ public class Settings {
         p.setProperty("fov", String.valueOf(fov));
         p.setProperty("turnSpeed", String.valueOf(turnSpeed));
         p.setProperty("uiSize", String.valueOf(uiSize));
+
+        for (EAction a : EAction.values()) {
+            p.setProperty("key." + a.name(), String.valueOf(Input.getKey(a)));
+        }
+
         try (Writer w = Files.newBufferedWriter(FILE)) {
             p.store(w, "Demon Lord settings");
         } catch (IOException e) {
