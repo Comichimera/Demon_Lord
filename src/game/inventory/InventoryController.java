@@ -1,6 +1,8 @@
 package game.inventory;
 
 import game.core.Game;
+import game.input.EAction;
+import game.input.Input;
 import game.input.InputEdge;
 import game.map.Tile;
 import game.ui.InventoryOverlay;
@@ -22,12 +24,12 @@ public class InventoryController {
     }
 
     public void handleKeys() {
-        if (InputEdge.pressedOnce(game.window.getWindowHandle(), GLFW_KEY_TAB)) {
+        if (Input.pressed(EAction.NEXT_ITEM)) {
             game.player.getInventory().selectNext();
             inventoryOverlay.rebuild(game.player.getInventory());
         }
 
-        if (InputEdge.pressedOnce(game.window.getWindowHandle(), GLFW_KEY_G) &&  game.player.isAlive()) {
+        if (Input.pressed(EAction.USE_ITEM) &&  game.player.isAlive()) {
             InventoryEntry selected = game.player.getInventory().getSelectedEntry();
             if (selected != null) {
                 ItemDefinition def = selected.getDefinition();

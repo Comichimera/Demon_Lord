@@ -6,6 +6,8 @@ import game.core.Game;
 import game.core.IGameState;
 import game.debug.DebugConfig;
 import game.debug.DebugOverlay;
+import game.input.EAction;
+import game.input.Input;
 import game.input.InputEdge;
 import game.input.KeyboardInput;
 import game.inventory.InventoryController;
@@ -136,8 +138,7 @@ public class PlayingState implements IGameState {
             return;
         }
 
-        long win = game.window.getWindowHandle();
-        if (InputEdge.pressedOnce(win, GLFW_KEY_ESCAPE) || !game.window.isFocused()) {
+        if (Input.pressed(EAction.PAUSE) || !game.window.isFocused()) {
             game.timers.pause();
             game.pushState(new PauseState(game, this));
             return;
@@ -186,7 +187,7 @@ public class PlayingState implements IGameState {
     }
 
     private void handleDebugToggle() {
-        if (DebugConfig.gameplayTogglable && InputEdge.pressedOnce(game.window.getWindowHandle(), GLFW_KEY_F3)) {
+        if (DebugConfig.gameplayTogglable && Input.pressed(EAction.DEBUG)) {
             DebugConfig.overlayVisible = !DebugConfig.overlayVisible;
         }
     }

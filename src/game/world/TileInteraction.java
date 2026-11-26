@@ -1,6 +1,8 @@
 package game.world;
 
 import game.core.Game;
+import game.input.EAction;
+import game.input.Input;
 import game.input.InputEdge;
 import game.map.Tile;
 import game.ui.InventoryOverlay;
@@ -9,6 +11,8 @@ import game.ui.TimerOverlay;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class TileInteraction {
+
+    // continue here
 
     private final Game game;
     private final InventoryOverlay inventoryOverlay;
@@ -21,7 +25,7 @@ public class TileInteraction {
     }
 
     public void update(int tx, int ty) {
-        if (InputEdge.pressedOnce(game.window.getWindowHandle(), GLFW_KEY_E)) {
+        if (Input.pressed(EAction.INTERACT)) {
 
             int col = tx;
             int row = ty;

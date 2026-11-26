@@ -21,13 +21,13 @@ public final class AchievementsManager {
                 "open_game", "God Gamer",
                 "You opened the game.",
                 GameConfig.path("achievement.locked","/data/assets/achievements/locked_achievement.png"),
-                GameConfig.path("achievement.unlocked","/data/assets/achievements/unlocked_achievement_test.jpg")
+                GameConfig.path("achievement.unlocked","/data/assets/achievements/unlocked_achievement.png")
         ));
         register(new Achievement(
                 "go_outside", "God Human",
                 "You quit the game.",
                 GameConfig.path("achievement.locked","/data/assets/achievements/locked_achievement.png"),
-                GameConfig.path("achievement.unlocked","/data/assets/achievements/unlocked_achievement_test.jpg")
+                GameConfig.path("achievement.unlocked","/data/assets/achievements/unlocked_achievement.png")
         ));
         load();
     }

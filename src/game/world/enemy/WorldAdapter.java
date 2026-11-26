@@ -51,8 +51,8 @@ public final class WorldAdapter implements IWorldAPI {
         float absDx = Math.abs(dx);
         float absDy = Math.abs(dy);
 
-        float tDeltaX = (stepX == 0) ? Float.POSITIVE_INFINITY : (1f / absDx);
-        float tDeltaY = (stepY == 0) ? Float.POSITIVE_INFINITY : (1f / absDy);
+        float tDeltaX = (stepX == 0) ? GameConfig.SOMETHING_HUGE : (1f / absDx);
+        float tDeltaY = (stepY == 0) ? GameConfig.SOMETHING_HUGE : (1f / absDy);
 
         int x = from.x;
         int y = from.y;
@@ -60,8 +60,8 @@ public final class WorldAdapter implements IWorldAPI {
         float nextBoundaryX = (stepX > 0) ? (x + 1) : x;
         float nextBoundaryY = (stepY > 0) ? (y + 1) : y;
 
-        float tMaxX = (stepX == 0) ? Float.POSITIVE_INFINITY : (Math.abs(nextBoundaryX - x0) / absDx);
-        float tMaxY = (stepY == 0) ? Float.POSITIVE_INFINITY : (Math.abs(nextBoundaryY - y0) / absDy);
+        float tMaxX = (stepX == 0) ? GameConfig.SOMETHING_HUGE : (Math.abs(nextBoundaryX - x0) / absDx);
+        float tMaxY = (stepY == 0) ? GameConfig.SOMETHING_HUGE : (Math.abs(nextBoundaryY - y0) / absDy);
 
         while (true) {
             if (x == to.x && y == to.y) return true;

@@ -2,6 +2,8 @@ package game.world;
 
 import game.config.GameConfig;
 import game.core.Game;
+import game.input.EAction;
+import game.input.Input;
 import game.logic.event.EGameEventType;
 import game.logic.event.EventBus;
 import game.logic.event.GameEvent;
@@ -30,8 +32,8 @@ public class PlayerCombat {
 
     public void update(float dt) {
         playerAttackCooldown -= dt;
-        int fKeyState = glfwGetKey(game.window.getWindowHandle(), GLFW_KEY_F);
-        if (fKeyState == GLFW_PRESS && !attackPressed && playerAttackCooldown <= 0f && game.player.isAlive()) {
+        boolean attackDown = Input.isDown(EAction.ATTACK);
+        if (attackDown && !attackPressed && playerAttackCooldown <= 0f && game.player.isAlive()) {
             attackPressed = true;
             playerAttackCooldown = PLAYER_ATTACK_RATE / game.player.getAttackSpeedMultiplier();
             float px = game.player.getX(), pz = game.player.getZ();
@@ -54,7 +56,7 @@ public class PlayerCombat {
                     }
                 }
             }
-        } else if (fKeyState == GLFW_RELEASE) {
+        } else if (!attackDown) {
             attackPressed = false;
         }
     }

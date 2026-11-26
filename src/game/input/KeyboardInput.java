@@ -10,22 +10,21 @@ public class KeyboardInput {
     public void processInput(Player player, float deltaTime, MapData mapData) {
         float moveSpeed = 5.0f * player.getSpeedMultiplier();
         float rotateSpeed = Settings.turnSpeed;
-        long context = glfwGetCurrentContext();
 
-        if (glfwGetKey(context, GLFW_KEY_W) == GLFW_PRESS) {
+        if (Input.isDown(EAction.MOVE_FORWARD)) {
             player.move((float)Math.sin(Math.toRadians(player.getYaw())) * moveSpeed * deltaTime,
                     -(float)Math.cos(Math.toRadians(player.getYaw())) * moveSpeed * deltaTime,
                     mapData);
         }
-        if (glfwGetKey(context, GLFW_KEY_S) == GLFW_PRESS) {
+        if (Input.isDown(EAction.MOVE_BACK)) {
             player.move(-(float)Math.sin(Math.toRadians(player.getYaw())) * moveSpeed * deltaTime,
                     (float)Math.cos(Math.toRadians(player.getYaw())) * moveSpeed * deltaTime,
                     mapData);
         }
-        if (glfwGetKey(context, GLFW_KEY_D) == GLFW_PRESS) {
+        if (Input.isDown(EAction.TURN_RIGHT)) {
             player.rotate(rotateSpeed * deltaTime);
         }
-        if (glfwGetKey(context, GLFW_KEY_A) == GLFW_PRESS) {
+        if (Input.isDown(EAction.TURN_LEFT)) {
             player.rotate(-rotateSpeed * deltaTime);
         }
     }

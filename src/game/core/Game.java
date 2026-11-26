@@ -8,6 +8,7 @@ import game.config.Settings;
 import game.core.state.MainMenuState;
 import game.core.state.SettingsState;
 import game.graphics.Renderer;
+import game.input.Input;
 import game.input.InputEdge;
 import game.input.InputGate;
 import game.input.KeyboardInput;
@@ -76,7 +77,7 @@ public class Game {
     public void popState() {
         currentState.exit();
         currentState = stateStack.pop();
-        InputEdge.onStateEnter((window.getWindowHandle()));
+        InputEdge.onStateEnter(window.getWindowHandle());
         InputGate.arm();
     }
 
@@ -125,6 +126,7 @@ public class Game {
             float deltaTime = (now - lastTime) / 1_000_000_000f;
             lastTime = now;
 
+            Input.update(window.getWindowHandle());
             currentState.update(deltaTime);
             AudioSystem.update(deltaTime);
             render();
