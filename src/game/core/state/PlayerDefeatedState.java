@@ -9,7 +9,6 @@ import game.util.FontLoader;
 
 import java.awt.*;
 
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class PlayerDefeatedState implements IGameState {
@@ -42,7 +41,7 @@ public class PlayerDefeatedState implements IGameState {
 
     @Override
     public void update(float dt) {
-
+        elapsedSeconds += dt;
         if (Input.pressed(EAction.CONFIRM)) {
 
             game.changeState(new PlayingState(game));

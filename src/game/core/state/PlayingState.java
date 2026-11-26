@@ -25,8 +25,6 @@ import game.world.PlayerCombat;
 import game.world.enemy.EnemyManager;
 import org.json.JSONObject;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 public class PlayingState implements IGameState {
     private final Game game;
     private final KeyboardInput keyboard;

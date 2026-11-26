@@ -7,8 +7,6 @@ import game.input.Input;
 import game.logic.TimerService;
 import game.ui.LevelCompleteOverlay;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 public class LevelCompleteState implements IGameState {
     private final Game game;
     private LevelCompleteOverlay overlay;
