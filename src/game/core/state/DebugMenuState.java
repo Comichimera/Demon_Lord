@@ -54,7 +54,7 @@ public class DebugMenuState implements IGameState {
             changed = true;
         }
 
-        if (Input.pressed(EAction.MENU_UP)) {
+        if (Input.pressed(EAction.MENU_DOWN)) {
             selected = (selected + 1) % ITEM_COUNT;
             changed = true;
         }
