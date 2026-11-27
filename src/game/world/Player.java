@@ -11,6 +11,8 @@ import game.world.health.InjuryHealthSystem;
 public class Player {
     private float x, y, z;
     private float yaw;
+
+    private float prevX, prevZ, prevYaw;
     private final Inventory inventory = new Inventory();
 
     private final int baseAttackDamage = 25;
@@ -44,8 +46,14 @@ public class Player {
 
     public Inventory getInventory() { return inventory; }
 
-    public void setYaw(float yaw)              { this.yaw = yaw; }
-    public void setPosition(float x, float z)  { this.x = x; this.z = z; }
+    public void setYaw(float yaw)              { this.yaw = yaw; prevYaw = yaw; }
+    public void setPosition(float x, float z)  { this.x = x; this.z = z; prevX = x; prevZ = z; }
+
+    public void savePrevious() { prevX = x; prevZ = z; prevYaw = yaw; }
+
+    public float lerpX(float a) { return prevX + (x - prevX) * a; }
+    public float lerpZ(float a) { return prevZ + (z - prevZ) * a; }
+    public float lerpYaw(float a) { return prevYaw + (yaw - prevYaw) * a; }
 
     public void tickHealth(float dt)  { health.tick(dt); }
     public boolean isAlive()          { return !health.isDead(); }

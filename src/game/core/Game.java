@@ -43,6 +43,8 @@ public class Game {
     private final Deque<IGameState> stateStack = new ArrayDeque<>();
 
     public final TimerService timers = new TimerService();
+    public float fps;
+    public float renderAlpha;
 
     private VersionOverlay versionOverlay;
     String formatTimeNoDecimal(double time) {
@@ -111,15 +113,24 @@ public class Game {
     }
     private void loop() {
         long lastTime = System.nanoTime();
+        float accumulator = 0f;
         while (running && !window.shouldClose()) {
             long now = System.nanoTime();
-            float deltaTime = (now - lastTime) / 1_000_000_000f;
-            deltaTime = Math.min(deltaTime, 0.1f);
+            float frameTime = (now - lastTime) / 1_000_000_000f;
+            frameTime = Math.min(frameTime, 0.1f);
             lastTime = now;
+            if (frameTime > 0f) fps = 1f / frameTime;
 
-            Input.update(window.getWindowHandle());
-            currentState.update(deltaTime);
-            AudioSystem.update(deltaTime);
+            accumulator += frameTime;
+            while (accumulator >= GameConfig.TICK_LENGTH) {
+                player.savePrevious();
+                Input.update(window.getWindowHandle());
+                currentState.update(GameConfig.TICK_LENGTH);
+                accumulator -= GameConfig.TICK_LENGTH;
+            }
+            renderAlpha = accumulator / GameConfig.TICK_LENGTH;
+
+            AudioSystem.update(frameTime);
             render();
             window.update();
         }

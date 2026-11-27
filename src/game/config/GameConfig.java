@@ -12,6 +12,9 @@ public class GameConfig {
     public static final float ROOM_HEIGHT    = 3.0f;
     public static final float ROOM_HALF_SIZE = TILE_SIZE / 2.0f;
     public static final float SOMETHING_HUGE = Float.POSITIVE_INFINITY;
+    public static final int TICKS_PER_SECOND = 60;
+    public static final float TICK_LENGTH = 1f / TICKS_PER_SECOND;
+
 
     public enum HealthSystem { CLASSIC, INJURIES }
     public static final HealthSystem healthSystem;

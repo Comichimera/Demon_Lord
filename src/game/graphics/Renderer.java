@@ -143,7 +143,7 @@ public class Renderer {
         }
     }
 
-    public void render(Player player, float elapsedSeconds, float aspect) {
+    public void render(Player player, float alpha, float elapsedSeconds, float aspect) {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_CULL_FACE);
@@ -152,8 +152,8 @@ public class Renderer {
                 .perspective((float) Math.toRadians(Settings.fov), aspect, 0.1f, 100f);
 
         Matrix4f view = new Matrix4f().identity()
-                .rotateY((float) Math.toRadians(player.getYaw()))
-                .translate(-player.getX(), -player.getY(), -player.getZ());
+                .rotateY((float) Math.toRadians(player.lerpYaw(alpha)))
+                .translate(-player.lerpX(alpha), -player.getY(), -player.lerpZ(alpha));
 
         for (var entry : floorInstances.entrySet()) {
             String tex = entry.getKey();
@@ -208,7 +208,7 @@ public class Renderer {
         glDisable(GL_BLEND);
 
         if (enemySprites != null && enemyManager != null) {
-            enemySprites.render(enemyManager, player, projection, view, elapsedSeconds);
+            enemySprites.render(enemyManager, player, alpha, projection, view, elapsedSeconds);
         }
     }
     private String resolveDoorFloorTexture(int row, int col,

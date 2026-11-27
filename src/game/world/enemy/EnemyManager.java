@@ -51,6 +51,10 @@ public class EnemyManager {
         return (float) Math.sqrt(min2) / GameConfig.TILE_SIZE;
     }
 
+    public void savePrevious() {
+        for (IEnemy e : enemies) e.savePrevious();
+    }
+
     public void update(float dt, MapData map, Player player) {
         if (playerDefeated) return;
 

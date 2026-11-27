@@ -33,7 +33,6 @@ public class PlayingState implements IGameState {
     private HpOverlay hpOverlay;
     private StatusOverlay statusOverlay;
     private DebugOverlay debugOverlay;
-    private float fps = 0f;
 
     private EventBus events;
     private ObjectiveManager objectives;
@@ -130,6 +129,8 @@ public class PlayingState implements IGameState {
 
     @Override
     public void update(float dt) {
+        if (enemies != null) enemies.savePrevious();
+
         if (enemies != null && enemies.isPlayerDefeated()) {
             game.changeState(new PlayerDefeatedState(game));
             return;
@@ -141,15 +142,13 @@ public class PlayingState implements IGameState {
             return;
         }
 
-        fps = (dt > 0f) ? 1f / dt : fps;
-
         game.timers.tick(dt);
         timer.update(game.timers.levelSeconds());
         game.player.tickHealth(dt);
 
         handleDebugToggle();
 
-        debugOverlay.update(game.player, enemies, game.mapData, fps, dt);
+        debugOverlay.update(game.player, enemies, game.mapData, game.fps, dt);
 
         keyboard.processInput(game.player, dt, game.mapData);
 
@@ -207,7 +206,7 @@ public class PlayingState implements IGameState {
 
     @Override
     public void render() {
-        game.renderer.render(game.player, (float)game.timers.levelSeconds(), (float) game.window.getWidth() / game.window.getHeight());
+        game.renderer.render(game.player, game.renderAlpha, (float)game.timers.levelSeconds(), (float) game.window.getWidth() / game.window.getHeight());
 
         if (timer != null) {
             timer.render();

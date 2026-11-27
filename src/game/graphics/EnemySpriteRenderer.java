@@ -37,7 +37,7 @@ public final class EnemySpriteRenderer {
         this.defs = defs;
     }
 
-    public void render(EnemyManager manager, Player cameraPlayer, Matrix4f projection, Matrix4f view, float timeSeconds) {
+    public void render(EnemyManager manager, Player cameraPlayer, float alpha, Matrix4f projection, Matrix4f view, float timeSeconds) {
         if (manager == null) return;
 
         boolean wasBlend = glIsEnabled(GL_BLEND);
@@ -48,7 +48,7 @@ public final class EnemySpriteRenderer {
 
         if (wasCull) glDisable(GL_CULL_FACE);
 
-        final float camYaw = cameraPlayer.getYaw();
+        final float camYaw = cameraPlayer.lerpYaw(alpha);
 
         for (IEnemy e : manager.getEnemies()) {
             QuadSet qs = cache.computeIfAbsent(e.getType().toLowerCase(), this::buildQuadSetForType);
@@ -95,7 +95,7 @@ public final class EnemySpriteRenderer {
             }
 
             Matrix4f model = new Matrix4f()
-                    .translation(e.getX(), qs.heightMeters * 0.5f + hoverMeters + bobMeters, e.getZ())
+                    .translation(e.lerpX(alpha), qs.heightMeters * 0.5f + hoverMeters + bobMeters, e.lerpZ(alpha))
                     .rotateY((float) toRadians(-camYaw))
                     .rotateX((float) toRadians(90.0));
 

@@ -12,6 +12,8 @@ public abstract class BaseEnemy {
     protected float z;
     protected float yaw;
 
+    protected float prevX, prevZ;
+
     protected float speed = 1.5f;
     protected float fovDeg = 90.0f;
     protected float viewDistTiles = 6.0f;
@@ -42,6 +44,21 @@ public abstract class BaseEnemy {
     public void setPosition(float worldX, float worldZ) {
         this.x = worldX;
         this.z = worldZ;
+        prevX = worldX;
+        prevZ = worldZ;
+    }
+
+    public void savePrevious() {
+        prevX = x;
+        prevZ = z;
+    }
+
+    public float lerpX(float a) {
+        return prevX + (x - prevX) * a;
+    }
+
+    public float lerpZ(float a) {
+        return prevZ + (z - prevZ) * a;
     }
 
     public void setYaw(float degrees) {

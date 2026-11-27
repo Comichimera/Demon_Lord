@@ -15,6 +15,10 @@ public interface IEnemy {
     void setPosition(float x, float z);
     void setYaw(float yawDegrees);
 
+    void savePrevious();
+    float lerpX(float a);
+    float lerpZ(float a);
+
     void update(float dt, MapData map, Player player, EventBus events);
 
     boolean canSeePlayer(MapData map, Player player);
