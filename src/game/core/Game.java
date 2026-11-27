@@ -114,6 +114,7 @@ public class Game {
         while (running && !window.shouldClose()) {
             long now = System.nanoTime();
             float deltaTime = (now - lastTime) / 1_000_000_000f;
+            deltaTime = Math.min(deltaTime, 0.1f);
             lastTime = now;
 
             Input.update(window.getWindowHandle());
