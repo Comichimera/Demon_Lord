@@ -85,7 +85,7 @@ public final class MenuOverlay {
     }
 
     public void render() {
-        renderer.render(tex, 20, 20, true, 0.75f, 0f, 0f, 0f);
+        renderer.render(tex, UiScale.px(20), UiScale.menuTop(), true, 0.75f, 0f, 0f, 0f);
         if (creditsTex != null) {
             int x = window.getWidth() - creditsTex.getWidth() - 10;
             int y = window.getHeight() - creditsTex.getHeight() - 10;

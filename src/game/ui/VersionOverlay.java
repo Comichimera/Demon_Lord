@@ -56,8 +56,8 @@ public final class VersionOverlay {
 
     public void render() {
         if (tex == null) return;
-        int x = 10;
-        int y = 10;
+        int x = UiScale.px(10);
+        int y = UiScale.px(10);
         renderer.render(tex, x, y, false, 0, 0, 0, 0);
     }
 

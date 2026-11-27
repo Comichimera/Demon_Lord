@@ -152,7 +152,7 @@ public class SettingsState implements IGameState {
     @Override
     public void render() {
         int x = UiScale.px(20);
-        int y = UiScale.px(20);
+        int y = UiScale.menuTop();
         renderer.render(titleTex, x, y, true, 0.75f, 0f, 0f, 0f);
         y += titleTex.getHeight() + UiScale.px(10);
         int labelsX = x + UiScale.px(24);

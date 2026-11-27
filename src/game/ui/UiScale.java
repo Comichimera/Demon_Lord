@@ -33,4 +33,8 @@ public class UiScale {
     public static int   version()           { return version; }
 
     public static int px(int designPixels)  { return Math.round(designPixels * scale); }
+
+    public static int menuTop() {
+        return px(40);
+    }
 }

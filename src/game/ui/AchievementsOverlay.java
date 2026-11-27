@@ -72,7 +72,7 @@ public class AchievementsOverlay {
     public void render() {
         int icon = UiScale.px(ICON_SIZE);
         int x = UiScale.px(40);
-        int y = UiScale.px(40);
+        int y = UiScale.menuTop();
 
         renderer.render(headerTex, x, y, false, 0, 0, 0, 0);
         y += headerTex.getHeight() + UiScale.px(16);

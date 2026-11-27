@@ -8,6 +8,7 @@ import game.input.EAction;
 import game.input.Input;
 import game.ui.OverlayRenderer;
 import game.graphics.TextTexture;
+import game.ui.UiScale;
 import game.util.FontLoader;
 
 import java.awt.*;
@@ -153,7 +154,7 @@ public class DebugMenuState implements IGameState {
         glClear(GL_COLOR_BUFFER_BIT);
 
         if (menuTex != null) {
-            renderer.render(menuTex, 20, 20, false, 0f, 0f, 0f, 0f);
+            renderer.render(menuTex, UiScale.px(20), UiScale.menuTop(), false, 0f, 0f, 0f, 0f);
         }
         if (showPreview && previewTex != null) {
             int x = game.window.getWidth() - previewTex.getWidth() - 20;
