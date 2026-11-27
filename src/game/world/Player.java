@@ -63,7 +63,7 @@ public class Player {
     public void takeDamage(int amount)                 { health.applyHit(amount, 1.0f); }
     public void heal(int amount)                       { health.heal(amount); }
     public void treatInjury(float amount)              { health.treatInjury(amount); }
-    public void resetHealth()                          { health.reset(); }
+    public void resetHealth(long seed)                          { health.reset(seed); }
 
     public float getSpeedMultiplier()       { return health.getSpeedMultiplier(); }
     public float getAttackSpeedMultiplier() { return health.getAttackSpeedMultiplier(); }

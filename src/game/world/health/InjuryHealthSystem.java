@@ -55,7 +55,8 @@ public class InjuryHealthSystem implements IHealthSystem {
     }
 
     @Override
-    public void reset() {
+    public void reset(long seed) {
+        rng.setSeed(seed);
         damage    = 0f;
         injuries  = 0f;
         bloodloss = 0f;

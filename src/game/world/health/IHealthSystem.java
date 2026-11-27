@@ -6,7 +6,7 @@ public interface IHealthSystem {
     boolean isDead();
     boolean isCritical();
     void heal(int amount);
-    void reset();
+    void reset(long seed);
     float getSpeedMultiplier();
     float getAttackSpeedMultiplier();
     float getDamageMultiplier();

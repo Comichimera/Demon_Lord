@@ -14,7 +14,7 @@ public class ClassicHealthSystem implements IHealthSystem {
     @Override public boolean isDead()     { return hp <= 0; }
     @Override public boolean isCritical() { return hp < maxHp * 0.3f; }
     @Override public void heal(int amount)  { hp = Math.min(maxHp, hp + amount); }
-    @Override public void reset()           { hp = maxHp; }
+    @Override public void reset(long seed)           { hp = maxHp; }
 
     @Override public float getSpeedMultiplier()       { return 1.0f; }
     @Override public float getAttackSpeedMultiplier() { return 1.0f; }

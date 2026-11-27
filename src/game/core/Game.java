@@ -22,10 +22,7 @@ import game.util.Log;
 import game.world.Player;
 import org.json.JSONObject;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -45,7 +42,7 @@ public class Game {
     public final TimerService timers = new TimerService();
     public float fps;
     public float renderAlpha;
-
+    public long levelSeed;
     private VersionOverlay versionOverlay;
     String formatTimeNoDecimal(double time) {
         int minutes = (int)(time / 60);
@@ -143,6 +140,13 @@ public class Game {
     }
 
     public void reloadLevel() {
+        reloadLevel(new Random().nextLong());
+    }
+
+    public void reloadLevel(long seed) {
+        levelSeed = seed;
+        Log.info("Level seed: " + seed);
+
         String mapPath = levelManager.getCurrentLevel().mapPath;
         mapData = MapLoader.loadMap(mapPath);
 
@@ -159,7 +163,7 @@ public class Game {
         int sy = mapData.getPlayerSpawnY();
         player.setPosition(sx * ts + ts / 2f, sy * ts + ts / 2f);
         player.setYaw(mapData.getCameraYaw());
-        player.resetHealth();
+        player.resetHealth(seed);
         player.getInventory().restore(levelStartItems);
     }
     private void render() {
